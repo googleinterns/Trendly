@@ -1,0 +1,11 @@
+body {
+  background-color:#f3f3f3ff;
+}
+app-main-page{
+  margin: 0 auto;
+  padding: 50px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
