@@ -4,44 +4,46 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class ColorsService {
-  readonly _colorShow: string[] = [
-    '#2196F3',
-    '#673AB7',
+  readonly colorShow: string[] = [
+    '#2196f3',
+    '#673ab7',
     '#009688',
-    '#FF9800',
-    '#FF5722',
-    '#E91E63',
-    '#3F51B5',
-    '#FFEB3B',
+    '#ff9800',
+    '#ff5722',
+    '#e91e63',
+    '#3f51b5',
+    '#ffeb3b',
   ];
-  readonly _lightColorShow: string[] = [
-    '#64B5F6',
-    '#9575CD',
-    '#4DB6AC',
-    '#FFB74D',
-    '#FF8A65',
-    '#F06292',
-    '#7986CB',
-    '#FFF176',
+  readonly lightColorShow: string[] = [];
+  readonly colorBlindShow: string[] = [
+    '#f5793A',
+    '#a95aa1',
+    '#85C0f9',
+    '#0f2080'
+  ];
+  readonly lightColorBlingShow: string[] = [];
 
-  ];
-  readonly _colorBlindShow: string[] = [
-    '#F5793A',
-    '#A95AA1',
-    '#85C0F9',
-    '#0F2080'
-  ];
-  readonly _lightColorBlingShow: string[];
-
-  get colorShow(): string[] {
-    return this._colorShow;
+  constructor(){
+    this.colorShow.forEach((color) =>
+      this.lightColorShow.push(this.changeColorLightness(color, 45)));
+    this.colorBlindShow.forEach((color) =>
+      this.lightColorBlingShow.push(this.changeColorLightness(color, 45)));
   }
 
-  get lightColorShow(): string[] {
-    return this._lightColorBlingShow;
+  /** Returns a hex representation of lighter/ darken version of color 
+   * by lightnessAmount.
+   * @param color - hex represantion of a color, statrs with #
+   * @param lightnessAmount - a number representing the amount of
+   * requested lightening of the given color. Given a negative number,
+   * the returned color will be a darken version of the given one. */ 
+  changeColorLightness(color: string, lightnessAmount: number): string {
+    color = color.slice(1);
+    const num = parseInt(color,16);
+    const r = Math.max(Math.min((num >> 16) + lightnessAmount, 255), 0);
+    const b = Math.max(Math.min(((num >> 8) & 0x00FF) + lightnessAmount, 255), 0);
+    const g = Math.max(Math.min((num & 0x0000FF) + lightnessAmount, 255), 0);
+    const newColor = g | (b << 8) | (r << 16);
+    return '#' + newColor.toString(16);
   }
 
-  get colorBlindShow(): string[] {
-    return this._colorBlindShow
-  }
 }
