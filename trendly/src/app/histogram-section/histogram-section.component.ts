@@ -5,25 +5,39 @@ interface ColumnArray {
   [index: number]: object | string;
 }
 
+interface Topic {
+  name: string; 
+  volume : number; 
+  description : string;
+}
+
+interface DataType {
+  [index: string]: Array<Topic>;
+}
+
 //mock data
-const MOCK_DATA = {
+const MOCK_DATA : DataType= {
   '8/2010' : [{name: 'apple', volume: 50, description:'big tech company'}, {name: 'corona', volume: 50, description:'a dangerous virus'}],
   '9/2010' : [{name: 'apple', volume: 30, description:'big tech company'}, {name: 'elections', volume: 10, description:'elections'}, {name: 'corona', volume: 80, description:'a dangerous virus'}],
   '10/2010' : [{name: 'elections', volume: 80, description:'elections'}, {name: 'corona', volume: 100, description:'a dangerous virus'}, 
   {name: 'pizza', volume: 20, description:'very tasty food'}],
 }
+
+const TOOLTIP_ROLE = 'tooltip';
+const STYLE_ROLE = 'style';
+
+/**
+ * responsibles for the charts view
+ */
 @Component({
   selector: 'app-histogram-section',
   templateUrl: './histogram-section.component.html',
   styleUrls: ['./histogram-section.component.css']
 })
-/**
- * responsibles for the charts view
- */
 export class HistogramSectionComponent implements OnInit {
   @Input() title : string; //get from parent
   @Input() type : string = 'ColumnChart';
-  @Input() data = [];
+  @Input() data : Array<Array<string | number>> = [];
   @Input() columnNames : ColumnArray = [];
   @Input() options : object =  
   {
@@ -50,7 +64,7 @@ export class HistogramSectionComponent implements OnInit {
    * converts the data from the server to charts format.
    */
   convertDataToChartsFormat() {
-    let topics : Map<string, number> = this.extractTopics(MOCK_DATA);
+    const topics : Map<string, number> = this.extractTopics(MOCK_DATA);
     this.createColumnNames(topics);
     this.createData(topics);
   }
@@ -59,7 +73,7 @@ export class HistogramSectionComponent implements OnInit {
    * extracts and returns the topics maps to its' index.
    */
   extractTopics(data: Object) :Map<string, number> {
-    let topics : Map<string, number> = new Map<string, number>();
+    const topics : Map<string, number> = new Map<string, number>();
     let counter : number = 0;
     for (let key of Object.keys(data)) {
       for (let element of data[key]) {
@@ -80,12 +94,11 @@ export class HistogramSectionComponent implements OnInit {
    createColumnNames(topics : Map<string, number>) : void {
       this.columnNames[0] = 'Topic';
       let index :number = 0;
-     for (let key of topics.keys())
-     {
+     for (let key of topics.keys()) {
        index = topics.get(key) * 3;
-       this.columnNames[(index + 1)] = key;
-       this.columnNames[index+ 2] = {role: 'tooltip'};
-       this.columnNames[index + 3] = {role: 'style'};
+       this.columnNames[index + 1] = key;
+       this.columnNames[index+ 2] = {role:TOOLTIP_ROLE};
+       this.columnNames[index + 3] = {role: STYLE_ROLE};
      }
    }
 
@@ -94,22 +107,20 @@ export class HistogramSectionComponent implements OnInit {
     * @param topics
     */
    private createData(topics : Map<string, number>) : void{
-     this.data = [];
      for (let date of Object.keys(MOCK_DATA)) {
-       let row = Array((topics.size * 3) + 1).fill('');
+       const row = Array((topics.size * 3) + 1).fill('');
        this.initializeRowArray(row);
        row[0] = date;
 
        for (let element of MOCK_DATA[date]) {
-         let index = topics.get(element.name) * 3;
-         let indexColor = topics.get(element.name);
+         const index = topics.get(element.name) * 3;
+         const indexColor = topics.get(element.name);
          row[index + 1] = element.volume;
          row[index + 2] = element.description;
          row[index + 3] = this.coloresService._lightColorShow[indexColor];
        }
        this.data.push(row);
      }
-     console.log(this.data)
    }
 
    /**
