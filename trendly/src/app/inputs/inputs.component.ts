@@ -9,15 +9,15 @@ interface InputObj {
 
 }
 
+/**
+ * responsible for all the user inputs.
+ */
 @Component({
   selector: 'app-inputs',
   templateUrl: './inputs.component.html',
   styleUrls: ['./inputs.component.css', '../../../node_modules/@angular/material/prebuilt-themes/indigo-pink.css']
 
 })
-/**
- * responsible for all the user inputs.
- */
 export class InputsComponent implements OnInit {
   //inputs initiallized to default values.
   startDate: Date = new Date(2004, 1, 1);

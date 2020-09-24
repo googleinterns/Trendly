@@ -162,14 +162,14 @@ const COUNTRY_CODES : Object = {
   'Zimbabwe': "ZW"
 }
 
+/**
+ * responsibeles for the country input.
+ */
 @Component({
   selector: 'app-country-input',
   templateUrl: './country-input.component.html',
   styleUrls: ['./country-input.component.css']
 })
-/**
- * responsibeles for the country input.
- */
 export class CountryInputComponent implements OnInit {
   @Output() emitter = new EventEmitter<string>();
   countryValue : string = '';
@@ -203,7 +203,7 @@ export class CountryInputComponent implements OnInit {
    * emit to parent component the country name while the input value changes.
    */
   emitCountry() : void {
-    let countryCode = this.countryValue === EMPTY_STR ? EMPTY_STR : COUNTRY_CODES[this.countryValue];
+    const countryCode = this.countryValue === EMPTY_STR ? EMPTY_STR : COUNTRY_CODES[this.countryValue];
     this.emitter.emit(countryCode);
   }
 
@@ -212,7 +212,7 @@ export class CountryInputComponent implements OnInit {
    */
   updateAndemitCountry(newCountry : string) : void {
     this.countryValue = newCountry;
-    let countryCode = this.countryValue === EMPTY_STR ? EMPTY_STR : COUNTRY_CODES[this.countryValue];
+    const countryCode = this.countryValue === EMPTY_STR ? EMPTY_STR : COUNTRY_CODES[this.countryValue];
     this.emitter.emit(countryCode);
   }
 

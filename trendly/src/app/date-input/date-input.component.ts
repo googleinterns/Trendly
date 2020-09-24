@@ -22,6 +22,9 @@ export const DATE_FORMAT = {
   },
 };
 
+/**
+ * responsibles for dates input
+ */
 @Component({
   selector: 'app-date-input',
   templateUrl: './date-input.component.html',
@@ -36,9 +39,6 @@ export const DATE_FORMAT = {
     {provide: MAT_DATE_FORMATS, useValue: DATE_FORMAT},
   ],
 })
-/**
- * responsibles for dates input
- */
 export class DateInputComponent implements OnInit {
   @Output() emitterStart = new EventEmitter<any>();
   @Output() emitterEnd = new EventEmitter<any>();
