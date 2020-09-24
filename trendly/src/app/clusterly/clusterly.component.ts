@@ -5,6 +5,7 @@ import { Cluster } from '../models/cluster-model'
 import { Bubble } from '../models/bubble-model'
 import { ClusterData, QueryData } from '../models/server-datatypes'
 import { ColorsService } from '../colors.service'
+import { CLUSTERS_DATA } from './mock-data'
 
 // To be replaced ib the future with window resize event listener
 export const WIDTH: number = window.innerWidth;
@@ -39,11 +40,11 @@ export enum Scales {
 export class ClusterlyComponent implements OnInit {
   private clusters: Map<number, Cluster> = new Map<number, Cluster>();
   private queries: Array<Bubble> = new Array<Bubble>();
-  private scales: Map<number, any> = new Map<number, any>();
+  private scales: Map<Scales, any> = new Map<Scales, any>();
 
   constructor(
     private colorsService: ColorsService
-  ) { }
+  ) {}
 
   // To be replaced with ngOnChange when the server will be connected
   ngOnInit(): void {
@@ -56,7 +57,7 @@ export class ClusterlyComponent implements OnInit {
     this.addScales();
     console.log(typeof this.scales.get(Scales.ColorScale));
 
-    // If exist clusters to show, add cluster visualization
+    // If exist clusters to show, adds cluster visualization
     if (this.clusters.size > 0) {
       this.addClustersVisualization();
     }
@@ -123,64 +124,7 @@ export class ClusterlyComponent implements OnInit {
   /** Returns mock data (const clusters in
    * the same format of the data from the server) */
   private get_data(): ClusterData[] {
-    const clusterData = [
-      {
-        title: 'Cluster 1',
-        id: 1,
-        queries: [
-          { queryString: 'This is query 1 from cluster 1 ', volume: 10 },
-          { queryString: 'This is query 2 from cluster 1 ', volume: 25 },
-          { queryString: 'This is query 3 from cluster 1 ', volume: 50 },
-          { queryString: 'This is query 4 from cluster 1 ', volume: 80 },
-          { queryString: 'This is query 5 from cluster 1 ', volume: 100 },
-        ],
-      },
-      {
-        title: 'Cluster 2',
-        id: 2,
-        queries: [
-          { queryString: 'apple!!', volume: 5 },
-          { queryString: 'banana!!', volume: 29 },
-          { queryString: 'orange!!', volume: 37 },
-          { queryString: 'watermelon!!', volume: 60 },
-          { queryString: 'grapes!!', volume: 100 },
-        ],
-      },
-      {
-        title: 'Cluster 3',
-        id: 3,
-        queries: [
-          { queryString: 'hi!!!', volume: 10 },
-          { queryString: 'hi!!!', volume: 30 },
-          { queryString: 'hi!!!', volume: 50 },
-          { queryString: 'hi!!!', volume: 70 },
-          { queryString: 'hi!!!', volume: 100 },
-        ],
-      },
-      {
-        title: 'Cluster 4',
-        id: 4,
-        queries: [
-          { queryString: 'hi!!!!', volume: 10 },
-          { queryString: 'hi!!!!', volume: 25 },
-          { queryString: 'hi!!!!', volume: 40 },
-          { queryString: 'hi!!!!', volume: 90 },
-          { queryString: 'hi!!!!', volume: 100 },
-        ],
-      },
-      {
-        title: 'Cluster 5',
-        id: 5,
-        queries: [
-          { queryString: 'hi!!!!', volume: 40 },
-          { queryString: 'hi!!!!', volume: 25 },
-          { queryString: 'hi!!!!', volume: 35 },
-          { queryString: 'hi!!!!', volume: 90 },
-          { queryString: 'hi!!!!', volume: 100 },
-        ],
-      },
-    ];
-    return clusterData;
+    return CLUSTERS_DATA;
   }
 
   /** Adds scales to this.scales to be used in this component functions */
@@ -221,8 +165,8 @@ export class ClusterlyComponent implements OnInit {
    * containing the x and y position for the center of each cluster */
   private gridDivision(): Map<number, Location> {
     const height: number = 4 * HEIGHT / 5;
-    const upperYPosition: number =  height / 4;
-    const lowerYPosition: number =  3 * height / 4;
+    const upperYPosition: number = height / 4;
+    const lowerYPosition: number = 3 * height / 4;
     const clusterIdToLoc: Map<number, Location> =
       new Map<number, Location>();
     this.clusters.forEach((cluster) => {
@@ -259,7 +203,7 @@ export class ClusterlyComponent implements OnInit {
   /** Adds circles bind to this.queries to circleGroup
    * and returns the created circles */
   private addCircles(circleGroup, id: string, radiusAddition: number,
-    clusterIdToLoc: Map<number, Location>, colorScale: number) {
+    clusterIdToLoc: Map<number, Location>, colorScale: Scales) {
     return circleGroup.selectAll('g')
       .data(this.queries).enter()
       .append('circle')
@@ -292,7 +236,7 @@ export class ClusterlyComponent implements OnInit {
   /** Adds to circle tooltip functionality
    * (tooltip appears when the mouse is over the circle
    * and disapears when it moves)*/
-  private tooltipHandling(tooltip, circle) {
+  private tooltipHandling(tooltip, circle): void {
     const mousemove = (event, d) => {
       tooltip
         .html(d.query)
@@ -322,7 +266,7 @@ export class ClusterlyComponent implements OnInit {
   }
 
   /** Applies given simulation on inner and outer circles */
-  private applySimulation(simulation, circle, lightCircle) {
+  private applySimulation(simulation, circle, lightCircle): void {
     simulation
       .nodes(this.queries)
       .on('tick', () => {
@@ -395,7 +339,7 @@ export class ClusterlyComponent implements OnInit {
 
   /** Updates given circle fill color based on the
    * appropriate color that match circleId at colorScale */
-  private updateCircleColor(circle, clusterId: number, colorScale) {
+  private updateCircleColor(circle, clusterId: number, colorScale: Scales): void {
     circle.style('fill', this.scales.get(colorScale)(clusterId));
   }
 }
