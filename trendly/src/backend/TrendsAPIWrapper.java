@@ -16,10 +16,10 @@ public class TrendsAPIWrapper {
   private static final String API_KEY = "";
   private static final Map<String, Class<? extends TrendsResult>> FUNC_TO_CLASS =
       Map.ofEntries(
-          entry("topTopics", TrendsTopicsResult.class),
-              entry("risingTopics", TrendsRisingTopicsResult.class),
-          entry("topQueries", TrendsQueriesResult.class),
-              entry("risingQueries", TrendsRisingQueriesResult.class));
+          entry(TrendsFunctions.TOP_TOPICS, TrendsTopicsResult.class),
+              entry(TrendsFunctions.RISING_TOPICS, TrendsRisingTopicsResult.class),
+          entry(TrendsFunctions.TOP_QUERIES, TrendsQueriesResult.class),
+              entry(TrendsFunctions.RISING_QUERIES, TrendsRisingQueriesResult.class));
 
   /**
    * Runs the requested function from Google Trends API with the given restrictions and returns

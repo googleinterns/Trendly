@@ -6,12 +6,6 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public final class TrendsAPIWrapperTest {
-  // Google Trends API functions
-  private static final String TOP_TOPICS_FUNC = "topTopics";
-  private static final String RISING_TOPICS_FUNC = "risingTopics";
-  private static final String TOP_QUERIES_FUNC = "topQueries";
-  private static final String RISING_QUERIES_FUNC = "risingQueries";
-
   // Restrictions
   private static final String TERM = "google";
   private static final String LOCATION = "US";
@@ -22,7 +16,8 @@ public final class TrendsAPIWrapperTest {
   @Test
   public void topTopicsReturnType() throws IOException {
     final TrendsResult res =
-        TrendsAPIWrapper.fetchDataFromTrends(TOP_TOPICS_FUNC, TERM, LOCATION, START_DATE, END_DATE);
+        TrendsAPIWrapper.fetchDataFromTrends(
+            TrendsFunctions.TOP_TOPICS, TERM, LOCATION, START_DATE, END_DATE);
     Assert.assertTrue(res instanceof TrendsTopicsResult);
   }
 
@@ -34,7 +29,7 @@ public final class TrendsAPIWrapperTest {
   public void risingTopicsReturnType() throws IOException {
     final TrendsResult res =
         TrendsAPIWrapper.fetchDataFromTrends(
-            RISING_TOPICS_FUNC, TERM, LOCATION, START_DATE, END_DATE);
+            TrendsFunctions.RISING_TOPICS, TERM, LOCATION, START_DATE, END_DATE);
     Assert.assertTrue(res instanceof TrendsRisingTopicsResult);
   }
 
@@ -43,7 +38,7 @@ public final class TrendsAPIWrapperTest {
   public void topQueriesReturnType() throws IOException {
     final TrendsResult res =
         TrendsAPIWrapper.fetchDataFromTrends(
-            TOP_QUERIES_FUNC, TERM, LOCATION, START_DATE, END_DATE);
+            TrendsFunctions.TOP_QUERIES, TERM, LOCATION, START_DATE, END_DATE);
     Assert.assertTrue(res instanceof TrendsQueriesResult);
   }
 
@@ -55,7 +50,7 @@ public final class TrendsAPIWrapperTest {
   public void risingQueriesReturnType() throws IOException {
     final TrendsResult res =
         TrendsAPIWrapper.fetchDataFromTrends(
-            RISING_QUERIES_FUNC, TERM, LOCATION, START_DATE, END_DATE);
+            TrendsFunctions.RISING_QUERIES, TERM, LOCATION, START_DATE, END_DATE);
     Assert.assertTrue(res instanceof TrendsRisingQueriesResult);
   }
 }
