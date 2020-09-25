@@ -1,0 +1,9 @@
+<h1 mat-dialog-title>Topic: {{data.title}}</h1>
+<div mat-dialog-content>
+  Queries:
+  <mat-selection-list>
+    <mat-list-option *ngFor="let query of data.queries" [value]="query">
+      {{query.query}}  (volume: {{query.volume}})
+    </mat-list-option>
+  </mat-selection-list>
+</div>

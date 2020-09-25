@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 
 import * as d3 from 'd3';
-import { Cluster } from '../models/cluster-model'
-import { Bubble } from '../models/bubble-model'
-import { ClusterData, QueryData } from '../models/server-datatypes'
-import { ColorsService } from '../colors.service'
-import { CLUSTERS_DATA } from './mock-data'
+import { Cluster } from '../models/cluster-model';
+import { Bubble } from '../models/bubble-model';
+import { ClusterData, QueryData } from '../models/server-datatypes';
+import { ColorsService } from '../colors.service';
+import { CLUSTERS_DATA } from './mock-data';
+import { QueriesDialogComponent } from '../queries-dialog/queries-dialog.component'
+
 
 // To be replaced ib the future with window resize event listener
 export const WIDTH: number = window.innerWidth;
@@ -43,7 +46,8 @@ export class ClusterlyComponent implements OnInit {
   private scales: Map<Scales, any> = new Map<Scales, any>();
 
   constructor(
-    private colorsService: ColorsService
+    private colorsService: ColorsService,
+    public dialog: MatDialog
   ) {}
 
   // To be replaced with ngOnChange when the server will be connected
@@ -55,7 +59,6 @@ export class ClusterlyComponent implements OnInit {
 
     this.processClustersObjects(clustersData);
     this.addScales();
-    console.log(typeof this.scales.get(Scales.ColorScale));
 
     // If exist clusters to show, adds cluster visualization
     if (this.clusters.size > 0) {
@@ -88,6 +91,7 @@ export class ClusterlyComponent implements OnInit {
     const simulation = this.addForceSimulation(clusterIdToLoc);
     this.applySimulation(simulation, circle, lightCircle);
     this.applyDragging(simulation, tooltip, circle, lightCircle, clusterIdToLoc);
+    this.applyDialog(circle, lightCircle);
 
   }
 
@@ -106,7 +110,7 @@ export class ClusterlyComponent implements OnInit {
       const queriesAmount: number = this.getRandomInt(6) + 2;
       for (let j = 1; j <= queriesAmount; j++) {
         currQueries.push({
-          queryString: 'this is query ' + j + ' from cluster ' + i
+          title: 'this is query ' + j + ' from cluster ' + i
             + ' originally',
           volume: this.getRandomInt(100),
         })
@@ -342,4 +346,27 @@ export class ClusterlyComponent implements OnInit {
   private updateCircleColor(circle, clusterId: number, colorScale: Scales): void {
     circle.style('fill', this.scales.get(colorScale)(clusterId));
   }
+
+  private applyDialog(circle, lightCircle) {
+    circle.on('click', openDialog);
+    lightCircle.on('click', openDialog);
+
+    // A pointer to ClusterlyComponent instance
+    const clusterly = this;
+
+    function openDialog(event, d) {
+      const cluster: Cluster = clusterly.clusters.get(d.clusterId);
+      const sortedQueries: Bubble[] = Array.from(cluster.bubbles)
+        .sort((bubble1, bubble2) => bubble2.volume - bubble1.volume);
+
+      clusterly.dialog.open(QueriesDialogComponent, {
+        data: {
+          title: cluster.title,
+          queries: sortedQueries
+        }
+      });
+    }
+
+  }
+
 }
