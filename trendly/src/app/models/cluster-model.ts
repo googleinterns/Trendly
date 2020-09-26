@@ -16,7 +16,7 @@ export class Cluster {
     this.title = title;
     this.id = id;
     queries.forEach((query) =>
-      this.bubbles.add(new Bubble(query.queryString, query.volume, id))
+      this.bubbles.add(new Bubble(query.title, query.volume, id))
     );
   }
 
@@ -24,6 +24,7 @@ export class Cluster {
    * to anotherCluster.bubbles.
    */
   moveBubbleToAnotherCluster(bubble: Bubble, anotherCluster: Cluster): void {
+    bubble.clusterId = anotherCluster.id;
     this.bubbles.delete(bubble);
     anotherCluster.bubbles.add(bubble);
   }

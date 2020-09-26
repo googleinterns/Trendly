@@ -8,6 +8,8 @@ import { ClusterData, QueryData } from '../models/server-datatypes';
 import { ColorsService } from '../colors.service';
 import { CLUSTERS_DATA } from './mock-data';
 import { QueriesDialogComponent } from '../queries-dialog/queries-dialog.component'
+import { MatListOption } from '@angular/material/list';
+import { MatSelectChange } from '@angular/material/select';
 
 
 // To be replaced ib the future with window resize event listener
@@ -91,7 +93,7 @@ export class ClusterlyComponent implements OnInit {
     const simulation = this.addForceSimulation(clusterIdToLoc);
     this.applySimulation(simulation, circle, lightCircle);
     this.applyDragging(simulation, tooltip, circle, lightCircle, clusterIdToLoc);
-    this.applyDialog(circle, lightCircle);
+    this.applyDialog(simulation, circle, lightCircle);
 
   }
 
@@ -277,9 +279,11 @@ export class ClusterlyComponent implements OnInit {
         circle
           .attr('cx', (d) => d.x)
           .attr('cy', (d) => d.y)
+          .style('fill', (d) => this.scales.get(Scales.ColorScale)(d.clusterId))
         lightCircle
           .attr('cx', (d) => d.x)
           .attr('cy', (d) => d.y)
+          .style('fill', (d) => this.scales.get(Scales.LightColorScale)(d.clusterId))
       });
   }
 
@@ -327,32 +331,25 @@ export class ClusterlyComponent implements OnInit {
       clusterIdToLoc);
     const newCluster: Cluster = this.clusters.get(bubbleObj.clusterId);
     currentCluster.moveBubbleToAnotherCluster(bubbleObj, newCluster);
-
-    // Check if the catched circle is the inner or outer one
-    const circleClass = d3.select(circle).attr('class');
-    const lightCircle = circleClass.endsWith("light") ? d3.select(circle) :
-      d3.select('.' + circleClass + 'light');
-    const innerCircle = circleClass.endsWith("light") ?
-      d3.select('.' + circleClass.replace('light', '')) : d3.select(circle);
-
-    //Change inner and outer circles colors
-    this.updateCircleColor(innerCircle, bubbleObj.clusterId, Scales.ColorScale);
-    this.updateCircleColor(lightCircle, bubbleObj.clusterId,
-      Scales.LightColorScale);
   }
 
-  /** Updates given circle fill color based on the
-   * appropriate color that match circleId at colorScale */
-  private updateCircleColor(circle, clusterId: number, colorScale: Scales): void {
-    circle.style('fill', this.scales.get(colorScale)(clusterId));
+  updateClustersBasedOnDialog(event: MatSelectChange, selections: any[],
+    currCluster: Cluster, clusterly: ClusterlyComponent, simulation, circle, lightCircle){
+    const newCluster: Cluster = event.value;
+    selections.forEach((option) => {
+      const bubble: Bubble = option._value;
+      currCluster.moveBubbleToAnotherCluster(bubble, newCluster);
+    });
+    clusterly.applySimulation(simulation, circle, lightCircle);
+    clusterly.dialog.closeAll();
   }
 
-  private applyDialog(circle, lightCircle) {
+  private applyDialog(simulation, circle, lightCircle) {
     circle.on('click', openDialog);
     lightCircle.on('click', openDialog);
 
     // A pointer to ClusterlyComponent instance
-    const clusterly = this;
+    const clusterly: ClusterlyComponent = this;
 
     function openDialog(event, d) {
       const cluster: Cluster = clusterly.clusters.get(d.clusterId);
@@ -361,8 +358,14 @@ export class ClusterlyComponent implements OnInit {
 
       clusterly.dialog.open(QueriesDialogComponent, {
         data: {
-          title: cluster.title,
-          queries: sortedQueries
+          clusterly: clusterly,
+          simulation: simulation,
+          currentCluster: cluster,
+          queries: sortedQueries,
+          clusters: Array.from(clusterly.clusters.values()),
+          updateFunc: clusterly.updateClustersBasedOnDialog,
+          circle: circle,
+          lightCircle: lightCircle
         }
       });
     }

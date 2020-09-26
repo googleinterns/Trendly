@@ -1,6 +1,6 @@
 /** Query data type as recieved from the server */
 export interface QueryData {
-    queryString: string;
+    title: string;
     volume: number;
 }
 

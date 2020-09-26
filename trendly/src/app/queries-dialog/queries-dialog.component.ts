@@ -2,10 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Bubble } from '../models/bubble-model';
+import { Cluster } from '../models/cluster-model';
+import { ClusterlyComponent } from '../clusterly/clusterly.component'
+
 
 export interface DialogData {
-  title: String;
+  clusterly: ClusterlyComponent;
+  simulation,
+  currentCluster: Cluster;
   queries: Bubble[];
+  clusters: Cluster[];
+  updateFunc: (event, selections, currCluster, clusterly, simulation, circle, lightCircle)=>void;
+  circle;
+  lightCircle;
 }
 
 @Component({
