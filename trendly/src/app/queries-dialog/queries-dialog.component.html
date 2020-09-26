@@ -9,7 +9,7 @@
   <p>Move selected queries to </p>
   <mat-form-field appearance="fill">
     <mat-label>Select a cluster</mat-label>
-    <mat-select (selectionChange)="data.updateFunc($event, terms.selectedOptions.selected, data.currentCluster, data.clusterly, data.simulation, data.circle, data.lightCircle)" >
+    <mat-select (selectionChange)="data.updateFunc($event, terms.selectedOptions.selected, data.currentCluster, data.clusterly)" >
       <mat-option *ngFor="let cluster of data.clusters" [value]="cluster">{{cluster.title}}</mat-option>
     </mat-select>
   </mat-form-field>

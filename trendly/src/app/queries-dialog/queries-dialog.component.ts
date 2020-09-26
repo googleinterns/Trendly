@@ -8,13 +8,10 @@ import { ClusterlyComponent } from '../clusterly/clusterly.component'
 
 export interface DialogData {
   clusterly: ClusterlyComponent;
-  simulation,
   currentCluster: Cluster;
   queries: Bubble[];
   clusters: Cluster[];
-  updateFunc: (event, selections, currCluster, clusterly, simulation, circle, lightCircle)=>void;
-  circle;
-  lightCircle;
+  updateFunc: (event, selections, currCluster, clusterly)=>void;
 }
 
 @Component({

@@ -46,6 +46,9 @@ export class ClusterlyComponent implements OnInit {
   private clusters: Map<number, Cluster> = new Map<number, Cluster>();
   private queries: Array<Bubble> = new Array<Bubble>();
   private scales: Map<Scales, any> = new Map<Scales, any>();
+  private circles;
+  private lightCircles;
+  private simulation;
 
   constructor(
     private colorsService: ColorsService,
@@ -80,20 +83,20 @@ export class ClusterlyComponent implements OnInit {
     const circleGroup = this.addGroup(svgContainer);
 
     // Initialize outer and inner circle for each query circle
-    const lightCircle = this.addCircles(circleGroup, 'light', 25,
+    this.lightCircles = this.addCircles(circleGroup, 'light', 25,
       clusterIdToLoc, Scales.LightColorScale);
-    const circle = this.addCircles(circleGroup, '', 0,
+    this.circles = this.addCircles(circleGroup, '', 0,
       clusterIdToLoc, Scales.ColorScale);
 
     // Add tooltip with query string for each circle
     const tooltip = this.addTooltip(CLUSTERS_CONTAINER);
-    this.tooltipHandling(tooltip, circle);
+    this.tooltipHandling(tooltip);
 
     // Apply force clustering simulation + dragging functionallity
-    const simulation = this.addForceSimulation(clusterIdToLoc);
-    this.applySimulation(simulation, circle, lightCircle);
-    this.applyDragging(simulation, tooltip, circle, lightCircle, clusterIdToLoc);
-    this.applyDialog(simulation, circle, lightCircle);
+    this.simulation = this.addForceSimulation(clusterIdToLoc);
+    this.applySimulation();
+    this.applyDragging(tooltip, clusterIdToLoc);
+    this.applyDialog();
 
   }
 
@@ -242,14 +245,14 @@ export class ClusterlyComponent implements OnInit {
   /** Adds to circle tooltip functionality
    * (tooltip appears when the mouse is over the circle
    * and disapears when it moves)*/
-  private tooltipHandling(tooltip, circle): void {
+  private tooltipHandling(tooltip): void {
     const mousemove = (event, d) => {
       tooltip
         .html(d.query)
         .style('left', (d3.pointer(event)[0] + 40) + 'px')
         .style('top', (d3.pointer(event)[1]) + 75 + 'px');
     }
-    circle.on('mouseover', () => { tooltip.style('display', 'inline'); })
+    this.circles.on('mouseover', () => { tooltip.style('display', 'inline'); })
       .on('mousemove', mousemove)
       .on('mouseleave', () => { tooltip.style('display', 'none'); })
   }
@@ -272,15 +275,15 @@ export class ClusterlyComponent implements OnInit {
   }
 
   /** Applies given simulation on inner and outer circles */
-  private applySimulation(simulation, circle, lightCircle): void {
-    simulation
+  private applySimulation(): void {
+    this.simulation
       .nodes(this.queries)
       .on('tick', () => {
-        circle
+        this.circles
           .attr('cx', (d) => d.x)
           .attr('cy', (d) => d.y)
           .style('fill', (d) => this.scales.get(Scales.ColorScale)(d.clusterId))
-        lightCircle
+        this.lightCircles
           .attr('cx', (d) => d.x)
           .attr('cy', (d) => d.y)
           .style('fill', (d) => this.scales.get(Scales.LightColorScale)(d.clusterId))
@@ -288,22 +291,21 @@ export class ClusterlyComponent implements OnInit {
   }
 
   /** Adds dragging functionality to inner and outer circles */
-  private applyDragging(simulation, tooltip, circle, lightCircle,
-    clusterIdToLoc: Map<number, Location>): void {
+  private applyDragging(tooltip, clusterIdToLoc: Map<number, Location>): void {
     // A pointer to ClusterlyComponent instance
     const clusterly = this;
 
-    circle.call(d3.drag()
+    this.circles.call(d3.drag()
       .on('start', dragstarted)
       .on('drag', dragged)
       .on('end', dragended));
-    lightCircle.call(d3.drag()
+    this.lightCircles.call(d3.drag()
       .on('start', dragstarted)
       .on('drag', dragged)
       .on('end', dragended));
 
     function dragstarted(event, d): void {
-      if (!event.active) { simulation.alphaTarget(.03).restart(); }
+      if (!event.active) { clusterly.simulation.alphaTarget(.03).restart(); }
       tooltip.style('display', 'none');
       d.fx = d.x;
       d.fy = d.y;
@@ -314,10 +316,10 @@ export class ClusterlyComponent implements OnInit {
       d.fy = event.y;
     }
     function dragended(event, d): void {
-      if (!event.active) { simulation.alphaTarget(.03); }
+      if (!event.active) { clusterly.simulation.alphaTarget(.03); }
       tooltip.style('display', 'none');
       clusterly.changeBubbleCluster(this, d, clusterIdToLoc);
-      clusterly.applySimulation(simulation, circle, lightCircle);
+      clusterly.applySimulation();
       d.fx = null;
       d.fy = null;
     }
@@ -334,19 +336,19 @@ export class ClusterlyComponent implements OnInit {
   }
 
   updateClustersBasedOnDialog(event: MatSelectChange, selections: any[],
-    currCluster: Cluster, clusterly: ClusterlyComponent, simulation, circle, lightCircle){
+    currCluster: Cluster, clusterly: ClusterlyComponent){
     const newCluster: Cluster = event.value;
     selections.forEach((option) => {
       const bubble: Bubble = option._value;
       currCluster.moveBubbleToAnotherCluster(bubble, newCluster);
     });
-    clusterly.applySimulation(simulation, circle, lightCircle);
+    clusterly.applySimulation();
     clusterly.dialog.closeAll();
   }
 
-  private applyDialog(simulation, circle, lightCircle) {
-    circle.on('click', openDialog);
-    lightCircle.on('click', openDialog);
+  private applyDialog() {
+    this.circles.on('click', openDialog);
+    this.lightCircles.on('click', openDialog);
 
     // A pointer to ClusterlyComponent instance
     const clusterly: ClusterlyComponent = this;
@@ -359,13 +361,10 @@ export class ClusterlyComponent implements OnInit {
       clusterly.dialog.open(QueriesDialogComponent, {
         data: {
           clusterly: clusterly,
-          simulation: simulation,
           currentCluster: cluster,
           queries: sortedQueries,
           clusters: Array.from(clusterly.clusters.values()),
           updateFunc: clusterly.updateClustersBasedOnDialog,
-          circle: circle,
-          lightCircle: lightCircle
         }
       });
     }
