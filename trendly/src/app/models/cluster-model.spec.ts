@@ -1,9 +1,10 @@
 import { Cluster } from './cluster-model';
+import { Bubble } from './bubble-model';
 
 const CLUSTER = new Cluster("", 1,
-    [{ queryString: "", volume: 15 },
-    { queryString: "", volume: 14 },
-    { queryString: "", volume: 13 }]);
+    [{ title: "", volume: 15 },
+    { title: "", volume: 14 },
+    { title: "", volume: 13 }]);
 
 describe('Cluster', () => {
     /** Checks the bubbles set property contains the same amount of
@@ -24,6 +25,7 @@ describe('Cluster', () => {
     /** Checks moveBubbleToAnotherCluster correctly remove the given bubble
      * from the current cluster its called on */
     it('check moveBubbleToAnotherCluster removes bubble from current cluster', () => {
+
         const [currCluster, newCluster, bubble] = get2ClustersAndBubble();
         currCluster.moveBubbleToAnotherCluster(bubble, newCluster);
         expect(currCluster.bubbles.has(bubble)).toBeFalse();
@@ -42,8 +44,8 @@ describe('Cluster', () => {
  *  Returns 2 created clusters and a bubble that belongs to the first one.
  */
 function get2ClustersAndBubble() {
-    const currCluster = new Cluster("", 1, [{ queryString: "", volume: 15 }]);
-    const newCluster = new Cluster("", 2, [{ queryString: "", volume: 100 }]);
-    const bubble = currCluster.bubbles[0];
+    const currCluster = new Cluster("", 1, [{ title: "", volume: 15 }]);
+    const newCluster = new Cluster("", 2, [{ title: "", volume: 100 }]);
+    const bubble = currCluster.bubbles.values().next().value;
     return [currCluster, newCluster, bubble];
 }

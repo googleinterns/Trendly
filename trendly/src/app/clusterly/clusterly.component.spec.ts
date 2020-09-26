@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 
 import * as d3 from 'd3';
 import { Cluster } from '../models/cluster-model';
@@ -10,28 +11,28 @@ import { Bubble } from '../models/bubble-model';
 
 // Mock data recieved from server
 const CLUSTER_DATA: ClusterData[] =
-  [{ title: '', id: 1, queries: [{ queryString: '', volume: 10 }] },
-   { title: '', id: 2, queries: [{ queryString: '', volume: 15 }] }];
+  [{ title: '', id: 1, queries: [{ title: '', volume: 10 }] },
+   { title: '', id: 2, queries: [{ title: '', volume: 15 }] }];
 const CLUSTER_DATA2: ClusterData[] =
-  [{ title: '', id: 1, queries: [{ queryString: '', volume: 1 }] },
-   { title: '', id: 2, queries: [{ queryString: '', volume: 1 },
-                                 { queryString: '', volume: 1 }]}];
-                                 
+  [{ title: '', id: 1, queries: [{ title: '', volume: 1 }] },
+   { title: '', id: 2, queries: [{ title: '', volume: 1 },
+                                 { title: '', volume: 1 }]}];
+
 // Options for clusters property
 const CLUSTERS_1_GROUP : Map<number, Cluster> =
-  new Map([[1, new Cluster('', 1, [{ queryString: '', volume: 1 }])]]);
+  new Map([[1, new Cluster('', 1, [{ title: '', volume: 1 }])]]);
 const CLUSTERS_2_GROUPS : Map<number, Cluster> =
-  new Map([[1, new Cluster('', 1, [{ queryString: '', volume: 10 }])],
-           [2, new Cluster('', 2, [{ queryString: '', volume: 15 }])]]);
+  new Map([[1, new Cluster('', 1, [{ title: '', volume: 10 }])],
+           [2, new Cluster('', 2, [{ title: '', volume: 15 }])]]);
 const CLUSTERS_3_GROUPS : Map<number, Cluster> =
-  new Map([[1, new Cluster('', 1, [{ queryString: '', volume: 1 }])],
-        [2, new Cluster('', 2, [{ queryString: '', volume: 1 }])],
-        [3, new Cluster('', 3, [{ queryString: '', volume: 1 }])]]);
+  new Map([[1, new Cluster('', 1, [{ title: '', volume: 1 }])],
+        [2, new Cluster('', 2, [{ title: '', volume: 1 }])],
+        [3, new Cluster('', 3, [{ title: '', volume: 1 }])]]);
 const CLUSTERS_4_GROUPS : Map<number, Cluster> =
-        new Map([[1, new Cluster('', 1, [{ queryString: '', volume: 1 }])],
-        [2, new Cluster('', 2, [{ queryString: '', volume: 1 }])],
-        [3, new Cluster('', 3, [{ queryString: '', volume: 1 }])],
-        [4, new Cluster('', 4, [{ queryString: '', volume: 1 }])]]);
+        new Map([[1, new Cluster('', 1, [{ title: '', volume: 1 }])],
+        [2, new Cluster('', 2, [{ title: '', volume: 1 }])],
+        [3, new Cluster('', 3, [{ title: '', volume: 1 }])],
+        [4, new Cluster('', 4, [{ title: '', volume: 1 }])]]);
 
 // Options for queries property
 const QUERIES : Array<Bubble> =
@@ -39,7 +40,7 @@ const QUERIES : Array<Bubble> =
    new Bubble('', 15, 2)];
 
 // Options for cluster to id loc map
-const CLUSTER_ID_TO_LOC_1_GROUP: Map<number, Location> = 
+const CLUSTER_ID_TO_LOC_1_GROUP: Map<number, Location> =
   new Map([[1, { xPosition: 100, yPosition: 100 }]]);
 const CLUSTER_ID_TO_LOC_2_GROUPS: Map<number, Location> =
   new Map([[1, { xPosition: 100, yPosition: 100 }],
@@ -52,15 +53,20 @@ const CLUSTER_ID_TO_LOC_3_GROUPS: Map<number, Location> =
 describe('ClusterlyComponent', () => {
   let component: ClusterlyComponent;
   let fixture: ComponentFixture<ClusterlyComponent>;
+  let dialog: MatDialog;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ClusterlyComponent]
+      declarations: [ClusterlyComponent],
+      providers: [
+        { provide: MatDialog, useValue: {} },
+    ]
     })
       .compileComponents();
   });
 
   beforeEach(() => {
+    dialog = TestBed.inject(MatDialog);
     fixture = TestBed.createComponent(ClusterlyComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -83,7 +89,7 @@ describe('ClusterlyComponent', () => {
     }
   });
 
-  /** Checks processClustersObjects adds correctly the clusters 
+  /** Checks processClustersObjects adds correctly the clusters
    * at clustersData to this.clusters */
   it('check processClustersObjects create correct clusters', () => {
     (component as any).clusters = new Map<number, Cluster>();
@@ -92,7 +98,7 @@ describe('ClusterlyComponent', () => {
 
   });
 
-  /** Checks processClustersObjects adds correctly the queries 
+  /** Checks processClustersObjects adds correctly the queries
    * at clustersData to this.queries */
   it('check processClustersObjects create correct queries', () => {
     (component as any).queries = new Array<Bubble>();
@@ -200,7 +206,7 @@ describe('ClusterlyComponent', () => {
     expect(circleGroup.selectAll('circle').size()).toBe(3);
   });
 
-  /** Checks closestGroupId returns the correct clusterId when 
+  /** Checks closestGroupId returns the correct clusterId when
    * there is only one cluster */
   it('check closestGroupId with only one cluster option', () => {
     (component as any).clusters = CLUSTERS_1_GROUP;
@@ -209,7 +215,7 @@ describe('ClusterlyComponent', () => {
       .toBe(1);
   });
 
-  /** Checks closestGroupId returns the correct clusterId when 
+  /** Checks closestGroupId returns the correct clusterId when
    * there are 3 possible clusters*/
   it('check closestGroupId with three clusters', () => {
     (component as any).clusters = CLUSTERS_3_GROUPS;
@@ -218,7 +224,7 @@ describe('ClusterlyComponent', () => {
       .toBe(3);
   });
 
-  /** Checks closestGroupId returns the correct clusterId when 
+  /** Checks closestGroupId returns the correct clusterId when
    * there are 2 valid clusters (supposed to return the pme with
    * the lower id)*/
   it('check closestGroupId with two valid clusters options', () => {
@@ -228,7 +234,7 @@ describe('ClusterlyComponent', () => {
       .toBe(1);
   });
 
-  /** Checks changeBubbleCluster updates correctly the bubbleObject 
+  /** Checks changeBubbleCluster updates correctly the bubbleObject
    * clusterID based on x and y positions*/
   it('check changeBubbleCluster updates bubble clusterID', () => {
     initialClusterData(component);
@@ -248,11 +254,11 @@ describe('ClusterlyComponent', () => {
     expect(bubble.clusterId).toBe(2);
   });
 
-  /** Checks changeBubbleCluster removes bubble from previous 
+  /** Checks changeBubbleCluster removes bubble from previous
    * cluster Bubble set*/
   it('check changeBubbleCluster removes bubble correctly', () => {
     initialClusterData(component);
-    const clusterIdtoLoc: Map<number, Location> = 
+    const clusterIdtoLoc: Map<number, Location> =
       CLUSTER_ID_TO_LOC_2_GROUPS;
     const bubble = new Bubble('', 10, 1);
     bubble['x'] = 25;
@@ -268,7 +274,7 @@ describe('ClusterlyComponent', () => {
     expect((component as any).clusters.get(1).bubbles.has(bubble)).toBeFalse();
   });
 
-  /** Checks changeBubbleCluster adds bubble to the new 
+  /** Checks changeBubbleCluster adds bubble to the new
    * cluster Bubble set*/
   it('check changeBubbleCluster adds bubble correctly', () => {
     initialClusterData(component);
@@ -285,19 +291,6 @@ describe('ClusterlyComponent', () => {
     const circle = circleGroup.select('circle').node();
     (component as any).changeBubbleCluster(circle, bubble, clusterIdtoLoc);
     expect((component as any).clusters.get(2).bubbles.has(bubble)).toBeTrue();
-  });
-
-  /** Checks updateCircleColor change the given circle
-   * color correctly based on new clusterId and colorScale*/
-  it('check updateCircleColor updates color correctly', () => {
-    initialClusterData(component);
-    const svg = (component as any).addSvg(CLUSTERS_CONTAINER);
-    const circleGroup = (component as any).addGroup(svg);
-    const circle = circleGroup.append('circle');
-    (component as any).updateCircleColor(circle, 1, Scales.ColorScale);
-    expect(circle.style('fill'))
-      .toEqual(d3.rgb((component as any).scales.get(Scales.ColorScale)(1))
-        .toString());
   });
 });
 

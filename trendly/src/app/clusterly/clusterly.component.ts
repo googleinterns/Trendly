@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSelectChange } from '@angular/material/select';
 
 import * as d3 from 'd3';
 import { Cluster } from '../models/cluster-model';
@@ -8,8 +9,6 @@ import { ClusterData, QueryData } from '../models/server-datatypes';
 import { ColorsService } from '../colors.service';
 import { CLUSTERS_DATA } from './mock-data';
 import { QueriesDialogComponent } from '../queries-dialog/queries-dialog.component'
-import { MatListOption } from '@angular/material/list';
-import { MatSelectChange } from '@angular/material/select';
 
 
 // To be replaced ib the future with window resize event listener
@@ -335,6 +334,9 @@ export class ClusterlyComponent implements OnInit {
     currentCluster.moveBubbleToAnotherCluster(bubbleObj, newCluster);
   }
 
+  /** Called from the dialog, updates the clusters based on the event chosen
+   * new cluster and queries to move
+   */
   updateClustersBasedOnDialog(event: MatSelectChange, selections: any[],
     currCluster: Cluster, clusterly: ClusterlyComponent){
     const newCluster: Cluster = event.value;
@@ -346,6 +348,10 @@ export class ClusterlyComponent implements OnInit {
     clusterly.dialog.closeAll();
   }
 
+
+  /** Adds a dialog with the queries belongs to a specific cluster
+   * when the user click on a bubble
+   */
   private applyDialog() {
     this.circles.on('click', openDialog);
     this.lightCircles.on('click', openDialog);
