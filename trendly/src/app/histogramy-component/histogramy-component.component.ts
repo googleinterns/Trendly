@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import {DataService} from '../data.service';
 
 interface InputObj {
@@ -20,11 +20,12 @@ interface InputObj {
 export class HistogramyComponentComponent implements OnInit {
   readonly TopTopicsTitle : string = 'Top Topics'
   readonly RisingTopicsTitle : string = 'Rising Topics'
+  dataTop;
+  dataRising;
 
   constructor(private dataService : DataService) { }
 
   ngOnInit(): void {
-    console.log(this.dataService.callServlet('/trendly', ['t', 'y', 'l'], '2016 2', '2017 7', 'US', 3));
   }
 
   /**
@@ -37,5 +38,15 @@ export class HistogramyComponentComponent implements OnInit {
     console.log(input['startDate']);
     console.log(input['endDate']);
     console.log(input['country']);
+
+    this.dataService.callServlet('/top-topics', ['t', 'y', 'l'], '2016 2', '2017 7', 'US', 3).subscribe((data) => {
+      this.dataTop = { ...data };
+     }
+      );
+
+      this.dataService.callServlet('/rising-topics', ['t', 'y', 'l'], '2016 2', '2017 7', 'US', 3).subscribe((data) => {
+        this.dataRising = { ...data };
+       }
+        );
   }
 }

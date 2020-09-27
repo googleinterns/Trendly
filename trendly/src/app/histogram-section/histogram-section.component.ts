@@ -35,6 +35,7 @@ const STYLE_ROLE = 'style';
   styleUrls: ['./histogram-section.component.css']
 })
 export class HistogramSectionComponent implements OnInit {
+  @Input() trendsData;
   @Input() title : string; //get from parent
   @Input() type : string = 'ColumnChart';
   @Input() data : Array<Array<string | number>> = [];
@@ -57,14 +58,14 @@ export class HistogramSectionComponent implements OnInit {
 
   ngOnInit(): void {
     // this function should be call after data retrival from server, will change after creating backend
-    this.convertDataToChartsFormat();
+    // this.convertDataToChartsFormat();
   }
 
   /**
    * converts the data from the server to charts format.
    */
   convertDataToChartsFormat() {
-    const topics : Map<string, number> = this.extractTopics(MOCK_DATA);
+    const topics : Map<string, number> = this.extractTopics(this.trendsData);
     this.createColumnNames(topics);
     this.createData(topics);
   }
@@ -92,6 +93,7 @@ export class HistogramSectionComponent implements OnInit {
     * @param topics 
     */
    createColumnNames(topics : Map<string, number>) : void {
+     this.columnNames = [];
       this.columnNames[0] = 'Topic';
       let index :number = 0;
      for (let key of topics.keys()) {
@@ -107,12 +109,13 @@ export class HistogramSectionComponent implements OnInit {
     * @param topics
     */
    private createData(topics : Map<string, number>) : void{
-     for (let date of Object.keys(MOCK_DATA)) {
+     this.data = [];
+     for (let date of Object.keys(this.trendsData)) {
        const row = Array((topics.size * 3) + 1).fill('');
        this.initializeRowArray(row);
        row[0] = date;
 
-       for (let element of MOCK_DATA[date]) {
+       for (let element of this.trendsData[date]) {
          const index = topics.get(element.name) * 3;
          const indexColor = topics.get(element.name);
          row[index + 1] = element.volume;
@@ -132,5 +135,14 @@ export class HistogramSectionComponent implements OnInit {
       array[i] = 0;
     }
 
-  } 
+  }
+  
+    ngOnChanges(changes: SimpleChanges): void {
+    if(changes['trendsData'])
+    {
+      this.trendsData = changes['trendsData'].currentValue;
+      console.log(this.trendsData);
+      this.convertDataToChartsFormat();
+    }
+  }
 }

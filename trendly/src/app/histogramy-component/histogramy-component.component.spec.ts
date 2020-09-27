@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {DataService} from '../data.service';
 
 import { HistogramyComponentComponent } from './histogramy-component.component';
 const DEF_OBJ = {
@@ -14,7 +16,11 @@ describe('HistogramyComponentComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ HistogramyComponentComponent ]
+      declarations: [ HistogramyComponentComponent ],
+      imports: [HttpClientTestingModule],
+      providers: [DataService]
+  
+    
     })
     .compileComponents();
   });
