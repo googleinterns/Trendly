@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router'
 import {RouterModule} from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -18,6 +19,7 @@ import {MatNativeDateModule} from '@angular/material/core';
 import {GoogleChartsModule} from 'angular-google-charts'
 
 
+import { TopBarComponent } from './top-bar/top-bar.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { TopBarComponent } from './top-bar/top-bar.component';
@@ -29,7 +31,7 @@ import { DateInputComponent } from './date-input/date-input.component';
 import { IntervalInputComponent } from './interval-input/interval-input.component';
 import { HistogramSectionComponent } from './histogram-section/histogram-section.component';
 import { MainPageComponent } from './main-page/main-page.component';
-// import { ClusterlyComponent } from './clusterly/clusterly.component';
+import { ClusterlyComponent } from './clusterly/clusterly.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +39,7 @@ import { MainPageComponent } from './main-page/main-page.component';
     MainPageComponent,
     AppComponent,
     TopBarComponent,
+    ClusterlyComponent
     HistogramyComponentComponent,
     InputsComponent,
     TermInputComponent,
@@ -60,8 +63,8 @@ import { MainPageComponent } from './main-page/main-page.component';
     HttpClientModule,
     RouterModule.forRoot([
       { path: '', component: MainPageComponent },
-      { path: 'histogramy', component:  HistogramyComponentComponent},
-      // { path: 'clusterly', component: MainPageComponent }
+      { path: 'histogramy', component: HistogramyComponentComponent},
+      { path: 'clusterly', component: ClusterlyComponent }
     ])
   ],
   providers: [HttpClientModule],
