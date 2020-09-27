@@ -9,7 +9,6 @@ app-top-bar {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-
 }
 
 app-top-bar a {
@@ -22,6 +21,9 @@ app-top-bar a {
   text-decoration: none;
 }
 
+app-inputs {
+  align-items: center;
+}
 
 /* materia designm icons */
 .material-icons {
@@ -49,15 +51,16 @@ app-top-bar a {
   font-feature-settings: 'liga';
 }
 
-html, body { height: 100%; }
-
-
+html, body { 
+  height: 100%; 
+}
 
 body {
   background-color:#f3f3f3ff;
   margin: 0; 
   font-family: Roboto, "Helvetica Neue", sans-serif; 
 }
+
 app-main-page{
   margin: 0 auto;
   padding: 50px;

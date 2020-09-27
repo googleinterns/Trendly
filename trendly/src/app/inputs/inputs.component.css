@@ -1,0 +1,26 @@
+.form{
+  align-items: center;
+  min-width: 400px;
+  max-width: 600px;
+  width:100%;
+  display: flex;
+  flex-direction: row;
+  /* border: 2px medium #6d9eebff;
+  border-radius: 20px; */
+}
+
+.input-element{
+  float: left;
+  padding: 15px;
+  width: 100%;
+  font-size: 15pt;
+  font-family: 'Amatic SC', cursive;
+}
+
+.apply-button {
+  background-color: #6d9eebff;
+  height: 50px;
+  text-align: center;
+}
+
+
