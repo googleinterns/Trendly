@@ -1,14 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { QueriesDialogComponent, DialogData } from './queries-dialog.component';
 import { Cluster } from '../models/cluster-model';
 import { Bubble } from '../models/bubble-model';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
-
 
 const CLUSTER1: Cluster = new Cluster('Cluster1 title', 1, [{ title: '', volume: 1 }]);
 const CLUSTER2: Cluster = new Cluster('Cluster2 title', 1, [{ title: '', volume: 1 }]);
@@ -28,7 +25,6 @@ describe('QueriesDialogComponent', () => {
   let fixture: ComponentFixture<QueriesDialogComponent>;
   let dialog: MatDialog;
   let overlayContainerElement: HTMLElement;
-
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

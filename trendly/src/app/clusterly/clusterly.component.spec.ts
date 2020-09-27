@@ -292,6 +292,7 @@ describe('ClusterlyComponent', () => {
     (component as any).changeBubbleCluster(circle, bubble, clusterIdtoLoc);
     expect((component as any).clusters.get(2).bubbles.has(bubble)).toBeTrue();
   });
+
 });
 
 /* Helper function for changeBubbleCluster & addCircles tests */

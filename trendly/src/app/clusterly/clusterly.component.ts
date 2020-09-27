@@ -10,14 +10,11 @@ import { ColorsService } from '../colors.service';
 import { CLUSTERS_DATA } from './mock-data';
 import { QueriesDialogComponent } from '../queries-dialog/queries-dialog.component'
 
-
 // To be replaced ib the future with window resize event listener
 export const WIDTH: number = window.innerWidth;
 export const HEIGHT: number = window.innerHeight;
-
 export const CLUSTERS_CONTAINER: string = '.clusters-container';
 export const TOOLTIP_CLASS: string = 'bubble-tooltip';
-
 
 export interface Location {
   xPosition: number;
@@ -348,7 +345,6 @@ export class ClusterlyComponent implements OnInit {
     clusterly.dialog.closeAll();
   }
 
-
   /** Adds a dialog with the queries belongs to a specific cluster
    * when the user click on a bubble
    */
@@ -374,7 +370,5 @@ export class ClusterlyComponent implements OnInit {
         }
       });
     }
-
   }
-
 }
