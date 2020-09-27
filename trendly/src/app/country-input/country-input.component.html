@@ -1,0 +1,15 @@
+
+<mat-form-field class="form-field">
+  <input (change)="emitCountry()" type="text"
+           placeholder="Pick Country"
+           aria-label="text"
+           matInput
+           [formControl]="myControl"
+           [matAutocomplete]="auto"
+           [(ngModel)]="countryValue">
+  <mat-autocomplete autoActiveFirstOption (optionSelected)="updateAndemitCountry($event.option.value)" #auto="matAutocomplete">
+  <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+        {{option}}
+  </mat-option>
+  </mat-autocomplete>
+</mat-form-field>
