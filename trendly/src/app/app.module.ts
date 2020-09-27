@@ -5,13 +5,11 @@ import {RouterModule} from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-// import { HashLocationStrategy, LocationStrategy } from '@angular/common';
-// {provide: LocationStrategy, useClass: HashLocationStrategy}
-
-
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 import {MatInputModule} from '@angular/material/input';
 import {MatIconModule} from '@angular/material/icon';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
@@ -32,6 +30,9 @@ import { IntervalInputComponent } from './interval-input/interval-input.componen
 import { HistogramSectionComponent } from './histogram-section/histogram-section.component';
 import { MainPageComponent } from './main-page/main-page.component';
 import { ClusterlyComponent } from './clusterly/clusterly.component';
+import { QueriesDialogComponent } from './queries-dialog/queries-dialog.component';
+import { DemoMaterialModule } from './material-module';
+
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { ClusterlyComponent } from './clusterly/clusterly.component';
     MainPageComponent,
     AppComponent,
     TopBarComponent,
+    QueriesDialogComponent,
     ClusterlyComponent
     HistogramyComponentComponent,
     InputsComponent,
@@ -61,11 +63,15 @@ import { ClusterlyComponent } from './clusterly/clusterly.component';
     BrowserAnimationsModule,
     GoogleChartsModule,
     HttpClientModule,
+    DemoMaterialModule,
     RouterModule.forRoot([
       { path: '', component: MainPageComponent },
       { path: 'histogramy', component: HistogramyComponentComponent},
       { path: 'clusterly', component: ClusterlyComponent }
     ])
+  ],
+  providers: [{provide: LocationStrategy, useClass: HashLocationStrategy},
+    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } },
   ],
   providers: [HttpClientModule],
   bootstrap: [AppComponent]

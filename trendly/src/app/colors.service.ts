@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 
+/**
+ * Colors service, for consistent color palette for Hitogramy and Clusterly
+ */
 @Injectable({
   providedIn: 'root',
 })
