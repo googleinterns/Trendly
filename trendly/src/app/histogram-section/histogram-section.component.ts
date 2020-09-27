@@ -47,7 +47,7 @@ export class HistogramSectionComponent implements OnInit {
     legend: { position: 'top', maxLines: 3 },
     bar: { groupWidth: '75%' },
     isStacked: true,
-    colors: this.coloresService._lightColorShow,
+    colors: this.coloresService.lightColorShow,
   };
 
   /**
@@ -120,7 +120,7 @@ export class HistogramSectionComponent implements OnInit {
          const indexColor = topics.get(element.name);
          row[index + 1] = element.volume;
          row[index + 2] = element.description;
-         row[index + 3] = this.coloresService._lightColorShow[indexColor];
+         row[index + 3] = this.coloresService.lightColorShow[indexColor];
        }
        this.data.push(row);
      }

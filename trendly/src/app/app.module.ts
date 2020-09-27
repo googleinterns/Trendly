@@ -1,7 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router'
-import {RouterModule} from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -20,7 +19,6 @@ import {GoogleChartsModule} from 'angular-google-charts'
 import { TopBarComponent } from './top-bar/top-bar.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { TopBarComponent } from './top-bar/top-bar.component';
 import { HistogramyComponentComponent } from './histogramy-component/histogramy-component.component';
 import { InputsComponent } from './inputs/inputs.component';
 import { TermInputComponent } from './term-input/term-input.component';
@@ -41,7 +39,7 @@ import { DemoMaterialModule } from './material-module';
     AppComponent,
     TopBarComponent,
     QueriesDialogComponent,
-    ClusterlyComponent
+    ClusterlyComponent,
     HistogramyComponentComponent,
     InputsComponent,
     TermInputComponent,
@@ -71,9 +69,8 @@ import { DemoMaterialModule } from './material-module';
     ])
   ],
   providers: [{provide: LocationStrategy, useClass: HashLocationStrategy},
-    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } },
+    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } },HttpClientModule
   ],
-  providers: [HttpClientModule],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
