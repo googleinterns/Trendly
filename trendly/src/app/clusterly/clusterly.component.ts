@@ -15,6 +15,7 @@ export const HEIGHT: number = window.innerHeight;
 
 export const CLUSTERS_CONTAINER: string = '.clusters-container';
 export const TOOLTIP_CLASS: string = 'bubble-tooltip';
+const LIGHT_CIRCLE_CLASS = 'light';
 
 export interface Location {
   xPosition: number;
@@ -75,7 +76,8 @@ export class ClusterlyComponent implements OnInit {
 
     // Initialize outer and inner circle for each query circle
     const lightCircle = this.addCircles(
-        circleGroup, 'light', 25, clusterIdToLoc, Scales.LightColorScale);
+        circleGroup, LIGHT_CIRCLE_CLASS, 25, clusterIdToLoc,
+        Scales.LightColorScale);
     const circle =
         this.addCircles(circleGroup, '', 0, clusterIdToLoc, Scales.ColorScale);
 
@@ -240,20 +242,17 @@ export class ClusterlyComponent implements OnInit {
    */
   private closestGroupId(
       x: number, y: number, clusterIdToLoc: Map<number, Location>): number {
-    let minDistance: number = Infinity;
-    let closestGroupId: number;
-    let currDistance: number;
-
-    for (let i = 1; i <= this.clusters.size; i++) {
-      currDistance = Math.sqrt(
-          Math.pow(clusterIdToLoc.get(i).xPosition - x, 2) +
-          Math.pow(clusterIdToLoc.get(i).yPosition - y, 2));
-      if (currDistance < minDistance) {
-        minDistance = currDistance;
-        closestGroupId = i;
-      }
-    };
-    return closestGroupId;
+    const getDistance = (pos) => Math.sqrt(
+        Math.pow(pos.xPosition - x, 2) + Math.pow(pos.yPosition - y, 2));
+    const [closestId, distance] =
+        Array.from(clusterIdToLoc.entries())
+            .map(([id, pos]) => [id, getDistance(pos)])
+            .reduce(
+                ([closestId, closestDist], [currId, currDist]) =>
+                    currDist < closestDist ? [currId, currDist] :
+                                             [closestId, closestDist],
+                [-1, Infinity]);
+    return closestId;
   }
 
   /**
@@ -375,11 +374,12 @@ export class ClusterlyComponent implements OnInit {
 
     // Check if the catched circle is the inner or outer one
     const circleClass = d3.select(circle).attr('class');
-    const lightCircle = circleClass.endsWith('light') ?
+    const isCurrCircleLight: boolean = circleClass.endsWith(LIGHT_CIRCLE_CLASS);
+    const lightCircle = isCurrCircleLight ?
         d3.select(circle) :
-        d3.select('.' + circleClass + 'light');
-    const innerCircle = circleClass.endsWith('light') ?
-        d3.select('.' + circleClass.replace('light', '')) :
+        d3.select('.' + circleClass + LIGHT_CIRCLE_CLASS);
+    const innerCircle = isCurrCircleLight ?
+        d3.select('.' + circleClass.replace(LIGHT_CIRCLE_CLASS, '')) :
         d3.select(circle);
 
     // Change inner and outer circles colors

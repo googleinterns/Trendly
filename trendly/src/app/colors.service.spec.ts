@@ -29,8 +29,8 @@ describe('ColorsService', () => {
    * colors.lightColorBlingShow since each color in colorBlindShow
    * supposed to have a lighter version in lightColorBlingShow
    */
-  it('check colorBlindShow size equals lightColorBlingShow size', () => {
-    expect(service.colorBlindShow.length === service.lightColorBlingShow.length)
+  it('check colorBlindShow size equals lightColorBlindShow size', () => {
+    expect(service.colorBlindShow.length === service.lightColorBlindShow.length)
         .toBeTrue();
   });
 
@@ -66,7 +66,7 @@ describe('ColorsService', () => {
    * of color
    */
   it('check lightColorBlingShow has valid hex color representation',
-     () => {service.lightColorBlingShow.forEach((color) => {
+     () => {service.lightColorBlindShow.forEach((color) => {
        expect(/^#[0-9A-F]{6}$/i.test(color)).toBeTrue();
      })});
 

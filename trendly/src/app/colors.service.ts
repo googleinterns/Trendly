@@ -20,14 +20,14 @@ export class ColorsService {
   readonly lightColorShow: string[] = [];
   readonly colorBlindShow: string[] =
       ['#f5793A', '#a95aa1', '#85C0f9', '#0f2080'];
-  readonly lightColorBlingShow: string[] = [];
+  readonly lightColorBlindShow: string[] = [];
 
   constructor() {
     this.colorShow.forEach(
         (color) =>
             this.lightColorShow.push(this.changeColorLightness(color, 45)));
     this.colorBlindShow.forEach(
-        (color) => this.lightColorBlingShow.push(
+        (color) => this.lightColorBlindShow.push(
             this.changeColorLightness(color, 45)));
   }
 
@@ -42,10 +42,11 @@ export class ColorsService {
   changeColorLightness(color: string, lightnessAmount: number): string {
     color = color.slice(1);
     const num = parseInt(color, 16);
-    const r = Math.max(Math.min((num >> 16) + lightnessAmount, 255), 0);
-    const b =
-        Math.max(Math.min(((num >> 8) & 0x00FF) + lightnessAmount, 255), 0);
-    const g = Math.max(Math.min((num & 0x0000FF) + lightnessAmount, 255), 0);
+    const getColorLightness = (colorNum) =>
+        Math.max(Math.min(colorNum + lightnessAmount, 255), 0);
+    const r = getColorLightness(num >> 16);
+    const b = getColorLightness((num >> 8) & 0x00FF);
+    const g = getColorLightness(num & 0x0000FF);
     const newColor = g | (b << 8) | (r << 16);
     return '#' + newColor.toString(16);
   }
