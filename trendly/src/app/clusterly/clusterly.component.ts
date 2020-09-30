@@ -49,7 +49,7 @@ export class ClusterlyComponent implements OnInit {
   ngOnInit(): void {
     // Mock data, to be replaced with data recieved from the sever
     // (two options - const/ random)
-    const clustersData: ClusterData[] = this.get_data();
+    const clustersData: ClusterData[] = this.getData();
     // const clustersData: ClustersData[] = this.get_random_data(5);
 
     this.processClustersObjects(clustersData);
@@ -102,7 +102,7 @@ export class ClusterlyComponent implements OnInit {
    * Returns random mock data (clustersAmount random clusters in
    * the same format of the data from the server)
    */
-  private get_random_data(clustersAmount: number): ClusterData[] {
+  private getRandomData(clustersAmount: number): ClusterData[] {
     const clusterData: ClusterData[] = [];
     for (let i = 1; i <= clustersAmount; i++) {
       const currQueries: QueryData[] = [];
@@ -124,7 +124,7 @@ export class ClusterlyComponent implements OnInit {
    * Returns mock data (const clusters in
    * the same format of the data from the server)
    */
-  private get_data(): ClusterData[] {
+  private getData(): ClusterData[] {
     return CLUSTERS_DATA;
   }
 
