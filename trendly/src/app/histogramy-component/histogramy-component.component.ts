@@ -30,7 +30,7 @@ export class HistogramyComponentComponent implements OnInit {
 
   /**
    * gets data from server according to the given parameters. (for now just printing).
-   * @param input 
+   * @param input
    */
   getDataFromServer(input: InputObj) {
     console.log(input['term']);
