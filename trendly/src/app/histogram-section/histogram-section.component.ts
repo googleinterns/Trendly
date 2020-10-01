@@ -131,31 +131,31 @@ export class HistogramSectionComponent implements OnInit {
    * @param topics
    */
   private createData(topics: Map<string, number>): void {
-    for (let date of Object.keys(MOCK_DATA)) {
-      const row =
-          Array((topics.size * NUM_OF_COL_PER_TOPIC) + 1).fill(EMPTY_STR);
-      this.initializeRowArray(row);
-      row[0] = date;
+    Object.keys(MOCK_DATA).forEach((date) => {
+    const row = Array((topics.size * NUM_OF_COL_PER_TOPIC) + 1).fill(EMPTY_STR);
+    this.initializeRowArray(row);
+    row[0] = date;
 
-      for (let element of MOCK_DATA[date]) {
-        const index = topics.get(element.name) * NUM_OF_COL_PER_TOPIC;
-        const indexColor = topics.get(element.name);
-        row[index + FIRST_TOPIC_COL] = element.volume;
-        row[index + SECOND_TOPIC_COL] = element.description;
-        row[index + THIRD_TOPIC_COL] =
-            this.coloresService._lightColorShow[indexColor];
-      }
-      this.data.push(row);
-    }
-  }
+    [...MOCK_DATA[date]].forEach((element) =>
+    {
+      const index = topics.get(element.name) * NUM_OF_COL_PER_TOPIC;
+      const indexColor = topics.get(element.name);
+      row[index + FIRST_TOPIC_COL] = element.volume;
+      row[index + SECOND_TOPIC_COL] = element.description;
+      row[index + THIRD_TOPIC_COL] =
+          this.coloresService._lightColorShow[indexColor];
+    });
+    this.data.push(row);
+    });
+}
 
-  /**
-   * Initializes one row in the data.
-   * @param array
-   */
-  initializeRowArray(array: Array<string|number>): void {
-    for (let i = 1; i < array.length; i += NUM_OF_COL_PER_TOPIC) {
-      array[i] = 0;
-    }
+/**
+ * Initializes one row in the data.
+ * @param array
+ */
+initializeRowArray(array: Array<string|number>): void {
+  for (let i = 1; i < array.length; i += NUM_OF_COL_PER_TOPIC) {
+    array[i] = 0;
   }
+}
 }
