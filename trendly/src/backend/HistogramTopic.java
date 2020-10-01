@@ -1,4 +1,4 @@
-public class HistogramTopic extends TrendsTopic{
+public class HistogramTopic extends TrendsTopic {
   public String description;
   @Override
   public String toString() {
