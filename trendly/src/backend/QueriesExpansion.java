@@ -99,11 +99,14 @@ public class QueriesExpansion {
     ExecutorService executor = Executors.newFixedThreadPool(topics.size());
 
     Map<String, Future<TrendsResult>> queriesResults = new HashMap<>();
-    for (String topic : topics) {
-      Callable<TrendsResult> callable =
-          new TrendsCallable(TrendsFunctions.TOP_QUERIES, topic, location, startDate, endDate);
-      queriesResults.put(topic, executor.submit(callable));
-    }
+    topics.parallelStream()
+        .forEach(
+            (topic) -> {
+              Callable<TrendsResult> callable =
+                  new TrendsCallable(
+                      TrendsFunctions.TOP_QUERIES, topic, location, startDate, endDate);
+              queriesResults.put(topic, executor.submit(callable));
+            });
     executor.shutdown();
     return getClustersFromThreads(queriesResults, max_related_queries);
   }
@@ -119,23 +122,24 @@ public class QueriesExpansion {
       Map<String, Future<TrendsResult>> queriesResults, int max_related_queries) {
     List<Cluster> clusters = new ArrayList<>();
     AtomicInteger id = new AtomicInteger(1);
-    queriesResults.forEach(
-        (topic, futureTrendRes) -> {
-          TrendsQueriesResult queriesResult;
-          try {
-            queriesResult = (TrendsQueriesResult) futureTrendRes.get();
-          } catch (InterruptedException | ExecutionException e) {
-            throw new Error(e);
-          }
-          if (queriesResult.item != null) {
-            TrendsQuery[] trendsQueries =
-                Arrays.copyOfRange(
-                    queriesResult.item,
-                    0,
-                    Math.min(max_related_queries, queriesResult.item.length));
-            clusters.add(new Cluster(topic, id.getAndIncrement(), trendsQueries));
-          }
-        });
+    queriesResults.entrySet().parallelStream()
+        .forEach(
+            (entry) -> {
+              TrendsQueriesResult queriesResult;
+              try {
+                queriesResult = (TrendsQueriesResult) entry.getValue().get();
+              } catch (InterruptedException | ExecutionException e) {
+                throw new Error(e);
+              }
+              if (queriesResult.item != null) {
+                TrendsQuery[] trendsQueries =
+                    Arrays.copyOfRange(
+                        queriesResult.item,
+                        0,
+                        Math.min(max_related_queries, queriesResult.item.length));
+                clusters.add(new Cluster(entry.getKey(), id.getAndIncrement(), trendsQueries));
+              }
+            });
     return clusters;
   }
 }
