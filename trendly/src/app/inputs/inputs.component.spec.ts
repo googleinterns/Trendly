@@ -1,20 +1,20 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { InputsComponent } from './inputs.component';
+import {InputsComponent} from './inputs.component';
 
-const IL_COUNTRY : string = 'IL';
-const CHANGED_INTERVAL : number = 2;
-const CHANGED_END_DATE : Date = new Date(2006, 1, 1);
-const MOCK_END_DATE : Date = new Date(2020, 1, 1);
+const IL_COUNTRY: string = 'IL';
+const CHANGED_INTERVAL: number = 2;
+const CHANGED_END_DATE: Date = new Date(2006, 1, 1);
+const MOCK_END_DATE: Date = new Date(2020, 1, 1);
 const DEF_OBJ = {
-  term:'',
+  term: '',
   startDate: new Date(2004, 1, 1),
   endDate: MOCK_END_DATE,
   country: '',
   interval: 1
-}
+};
 const CHANGED_OBJ = {
-  term:'',
+  term: '',
   startDate: new Date(2004, 1, 1),
   endDate: CHANGED_END_DATE,
   country: IL_COUNTRY,
@@ -26,10 +26,8 @@ describe('InputsComponent', () => {
   let fixture: ComponentFixture<InputsComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ InputsComponent ]
-    })
-    .compileComponents();
+    await TestBed.configureTestingModule({declarations: [InputsComponent]})
+        .compileComponents();
   });
 
   beforeEach(() => {
@@ -54,7 +52,6 @@ describe('InputsComponent', () => {
     component.sendParameters();
     expect(component.apply.emit).toHaveBeenCalled();
     expect(component.apply.emit).toHaveBeenCalledWith(DEF_OBJ);
-   
   });
 
   /**

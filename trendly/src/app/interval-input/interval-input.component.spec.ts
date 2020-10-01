@@ -1,14 +1,14 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import {By} from "@angular/platform-browser";
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import {By} from '@angular/platform-browser';
 
-import { IntervalInputComponent } from './interval-input.component';
+import {IntervalInputComponent} from './interval-input.component';
 
-const INPUT_ELEMENT : string = 'input';
-const EMPTY_STR : string = '';
-const VAL1_STR : string= '1';
-const VAL2_STR : string = '2';
-const VAL1 : number = 1;
-const VAL2 : number = 2;
+const INPUT_ELEMENT: string = 'input';
+const EMPTY_STR: string = '';
+const VAL1_STR: string = '1';
+const VAL2_STR: string = '2';
+const VAL1: number = 1;
+const VAL2: number = 2;
 
 describe('IntervalInputComponent', () => {
   let component: IntervalInputComponent;
@@ -16,10 +16,9 @@ describe('IntervalInputComponent', () => {
   let input;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ IntervalInputComponent ]
-    })
-    .compileComponents();
+    await TestBed
+        .configureTestingModule({declarations: [IntervalInputComponent]})
+        .compileComponents();
   });
 
   beforeEach(() => {
@@ -40,13 +39,12 @@ describe('IntervalInputComponent', () => {
    * tests the initialized value of the term.
    */
   it('initial intervalValue should be match', waitForAsync(() => {
+       fixture.whenStable().then(() => {
+         let el = input.nativeElement;
 
-    fixture.whenStable().then(() => {
-      let el = input.nativeElement;
-
-      expect(el.value).toBe(EMPTY_STR);
-    });
-  }));
+         expect(el.value).toBe(EMPTY_STR);
+       });
+     }));
 
 
   /**

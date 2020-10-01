@@ -1,11 +1,11 @@
-import { ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
-import {By} from "@angular/platform-browser";
+import {By} from '@angular/platform-browser';
 
-import { CountryInputComponent } from './country-input.component';
+import {CountryInputComponent} from './country-input.component';
 
-const INPUT_ELEMENT : string= 'input';
-const EMPTY_STR : string= '';
+const INPUT_ELEMENT: string = 'input';
+const EMPTY_STR: string = '';
 const COUNTRY1 = 'United State'
 const COUNTRY2 = 'Venezuela';
 const COUNTRY1_CODE = 'US';
@@ -18,11 +18,12 @@ describe('CountryInputComponent', () => {
   let options;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [MatAutocompleteModule],
-      declarations: [ CountryInputComponent ]
-    })
-    .compileComponents();
+    await TestBed
+        .configureTestingModule({
+          imports: [MatAutocompleteModule],
+          declarations: [CountryInputComponent]
+        })
+        .compileComponents();
   });
 
   beforeEach(() => {
@@ -43,13 +44,12 @@ describe('CountryInputComponent', () => {
    * tests the initialized value of the term.
    */
   it('initial countryValue should be match', waitForAsync(() => {
+       fixture.whenStable().then(() => {
+         const el = input.nativeElement;
 
-    fixture.whenStable().then(() => {
-      let el = input.nativeElement;
-
-      expect(el.value).toBe(EMPTY_STR);
-    });
-  }));
+         expect(el.value).toBe(EMPTY_STR);
+       });
+     }));
 
   /**
    * tests emitter - should emit on change with default value.

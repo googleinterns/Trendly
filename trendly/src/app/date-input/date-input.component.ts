@@ -1,14 +1,12 @@
-import { Component, OnInit, Output, EventEmitter} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS} from '@angular/material-moment-adapter';
+import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from '@angular/material-moment-adapter';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 import {MatDatepicker} from '@angular/material/datepicker';
-
 import * as _moment from 'moment';
-
 import {Moment} from 'moment';
 
-const moment =  _moment;
+const moment = _moment;
 
 export const DATE_FORMAT = {
   parse: {
@@ -39,63 +37,58 @@ export const DATE_FORMAT = {
     {provide: MAT_DATE_FORMATS, useValue: DATE_FORMAT},
   ],
 })
-export class DateInputComponent implements OnInit {
+export class DateInputComponent {
   @Output() emitterStart = new EventEmitter<any>();
   @Output() emitterEnd = new EventEmitter<any>();
-   startDate = new FormControl(moment());
-   endDate = new FormControl(moment());
-   minDate = new Date(2004, 1, 1);
-   maxDate = new Date();
+  startDate = new FormControl(moment());
+  endDate = new FormControl(moment());
+  minDate = new Date(2004, 1, 1);
+  maxDate = new Date();
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
+  constructor() {}
 
   /**
    * handler for choosing year for start date.
-   * @param normalizedYear 
+   * @param normalizedYear
    */
-  chosenYearHandlerStart(normalizedYear: Moment) 
-  {
+  chosenYearHandlerStart(normalizedYear: Moment) {
     this.chosenYearHandler(normalizedYear, this.startDate)
   }
 
   /**
    * handler for choosing year for end date.
-   * @param normalizedYear 
+   * @param normalizedYear
    */
-  chosenYearHandlerEnd(normalizedYear: Moment) 
-  {
+  chosenYearHandlerEnd(normalizedYear: Moment) {
     this.chosenYearHandler(normalizedYear, this.endDate)
   }
 
   /**
    * handler for choosing month for start date.
-   * @param normalizedMonth 
-   * @param datepicker 
+   * @param normalizedMonth
+   * @param datepicker
    */
-  chosenMonthHandlerStart(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>)
-  {
+  chosenMonthHandlerStart(
+      normalizedMonth: Moment, datepicker: MatDatepicker<Moment>) {
     this.chosenMonthHandler(normalizedMonth, datepicker, this.startDate)
   }
 
   /**
    * handler for choosing month for end date.
-   * @param normalizedMonth 
-   * @param datepicker 
+   * @param normalizedMonth
+   * @param datepicker
    */
-  chosenMonthHandlerEnd(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>)
-  {
+  chosenMonthHandlerEnd(
+      normalizedMonth: Moment, datepicker: MatDatepicker<Moment>) {
     this.chosenMonthHandler(normalizedMonth, datepicker, this.endDate)
   }
 
   /**
    * handler for choosing year.
-   * @param normalizedYear 
-   * @param date 
+   * @param normalizedYear
+   * @param date
    */
-  chosenYearHandler(normalizedYear: Moment, date : any) {
+  chosenYearHandler(normalizedYear: Moment, date: any) {
     const ctrlValue = date.value;
     ctrlValue.year(normalizedYear.year());
     date.setValue(ctrlValue);
@@ -103,11 +96,12 @@ export class DateInputComponent implements OnInit {
 
   /**
    * handler for choosig month
-   * @param normalizedMonth 
-   * @param datepicker 
-   * @param date 
+   * @param normalizedMonth
+   * @param datepicker
+   * @param date
    */
-  chosenMonthHandler(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>, date : any) {
+  chosenMonthHandler(
+      normalizedMonth: Moment, datepicker: MatDatepicker<Moment>, date: any) {
     const ctrlValue = date.value;
     ctrlValue.month(normalizedMonth.month());
     date.setValue(ctrlValue);
@@ -117,16 +111,15 @@ export class DateInputComponent implements OnInit {
   /**
    * emits start date while the input value changes.
    */
-  emitStartDate() : void {
+  emitStartDate(): void {
     //**for month name MMMM in foemat */
-    this.emitterStart.emit(this.startDate.value.format('M YYYY'));
+    this.emitterStart.emit(this.startDate.value.format('YYYY-MM'));
   }
 
   /**
    * emits end date while the input value changes.
    */
-  emitEndDate() : void {
-    this.emitterEnd.emit(this.endDate.value.format('M YYYY'));
+  emitEndDate(): void {
+    this.emitterEnd.emit(this.endDate.value.format('YYYY-MM'));
   }
-
 }

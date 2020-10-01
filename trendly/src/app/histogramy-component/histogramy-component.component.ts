@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {DataService} from '../data.service';
+import {Component, OnInit} from '@angular/core';
+// import {DataService} from '../data.service';
 
 interface InputObj {
   startDate: Date;
@@ -18,18 +18,20 @@ interface InputObj {
   styleUrls: ['./histogramy-component.component.css']
 })
 export class HistogramyComponentComponent implements OnInit {
-  readonly TopTopicsTitle : string = 'Top Topics'
-  readonly RisingTopicsTitle : string = 'Rising Topics'
+  readonly TopTopicsTitle: string = 'Top Topics'
+  readonly RisingTopicsTitle: string = 'Rising Topics'
 
-  constructor(private dataService : DataService) { }
+  constructor() {}
 
   ngOnInit(): void {
-    console.log(this.dataService.callServlet('/trendly', ['t', 'y', 'l'], '2016 2', '2017 7', 'US', 3));
+    // console.log(this.dataService.callServlet('/trendly', ['t', 'y', 'l'],
+    // '2016 2', '2017 7', 'US', 3));
   }
 
   /**
-   * gets data from server according to the given parameters. (for now just printing).
-   * @param input 
+   * gets data from server according to the given parameters. (for now just
+   * printing).
+   * @param input
    */
   getDataFromServer(input: InputObj) {
     console.log(input['term']);

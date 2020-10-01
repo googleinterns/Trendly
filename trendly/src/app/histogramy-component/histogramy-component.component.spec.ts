@@ -1,22 +1,21 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { HistogramyComponentComponent } from './histogramy-component.component';
+import {HistogramyComponentComponent} from './histogramy-component.component';
 const DEF_OBJ = {
-  term:'',
+  term: '',
   startDate: new Date(2004, 1, 1),
   endDate: new Date(2020, 1, 1),
   country: '',
   interval: 1
-}
-describe('HistogramyComponentComponent', () => {
+};
+ describe('HistogramyComponentComponent', () => {
   let component: HistogramyComponentComponent;
   let fixture: ComponentFixture<HistogramyComponentComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ HistogramyComponentComponent ]
-    })
-    .compileComponents();
+    await TestBed
+        .configureTestingModule({declarations: [HistogramyComponentComponent]})
+        .compileComponents();
   });
 
   beforeEach(() => {
@@ -32,5 +31,5 @@ describe('HistogramyComponentComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  //TODO: after call to server add tests to see if its the expected value
+  // TODO: after call to server add tests to see if its the expected value
 });
