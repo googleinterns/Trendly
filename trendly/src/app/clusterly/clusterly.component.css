@@ -1,9 +1,9 @@
-.clusters-container{
+.clusters-container {
   margin: auto;
   padding: 10px;
 }
 
-::ng-deep .bubble-tooltip  {
+::ng-deep .bubble-tooltip {
   display: none;
   background-color: black;
   color: white;
