@@ -39,11 +39,13 @@ public class QueriesExpansion {
   public static List<Cluster> getAllClusters(
       String[] terms, String location, String startDate, String endDate)
       throws IOException, InterruptedException, ExecutionException {
-    if (terms.length == 0) {
-      return new ArrayList<Cluster>();
-    }
-    Set<String> topics = QueriesExpansion.getTopTopics(terms, location, startDate, endDate);
-    return topicQueryProcess(topics, location, startDate, endDate);
+    return terms.length == 0
+        ? new ArrayList<Cluster>()
+        : topicQueryProcess(
+            QueriesExpansion.getTopTopics(terms, location, startDate, endDate),
+            location,
+            startDate,
+            endDate);
   }
 
   /** Expands the given terms to related top topics and returns a set of topics titles. */
