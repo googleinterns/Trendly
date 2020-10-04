@@ -13,14 +13,19 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/rising-topics")
 public class RisingTopicsServlet extends HttpServlet {
   public static final String RESPONSE_JSON = "application/json";
+  public static final String TERM_PARAMETER = "term";
+  public static final String COUNTRY_PARAMETER = "country";
+  public static final String START_DATE_PARAMETER = "startDate";
+  public static final String END_DATE_PARAMETER = "endDate";
+  public static final String INTERVAL_PARAMETER = "interval";
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String country = request.getParameter("country");
-    String term = request.getParameter("term");
-    String interval = request.getParameter("interval");
-    String startDate = request.getParameter("startDate");
-    String endDate = request.getParameter("endDate");
+    String country = request.getParameter(COUNTRY_PARAMETER);
+    String term = request.getParameter(TERM_PARAMETER);
+    String interval = request.getParameter(INTERVAL_PARAMETER);
+    String startDate = request.getParameter(START_DATE_PARAMETER);
+    String endDate = request.getParameter(END_DATE_PARAMETER);
 
     LinkedHashMap<String, ArrayList<HistogramTopic>> results =
         HistogramyDataRetrieval.getDataForServlet(

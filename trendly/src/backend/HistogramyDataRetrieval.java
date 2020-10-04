@@ -102,8 +102,7 @@ public class HistogramyDataRetrieval {
     if (allAPITopics.getItem() != null) {
       int counter = 0;
       for (TrendsTopic topic : allAPITopics.getItem()) {
-        if (counter > MAX_TOPICS)
-          break;
+        if (counter > MAX_TOPICS) {break;}
         allTopics.add(handleTopic(topic));
         counter++;
       }
