@@ -47,23 +47,25 @@ public class HistogramyDataRetrieval {
    * @return List of date ranges.
    */
   static ArrayList<DateRange> dateProcessing(String startDate, String endDate, int interval) {
-    int currentYear = Integer.parseInt(startDate.split(SEPERATOR)[0]);
-    int currentMonth = Integer.parseInt(startDate.split(SEPERATOR)[1]);
+    String[] startDateSplit = startDate.split(SEPERATOR);
+    String[] endDateSplit = endDate.split(SEPERATOR);
+    int currentYear = Integer.parseInt(startDateSplit[0]);
+    int currentMonth = Integer.parseInt(startDateSplit[1]);
 
-    int endYear = Integer.parseInt(endDate.split(SEPERATOR)[0]);
-    int endMonth = Integer.parseInt(endDate.split(SEPERATOR)[1]);
+    int endYear = Integer.parseInt(endDateSplit[0]);
+    int endMonth = Integer.parseInt(endDateSplit[1]);
 
     ArrayList<DateRange> ranges = new ArrayList<>();
 
     while (currentYear < endYear || (currentYear == endYear && currentMonth <= endMonth)) {
       int endOfIntervalMonth = currentMonth + interval - 1;
       int endOfIntervalYear = currentYear;
-      // in case the interval is more than 1 year
-      while (endOfIntervalMonth > NUM_OF_MONTHES) {
-        endOfIntervalMonth = endOfIntervalMonth - NUM_OF_MONTHES;
-        endOfIntervalYear++;
+      // In case the interval is more than 1 year.
+      if (endOfIntervalMonth > NUM_OF_MONTHES) {
+        endOfIntervalYear += endOfIntervalMonth % NUM_OF_MONTHES == 0 ? (endOfIntervalMonth / NUM_OF_MONTHES) - 1 : endOfIntervalMonth / NUM_OF_MONTHES;
+        endOfIntervalMonth = endOfIntervalMonth % NUM_OF_MONTHES == 0 ? NUM_OF_MONTHES : endOfIntervalMonth % NUM_OF_MONTHES;
       }
-      // check out of range
+      // Check out of range.
       if (endOfIntervalYear > endYear
           || (endOfIntervalYear == endYear && endOfIntervalMonth > endMonth)) {
         endOfIntervalMonth = endMonth;
@@ -102,7 +104,7 @@ public class HistogramyDataRetrieval {
     if (allAPITopics.getItem() != null) {
       int counter = 0;
       for (TrendsTopic topic : allAPITopics.getItem()) {
-        if (counter > MAX_TOPICS) {break;}
+        if (counter > MAX_TOPICS) break;
         allTopics.add(handleTopic(topic));
         counter++;
       }
@@ -117,7 +119,7 @@ public class HistogramyDataRetrieval {
    */
   static HistogramTopic handleTopic(TrendsTopic topic) {
     HistogramTopic newTopic = new HistogramTopic();
-    // TO BE ADDED : calls KG graph in order to extract the description
+    // TO BE ADDED : calls KG graph in order to extract the description.
     newTopic.description = "description from KG will be added";
     newTopic.title = topic.title;
     newTopic.value = topic.value;

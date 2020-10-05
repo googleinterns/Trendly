@@ -9,11 +9,13 @@ public class DateRange {
 
   public DateRange(String start, String end) {
     // check to match format
-    start = start.split(SEPERATOR)[1].length() == 1
-        ? start.split(SEPERATOR)[0] + SEPERATOR + "0" + start.split("-")[1]
+    String[] startDate = start.split(SEPERATOR);
+    String[] endDate = end.split(SEPERATOR);
+    start = startDate[1].length() == 1
+        ? startDate[0] + SEPERATOR + "0" + startDate[1]
         : start;
-    end = end.split(SEPERATOR)[1].length() == 1
-        ? end.split(SEPERATOR)[0] + SEPERATOR + "0" + end.split(SEPERATOR)[1]
+    end = endDate[1].length() == 1
+        ? endDate[0] + SEPERATOR + "0" + endDate[1]
         : end;
     this.start = start;
     this.end = end;
