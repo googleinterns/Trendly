@@ -79,11 +79,9 @@ public class QueriesExpansion {
       TrendsTopicsResult topicsResult = (TrendsTopicsResult) res.get();
       if (topicsResult.item != null) {
         Iterator<TrendsTopic> topicsIter = Arrays.stream(topicsResult.item).iterator();
-        int i = 0;
-        while (topicsIter.hasNext() && i < max_related_topics) {
-          if (topics.add(topicsIter.next().title)) {
-            i++;
-          }
+        int max_topics_size = topics.size() + max_related_topics;
+        while (topicsIter.hasNext() && topics.size() < max_topics_size) {
+          topics.add(topicsIter.next().title);
         }
       }
     }
