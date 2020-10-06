@@ -6,6 +6,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * A class that checks similarity between clusters. Given list of clusters, updates the clusters'
+ * related clusters' IDs
+ */
 public class Similarity {
   private static final double SIMILARITY_THRESHOLD = 0.5;
 
