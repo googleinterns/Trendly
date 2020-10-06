@@ -17,7 +17,6 @@ export interface DialogData {
        clusterly: ClusterlyComponent) => void;
 }
 
-
 /**
  * Dialog component, responsible for displaying a dialog containing information
  * about the given cluster and the queries belongs to it + the possibility to
@@ -30,7 +29,12 @@ export interface DialogData {
   styleUrls: ['./queries-dialog.component.css']
 })
 export class QueriesDialogComponent implements OnInit {
+  selectedValue;
   constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {}
 
   ngOnInit(): void {}
+
+  selected(event: MatSelectChange) {
+    this.selectedValue = event.value;
+  }
 }

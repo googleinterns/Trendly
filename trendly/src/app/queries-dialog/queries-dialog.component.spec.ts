@@ -5,7 +5,6 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import {Bubble} from '../models/bubble-model';
 import {Cluster} from '../models/cluster-model';
-
 import {DialogData, QueriesDialogComponent} from './queries-dialog.component';
 
 const CLUSTER1: Cluster =

@@ -3,14 +3,19 @@
   Queries:
   <mat-selection-list #terms>
     <mat-list-option *ngFor="let query of data.queries" [value]="query">
-      {{query.query}}  (volume: {{query.volume}})
+      {{query.query}} (volume: {{query.volume}})
     </mat-list-option>
   </mat-selection-list>
-  <p>Move selected queries to </p>
-  <mat-form-field appearance="fill">
-    <mat-label>Select a cluster</mat-label>
-    <mat-select (selectionChange)="data.updateFunc($event, terms.selectedOptions.selected, data.currentCluster, data.clusterly)" >
-      <mat-option *ngFor="let cluster of data.clusters" [value]="cluster">{{cluster.title}}</mat-option>
-    </mat-select>
-  </mat-form-field>
+  <div class="cluster-selection">
+    <p>Move selected queries to </p>
+    <mat-form-field appearance="fill">
+      <mat-label>Select a cluster</mat-label>
+      <mat-select (selectionChange)="selected($event)">
+        <mat-option *ngFor="let cluster of data.clusters" [value]="cluster">{{cluster.title}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="btn">
+    <button class='apply-button' (click)="data.updateFunc(selectedValue, terms.selectedOptions.selected, data.currentCluster, data.clusterly)">Apply</button>
+  </div>
 </div>

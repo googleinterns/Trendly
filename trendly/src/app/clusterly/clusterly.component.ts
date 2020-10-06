@@ -49,7 +49,8 @@ export class ClusterlyComponent implements OnInit {
   private lightCircles;
   private simulation;
 
-  constructor(private colorsService: ColorsService, public dialog: MatDialog) {}
+  constructor(
+      private colorsService: ColorsService, public queriesDialog: MatDialog) {}
 
 
   // To be replaced with ngOnChange when the server will be connected
@@ -94,7 +95,7 @@ export class ClusterlyComponent implements OnInit {
     this.simulation = this.addForceSimulation(clusterIdToLoc);
     this.applySimulation();
     this.applyDragging(tooltip, clusterIdToLoc);
-    this.applyDialog();
+    this.applyQueriesDialog();
   }
 
   /**
@@ -381,35 +382,34 @@ export class ClusterlyComponent implements OnInit {
    * new cluster and queries to move
    */
   updateClustersBasedOnDialog(
-      event: MatSelectChange, selections: any[], currCluster: Cluster,
+      newCluster: Cluster, selections: any[], currCluster: Cluster,
       clusterly: ClusterlyComponent) {
-    const newCluster: Cluster = event.value;
     selections.forEach((option) => {
       const bubble: Bubble = option._value;
       currCluster.moveBubbleToAnotherCluster(bubble, newCluster);
     });
     clusterly.applySimulation();
-    clusterly.dialog.closeAll();
+    clusterly.queriesDialog.closeAll();
   }
 
   /**
    * Adds a dialog with the queries belongs to a specific cluster
    * when the user click on a bubble
    */
-  private applyDialog() {
-    this.circles.on('click', openDialog);
-    this.lightCircles.on('click', openDialog);
+  private applyQueriesDialog() {
+    this.circles.on('click', openQueriesDialog);
+    this.lightCircles.on('click', openQueriesDialog);
 
     // A pointer to ClusterlyComponent instance
     const clusterly: ClusterlyComponent = this;
 
-    function openDialog(event, d) {
+    function openQueriesDialog(event, d) {
       const cluster: Cluster = clusterly.clusters.get(d.clusterId);
       const sortedQueries: Bubble[] =
           Array.from(cluster.bubbles)
               .sort((bubble1, bubble2) => bubble2.volume - bubble1.volume);
 
-      clusterly.dialog.open(QueriesDialogComponent, {
+      clusterly.queriesDialog.open(QueriesDialogComponent, {
         data: {
           clusterly: clusterly,
           currentCluster: cluster,
