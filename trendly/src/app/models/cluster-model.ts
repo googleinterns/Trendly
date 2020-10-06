@@ -1,5 +1,5 @@
-import { Bubble } from './bubble-model'
-import { QueryData } from '../models/server-datatypes'
+import {QueryData} from '../models/server-datatypes'
+import {Bubble} from './bubble-model'
 
 /**
  * Cluster data type - for each cluster of the clusters received
@@ -15,12 +15,13 @@ export class Cluster {
   constructor(title: string, id: number, queries: QueryData[]) {
     this.title = title;
     this.id = id;
-    queries.forEach((query) =>
-      this.bubbles.add(new Bubble(query.queryString, query.volume, id))
-    );
+    queries.forEach(
+        (query) =>
+            this.bubbles.add(new Bubble(query.queryString, query.volume, id)));
   }
 
-  /** Removes the given bubble from this.bubbles and adds it
+  /**
+   * Removes the given bubble from this.bubbles and adds it
    * to anotherCluster.bubbles.
    */
   moveBubbleToAnotherCluster(bubble: Bubble, anotherCluster: Cluster): void {
