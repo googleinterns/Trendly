@@ -1,52 +1,51 @@
-import { Component, OnInit, Input } from '@angular/core';
+import {Component} from '@angular/core';
 import {DataService} from '../data.service';
 
 interface InputObj {
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
   term: string;
   country: string;
   interval: number;
 }
 
 /**
- * component of histogramy feature.
+ * Histogramy feature component.
  */
 @Component({
   selector: 'app-histogramy-component',
   templateUrl: './histogramy-component.component.html',
   styleUrls: ['./histogramy-component.component.css']
 })
-export class HistogramyComponentComponent implements OnInit {
-  readonly TopTopicsTitle : string = 'Top Topics'
-  readonly RisingTopicsTitle : string = 'Rising Topics'
+export class HistogramyComponentComponent {
+  readonly TopTopicsTitle: string = 'Top Topics'
+  readonly RisingTopicsTitle: string = 'Rising Topics'
   dataTop;
   dataRising;
 
-  constructor(private dataService : DataService) { }
-
-  ngOnInit(): void {
-  }
+  constructor(private dataService: DataService) {}
 
   /**
-   * gets data from server according to the given parameters. (for now just printing).
-   * @param input
+   * Gets data from server according to the given parameters. (for now just
+   * printing).
    */
   getDataFromServer(input: InputObj) {
-    console.log(input['term']);
-    console.log(input['interval']);
-    console.log(input['startDate']);
-    console.log(input['endDate']);
-    console.log(input['country']);
+    console.log(input);
 
-    this.dataService.callServlet('/top-topics', ['t', 'y', 'l'], '2016 2', '2017 7', 'US', 3).subscribe((data) => {
-      this.dataTop = { ...data };
-     }
-      );
+    this.dataService
+        .fetchTopTopics(
+            input['term'], input['startDate'], input['endDate'],
+            input['country'], input['interval'])
+        .subscribe((data) => {
+          this.dataTop = {...data};
+        });
 
-      this.dataService.callServlet('/rising-topics', ['t', 'y', 'l'], '2016 2', '2017 7', 'US', 3).subscribe((data) => {
-        this.dataRising = { ...data };
-       }
-        );
+    this.dataService
+        .fetchRisingTopics(
+            input['term'], input['startDate'], input['endDate'],
+            input['country'], input['interval'])
+        .subscribe((data) => {
+          this.dataRising = {...data};
+        });
   }
 }

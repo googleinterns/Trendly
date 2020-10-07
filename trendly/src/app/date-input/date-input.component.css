@@ -1,22 +1,21 @@
-.form-field{
+.form-field {
   float: left;
   padding: 10px;
   padding-left: 30px;
   width: 100%;
-  font-size: 15pt;
+  font-size: 15px;
   position: relative;
 }
 
 .example-month-picker .mat-calendar-period-button {
   pointer-events: none;
 }
-  
+
 .example-month-picker .mat-calendar-arrow {
   display: none;
 }
 
-.dates{
+.dates {
   display: flex;
   flex-direction: row;
 }
-  

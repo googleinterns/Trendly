@@ -1,63 +1,68 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 
-const START_PARAMETERS = '?';
-const NEXT_PARAMETER = '&';
-const TERM_PARAMETER = 'term=';
-const START_DATE_PARAMETER = 'startDate=';
-const END_DATE_PARAMETER = 'endDate=';
-const COUNTRY_PARAMETER = 'country=';
-const INTERVAL_PARAMETER = 'interval=';
-const EMPTY_STR = '';
-const TYPE_STRING = 'string';
-
 /**
  * Calls the servlets and returns the required data according to the given
- * oarameters.
+ * parameters.
  */
 @Injectable({providedIn: 'root'})
 export class DataService {
-  private options = {observe: 'body' as const, responseType: 'json' as const};
-
   constructor(private http: HttpClient) {}
+
+  /**
+   * Fetches data from top-topic servlet according to the restrictions.
+   */
+  public fetchTopTopics(
+      term: string|string[], startDate: string, endDate: string,
+      country: string, interval: number = 1) {
+    return this.callServlet(
+        '/top-topics', term, startDate, endDate, country, interval)
+  }
+
+  /**
+   * Fetches data from rising-topic servlet according to the restrictions.
+   */
+  public fetchRisingTopics(
+      term: string|string[], startDate: string, endDate: string,
+      country: string, interval: number = 1) {
+    return this.callServlet(
+        '/rising-topics', term, startDate, endDate, country, interval)
+  }
+
+  /**
+   * Fetches data from clusterly-data servlet according to the restrictions.
+   */
+  public fetchClustrlyData(
+      term: string|string[], startDate: string, endDate: string,
+      country: string, interval: number = 1) {
+    return this.callServlet(
+        '/clusterly-data', term, startDate, endDate, country, interval)
+  }
 
   /**
    * Calls the required servlet with the given parameters and returns the
    * response.
-   * @param servletName
-   * @param term
-   * @param startDate
-   * @param endDate
-   * @param country
-   * @param interval
    */
-  public callServlet(
+  private callServlet(
       servletName: string, term: string|string[], startDate: string,
-      endDate: string, country: string, interval: number = 1) {
-    let basrUrl: string = servletName + START_PARAMETERS;
+      endDate: string, country: string, interval: number) {
+    const basrUrl: string = servletName + '?';
     const url = basrUrl +
         this.buildURLParameters(term, startDate, endDate, country, interval)
-    return this.http.get(url, this.options);
+    return this.http.get(url, {observe: 'body', responseType: 'json'});
   }
 
   /**
    * Returns the parameters url part.
-   * @param termOrTerms
-   * @param startDate
-   * @param endDate
-   * @param country
-   * @param interval
    */
-  buildURLParameters(
+  private buildURLParameters(
       termOrTerms: string|string[], startDate: string, endDate: string,
       country: string, interval: number): string {
     const termParameter: string = this.makeTermParameter(termOrTerms);
-    console.log(termParameter);
-    const dateParameter: string = START_DATE_PARAMETER + startDate +
-        NEXT_PARAMETER + END_DATE_PARAMETER + endDate + NEXT_PARAMETER;
-    const countryParameter: string =
-        COUNTRY_PARAMETER + country + NEXT_PARAMETER;
-    const intervalParameter: string = INTERVAL_PARAMETER + interval;
+    const dateParameter: string = 'startDate=' + startDate + '&' +
+        'endDate=' + endDate + '&';
+    const countryParameter: string = 'country=' + country + '&';
+    const intervalParameter: string = 'interval=' + interval;
 
     return termParameter + dateParameter + countryParameter + intervalParameter;
   }
@@ -67,11 +72,9 @@ export class DataService {
    * @param termOrTerms
    */
   private makeTermParameter(termOrTerms: string|string[]): string {
-    const wrapTerm: (term: string) => string = (term) =>
-        TERM_PARAMETER + term + NEXT_PARAMETER;
-    return typeof termOrTerms === TYPE_STRING ?
+    const wrapTerm: (term: string) => string = (term) => 'term=' + term + '&';
+    return typeof termOrTerms === 'string' ?
         wrapTerm(termOrTerms as string) :
-        [...termOrTerms].reduce(
-            (terms, term) => terms += wrapTerm(term), EMPTY_STR);
+        [...termOrTerms].reduce((terms, term) => terms += wrapTerm(term), '');
   }
 }

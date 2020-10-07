@@ -1,4 +1,4 @@
-#chart-container{
+#chart-container {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -11,7 +11,7 @@ google-chart {
   border-radius: 25px;
 }
 
-.headline{
+.headline {
   padding: 30px;
   font-size: 30px;
   font-family: 'Amatic SC', cursive;

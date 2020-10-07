@@ -1,19 +1,17 @@
-.form{
+.form {
   align-items: center;
   min-width: 400px;
   max-width: 600px;
-  width:100%;
+  width: 100%;
   display: flex;
   flex-direction: row;
-  /* border: 2px medium #6d9eebff;
-  border-radius: 20px; */
 }
 
-.input-element{
+.input-element {
   float: left;
   padding: 15px;
   width: 100%;
-  font-size: 15pt;
+  font-size: 15px;
   font-family: 'Amatic SC', cursive;
 }
 
@@ -22,5 +20,3 @@
   height: 50px;
   text-align: center;
 }
-
-

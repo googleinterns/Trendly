@@ -1,16 +1,13 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { DateInputComponent } from './date-input.component';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {DateInputComponent} from './date-input.component';
 
 describe('DateInputComponent', () => {
   let component: DateInputComponent;
   let fixture: ComponentFixture<DateInputComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ DateInputComponent ]
-    })
-    .compileComponents();
+    await TestBed.configureTestingModule({declarations: [DateInputComponent]})
+        .compileComponents();
   });
 
   beforeEach(() => {
@@ -19,28 +16,19 @@ describe('DateInputComponent', () => {
     fixture.detectChanges();
   });
 
-  /**
-   * tests component creation.
-   */
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  /**
-   * tests start date emittion.
-   */
   it('should emit start date', () => {
-    spyOn(component.emitterStart, 'emit');
+    spyOn(component.startSelected, 'emit');
     component.emitStartDate();
-    expect(component.emitterStart.emit).toHaveBeenCalled();
+    expect(component.startSelected.emit).toHaveBeenCalled();
   });
 
-  /**
-   * tests end date emittion.
-   */
-  it('should emit start date', () => {
-    spyOn(component.emitterEnd, 'emit');
+  it('should emit end date', () => {
+    spyOn(component.endSelected, 'emit');
     component.emitEndDate();
-    expect(component.emitterEnd.emit).toHaveBeenCalled();
+    expect(component.endSelected.emit).toHaveBeenCalled();
   })
 });
