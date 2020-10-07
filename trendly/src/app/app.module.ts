@@ -24,12 +24,16 @@ import {TopBarComponent} from './top-bar/top-bar.component';
     QueriesDialogComponent,
   ],
   imports: [
-    BrowserModule, AppRoutingModule, MatIconModule, DemoMaterialModule,
-    BrowserAnimationsModule, RouterModule.forRoot([
+    BrowserModule,
+    AppRoutingModule,
+    MatIconModule,
+    DemoMaterialModule,
+    BrowserAnimationsModule,
+    RouterModule.forRoot([
       {path: '', component: MainPageComponent},
       {path: 'histogramy', component: MainPageComponent},
-      {path: 'clusterly', component: ClusterlyComponent}
-    ])
+      {path: 'clusterly', component: ClusterlyComponent},
+    ]),
   ],
   providers: [
     {provide: LocationStrategy, useClass: PathLocationStrategy},
