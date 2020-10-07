@@ -330,7 +330,6 @@ export class ClusterlyComponent implements OnInit {
 
   /** Adds dragging functionality to inner and outer circles */
   private applyDragging(tooltip, clusterIdToLoc: Map<number, Location>): void {
-    // A pointer to ClusterlyComponent instance
     const clusterly = this;
 
     this.circles.call(d3.drag()
