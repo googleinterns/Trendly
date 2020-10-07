@@ -8,7 +8,7 @@ import {ColorsService} from '../colors.service';
 import {Bubble} from '../models/bubble-model';
 import {Cluster} from '../models/cluster-model';
 import {ClusterData, QueryData} from '../models/server-datatypes';
-import {QueriesDialogComponent} from '../queries-dialog/queries-dialog.component'
+import {QueriesDialogComponent} from '../queries-dialog/queries-dialog.component';
 
 import {CLUSTERS_DATA} from './mock-data';
 
