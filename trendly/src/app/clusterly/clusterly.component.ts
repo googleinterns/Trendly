@@ -6,12 +6,7 @@ import {ColorsService} from '../colors.service'
 import {Bubble} from '../models/bubble-model'
 import {Cluster} from '../models/cluster-model'
 import {ClusterData, QueryData} from '../models/server-datatypes'
-
 import {CLUSTERS_DATA} from './mock-data'
-
-// To be replaced ib the future with window resize event listener
-export const WIDTH: number = window.innerWidth;
-export const HEIGHT: number = window.innerHeight;
 
 export const CLUSTERS_CONTAINER: string = '.clusters-container';
 export const TOOLTIP_CLASS: string = 'bubble-tooltip';
@@ -40,69 +35,62 @@ export enum Scales {
 })
 
 export class ClusterlyComponent implements OnInit {
-  private clusters: Map<number, Cluster> = new Map<number, Cluster>();
-  private queries: Array<Bubble> = new Array<Bubble>();
-  private scales: Map<Scales, any> = new Map<Scales, any>();
+  readonly clusters: Map<number, Cluster> = new Map<number, Cluster>();
+  readonly queries: Array<Bubble> = new Array<Bubble>();
+  readonly scales: Map<Scales, any> = new Map<Scales, any>();
 
   constructor(private colorsService: ColorsService) {}
 
-  // To be replaced with ngOnChange when the server will be connected
+  // TODO: Replace with ngOnChange when the server is connected.
   ngOnInit(): void {
-    // Mock data, to be replaced with data recieved from the sever
-    // (two options - const/ random)
+    // TODO: replace with data from the server (currently, mock data).
     const clustersData: ClusterData[] = this.getData();
-    // const clustersData: ClustersData[] = this.get_random_data(5);
 
     this.processClustersObjects(clustersData);
     this.addScales();
-    console.log(typeof this.scales.get(Scales.ColorScale));
 
-    // If exist clusters to show, adds cluster visualization
+    // If exist clusters to show, adds cluster visualization.
     if (this.clusters.size > 0) {
       this.addClustersVisualization();
     }
   }
 
-  /** Generates bubble clusters visualization based on the recieved data */
+  /** Generates bubble clusters visualization based on the recieved data. */
   private addClustersVisualization(): void {
-    // Map each cluster to its location on the screen
+    // Map each cluster to its location on the screen.
     const clusterIdToLoc: Map<number, Location> = this.gridDivision();
 
-    // Append the svg object to the cluster container
+    // Append the svg object to the cluster container.
     const svgContainer = this.addSvg(CLUSTERS_CONTAINER);
 
-    // Initialize the circle group
+    // Initialize the circle group.
     const circleGroup = this.addGroup(svgContainer);
 
-    // Initialize outer and inner circle for each query circle
+    // Initialize outer and inner circle for each query circle.
     const lightCircle = this.addCircles(
         circleGroup, LIGHT_CIRCLE_CLASS, 25, clusterIdToLoc,
         Scales.LightColorScale);
     const circle =
         this.addCircles(circleGroup, '', 0, clusterIdToLoc, Scales.ColorScale);
 
-    // Add tooltip with query string for each circle
+    // Add tooltip with query string for each circle.
     const tooltip = this.addTooltip(CLUSTERS_CONTAINER);
     this.tooltipHandling(tooltip, circle);
 
-    // Apply force clustering simulation + dragging functionallity
+    // Apply force clustering simulation + dragging functionallity.
     const simulation = this.addForceSimulation(clusterIdToLoc);
     this.applySimulation(simulation, circle, lightCircle);
     this.applyDragging(
         simulation, tooltip, circle, lightCircle, clusterIdToLoc);
   }
 
-  /**
-   * For the random mock data function,
-   * returns a random int between 0 to max
-   */
   private getRandomInt(max: number): number {
     return Math.floor(Math.random() * Math.floor(max));
   }
 
   /**
-   * Returns random mock data (clustersAmount random clusters in
-   * the same format of the data from the server)
+   * Returns random mock data (clustersAmount random clusters in the same format
+   * of the data from the server).
    */
   private getRandomData(clustersAmount: number): ClusterData[] {
     const clusterData: ClusterData[] = [];
@@ -111,9 +99,9 @@ export class ClusterlyComponent implements OnInit {
       const queriesAmount: number = this.getRandomInt(6) + 2;
       for (let j = 1; j <= queriesAmount; j++) {
         currQueries.push({
-          queryString:
+          title:
               'this is query ' + j + ' from cluster ' + i + ' originally',
-          volume: this.getRandomInt(100),
+          value: this.getRandomInt(100),
         })
       }
       const currCluster = {title: 'Cluster ' + i, id: i, queries: currQueries};
@@ -123,45 +111,45 @@ export class ClusterlyComponent implements OnInit {
   }
 
   /**
-   * Returns mock data (const clusters in
-   * the same format of the data from the server)
+   * Returns mock data (const clusters in the same format of the data from the
+   * server).
    */
   private getData(): ClusterData[] {
     return CLUSTERS_DATA;
   }
 
-  /** Adds scales to this.scales to be used in this component functions */
+  /** Adds scales to this.scales to be used in this component functions. */
   private addScales(): void {
-    // A scale that gives a radius size for each query based on its volume
+    // A scale that gives a radius size for each query based on its volume.
     this.scales.set(Scales.RadiusScale, d3.scaleSqrt().domain([1, 100]).range([
-      (WIDTH + HEIGHT) / 120, (WIDTH + HEIGHT) / 50
+      (window.innerWidth + window.innerHeight) / 120, (window.innerWidth + window.innerHeight) / 50
     ]));
 
-    // A scale that gives a color for each bubble
+    // A scale that gives a color for each bubble.
     this.scales.set(
         Scales.ColorScale,
         d3.scaleOrdinal()
             .domain(Array.from(this.clusters.keys()))
-            .range(this.colorsService.colorShow));
+            .range(this.colorsService.colors));
 
-    // A scale that gives a light color for each outer bubble
+    // A scale that gives a light color for each outer bubble.
     this.scales.set(
         Scales.LightColorScale,
         d3.scaleOrdinal()
             .domain(Array.from(this.clusters.keys()))
-            .range(this.colorsService.lightColorShow));
+            .range(this.colorsService.lightColors));
 
-    // A scale of the x position for each group
+    // A scale of the x position for each group.
     this.scales.set(
         Scales.XPositionSacle,
         d3.scaleLinear().domain([1, this.clusters.size]).range([
-          WIDTH / 6, 5 * WIDTH / 6
+          window.innerWidth / 6, 5 * window.innerWidth / 6
         ]));
   }
 
   /**
-   * Process the data recieved from the server and fills
-   * this.clusters, this.queries
+   * Process the data recieved from the server and fills this.clusters,
+   * this.queries.
    */
   private processClustersObjects(clustersData: ClusterData[]): void {
     clustersData.forEach((cluster) => {
@@ -173,11 +161,11 @@ export class ClusterlyComponent implements OnInit {
   }
 
   /**
-   * Returns a map of cluster id to Location object
-   * containing the x and y position for the center of each cluster
+   * Returns a map of cluster id to Location object containing the x and y
+   * position for the center of each cluster.
    */
   private gridDivision(): Map<number, Location> {
-    const height: number = 4 * HEIGHT / 5;
+    const height: number = 4 * window.innerHeight / 5;
     const upperYPosition: number = height / 4;
     const lowerYPosition: number = 3 * height / 4;
     const clusterIdToLoc: Map<number, Location> = new Map<number, Location>();
@@ -190,35 +178,32 @@ export class ClusterlyComponent implements OnInit {
   }
 
   /**
-   * Adds a svg object to the container and
-   * returns the created svg
+   * Adds a svg object to the container and returns the created svg.
    */
   private addSvg(container: string) {
     return d3.select(container)
         .append('svg')
-        .attr('width', WIDTH)
-        .attr('height', HEIGHT);
+        .attr('width', window.innerWidth)
+        .attr('height', window.innerHeight);
   }
 
   /**
-   * Adds a group (g object) to the svgContainer and
-   * returns the created group
+   * Adds a group (g object) to the svgContainer and returns the created group.
    */
   private addGroup(svgContainer) {
     return svgContainer.append('g');
   }
 
   /**
-   * Adds a tooltip div to the container and
-   * returns the created div
+   * Adds a tooltip div to the container and returns the created div.
    */
   private addTooltip(container: string) {
     return d3.select(container).append('div').attr('class', TOOLTIP_CLASS)
   }
 
   /**
-   * Adds circles bind to this.queries to circleGroup
-   * and returns the created circles
+   * Adds circles bind to this.queries to circleGroup and returns the created
+   * circles.
    */
   private addCircles(
       circleGroup, id: string, radiusAddition: number,
@@ -238,7 +223,7 @@ export class ClusterlyComponent implements OnInit {
   }
 
   /**
-   * Returns the cluster id of the nearest clusr to the given x,y coordinates
+   * Returns the cluster id of the nearest clusr to the given x,y coordinates.
    */
   private closestGroupId(
       x: number, y: number, clusterIdToLoc: Map<number, Location>): number {
@@ -256,9 +241,8 @@ export class ClusterlyComponent implements OnInit {
   }
 
   /**
-   * Adds to circle tooltip functionality
-   * (tooltip appears when the mouse is over the circle
-   * and disapears when it moves)
+   * Adds to circle tooltip functionality (tooltip appears when the mouse is
+   * over the circle and disapears when it moves).
    */
   private tooltipHandling(tooltip, circle): void {
     const mousemove = (event, d) => {
@@ -278,8 +262,7 @@ export class ClusterlyComponent implements OnInit {
   }
 
   /**
-   * Returns force simulation (x and y positions, centrering
-   * and anti-collide)
+   * Returns force simulation (x and y positions, centrering  and anti-collide).
    */
   private addForceSimulation(clusterIdToLoc: Map<number, Location>) {
     return d3.forceSimulation()
@@ -293,22 +276,22 @@ export class ClusterlyComponent implements OnInit {
                 (d) => clusterIdToLoc.get(d.clusterId).yPosition))
         .force(
             'center',
-            d3.forceCenter().x(WIDTH / 2).y(
-                HEIGHT / 2))  // Attraction to the center of the svg
+            d3.forceCenter().x(window.innerWidth / 2).y(
+                window.innerHeight / 2))  // Attraction to the center of the svg.
         .force(
             'charge',
             d3.forceManyBody().strength(
-                1))  // Nodes are attracted one each other
+                1))  // Nodes are attracted one each other.
         .force(
             'collide',
             d3.forceCollide()
                 .strength(1)
                 .radius(
                     (d) => this.scales.get(Scales.RadiusScale)(d.volume) + 1)
-                .iterations(1))  // Avoids circle overlapping
+                .iterations(1))  // Avoids circle overlapping.
   }
 
-  /** Applies given simulation on inner and outer circles */
+  /** Applies given simulation on inner and outer circles. */
   private applySimulation(simulation, circle, lightCircle): void {
     simulation
       .nodes(this.queries)
@@ -322,7 +305,7 @@ export class ClusterlyComponent implements OnInit {
       });
   }
 
-  /** Adds dragging functionality to inner and outer circles */
+  /** Adds dragging functionality to inner and outer circles. */
   private applyDragging(
       simulation, tooltip, circle, lightCircle,
       clusterIdToLoc: Map<number, Location>): void {
@@ -363,16 +346,16 @@ export class ClusterlyComponent implements OnInit {
     }
   }
 
-  /** Changes bubble cluster based on current position */
+  /** Changes bubble cluster based on current position. */
   private changeBubbleCluster(circle, bubbleObj, clusterIdToLoc): void {
     const currentCluster: Cluster = this.clusters.get(bubbleObj.clusterId);
-    // Get new ClusterId based on current position
+    // Get new ClusterId based on current position.
     bubbleObj.clusterId =
         this.closestGroupId(bubbleObj.x, bubbleObj.y, clusterIdToLoc);
     const newCluster: Cluster = this.clusters.get(bubbleObj.clusterId);
-    currentCluster.moveBubbleToAnotherCluster(bubbleObj, newCluster);
+    currentCluster.moveBubble(bubbleObj, newCluster);
 
-    // Check if the catched circle is the inner or outer one
+    // Check if the catched circle is the inner or outer one.
     const circleClass = d3.select(circle).attr('class');
     const isCurrCircleLight: boolean = circleClass.endsWith(LIGHT_CIRCLE_CLASS);
     const lightCircle = isCurrCircleLight ?
@@ -382,15 +365,15 @@ export class ClusterlyComponent implements OnInit {
         d3.select('.' + circleClass.replace(LIGHT_CIRCLE_CLASS, '')) :
         d3.select(circle);
 
-    // Change inner and outer circles colors
+    // Change inner and outer circles colors.
     this.updateCircleColor(innerCircle, bubbleObj.clusterId, Scales.ColorScale);
     this.updateCircleColor(
         lightCircle, bubbleObj.clusterId, Scales.LightColorScale);
   }
 
   /**
-   * Updates given circle fill color based on the
-   * appropriate color that match circleId at colorScale
+   * Updates given circle fill color based on the appropriate color that match
+   * circleId at colorScale.
    */
   private updateCircleColor(circle, clusterId: number, colorScale: Scales):
       void {
