@@ -37,16 +37,10 @@ describe('InputsComponent', () => {
     fixture.detectChanges();
   });
 
-  /**
-   * tests component creation.
-   */
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  /**
-   * tests emitter - should emit on click with default values.
-   */
   it('should emit on click with default', () => {
     spyOn(component.apply, 'emit');
     component.sendParameters();
@@ -54,10 +48,7 @@ describe('InputsComponent', () => {
     expect(component.apply.emit).toHaveBeenCalledWith(DEF_OBJ);
   });
 
-  /**
-   * tests emitter - should emit on click with after changed values.
-   */
-  it('should emit on click with default', () => {
+  it('should emit on click with changed value', () => {
     component.country = 'IL';
     component.endDate = new Date(2006, 1, 1);
     component.interval = 2;

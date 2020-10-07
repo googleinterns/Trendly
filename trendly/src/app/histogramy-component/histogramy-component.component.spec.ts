@@ -8,7 +8,7 @@ const DEF_OBJ = {
   country: '',
   interval: 1
 };
- describe('HistogramyComponentComponent', () => {
+describe('HistogramyComponentComponent', () => {
   let component: HistogramyComponentComponent;
   let fixture: ComponentFixture<HistogramyComponentComponent>;
 
@@ -24,9 +24,6 @@ const DEF_OBJ = {
     fixture.detectChanges();
   });
 
-  /**
-   * tests component creation.
-   */
   it('should create', () => {
     expect(component).toBeTruthy();
   });

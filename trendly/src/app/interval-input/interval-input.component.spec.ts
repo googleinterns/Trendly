@@ -28,16 +28,10 @@ describe('IntervalInputComponent', () => {
     fixture.detectChanges();
   });
 
-  /**
-   * tests component creation.
-   */
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  /**
-   * tests the initialized value of the term.
-   */
   it('initial intervalValue should be match', waitForAsync(() => {
        fixture.whenStable().then(() => {
          let el = input.nativeElement;
@@ -47,13 +41,10 @@ describe('IntervalInputComponent', () => {
      }));
 
 
-  /**
-   * tests emitter - should emit on change with default value.
-   */
   it('should emit on change default', () => {
-    spyOn(component.emitter, 'emit');
+    spyOn(component.intervalSelected, 'emit');
     component.emitInterval();
-    expect(component.emitter.emit).toHaveBeenCalled();
-    expect(component.emitter.emit).toHaveBeenCalledWith(VAL1);
+    expect(component.intervalSelected.emit).toHaveBeenCalled();
+    expect(component.intervalSelected.emit).toHaveBeenCalledWith(VAL1);
   });
 });

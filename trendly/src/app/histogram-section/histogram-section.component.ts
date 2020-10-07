@@ -1,11 +1,10 @@
-import {Component, HostListener, Input, OnInit, SimpleChanges} from '@angular/core';
-
+import {Component, Input, OnInit} from '@angular/core';
 import {ColorsService} from '../colors.service';
 
 interface chartRole {
   role: string;
 }
-type ColumnArray = (chartRole|string)[];
+type ColumnArray = Array<chartRole|string>;
 
 interface Topic {
   name: string;
@@ -14,10 +13,10 @@ interface Topic {
 }
 
 interface DataType {
-  [index: string]: Array<Topic>;
+  [index: string]: Topic[];
 }
 
-// mock data
+// TODO: remove when switching to live data.
 const MOCK_DATA: DataType = {
   '8/2010': [
     {name: 'apple', volume: 50, description: 'big tech company'},
@@ -48,11 +47,10 @@ const TOOLTIP_ROLE: chartRole = {
 const STYLE_ROLE = {
   role: STYLE_ROLE_NAME
 };
-const EMPTY_STR = '';
 
 
 /**
- * responsibles for the charts view
+ * Responsibles for the charts view.
  */
 @Component({
   selector: 'app-histogram-section',
@@ -65,7 +63,7 @@ export class HistogramSectionComponent implements OnInit {
   @Input() data: Array<Array<string|number>> = [];
   @Input() columnNames: ColumnArray = [];
   @Input()
-  options: object = {
+  readonly options: object = {
     width: window.innerWidth / 3,
     height: window.innerWidth / 4,
     legend: {position: 'top', maxLines: 3},
@@ -75,8 +73,7 @@ export class HistogramSectionComponent implements OnInit {
   };
 
   /**
-   * the constructor - injects color service.
-   * @param coloresService
+   * The constructor - injects color service.
    */
   constructor(private coloresService: ColorsService) {}
 
@@ -96,9 +93,9 @@ export class HistogramSectionComponent implements OnInit {
   }
 
   /**
-   * Extracts and returns the topics maps to its' index.
+   * Extracts and returns the topics mapped to their index.
    */
-  extractTopics(data: Object): Map<string, number> {
+  extractTopics(data: DataType): Map<string, number> {
     const topics: Map<string, number> = new Map<string, number>();
     let counter: number = 0;
     Object.keys(data)
@@ -114,7 +111,6 @@ export class HistogramSectionComponent implements OnInit {
 
   /**
    * Creates the columns forthe chart.
-   * @param topics
    */
   createColumnNames(topics: Map<string, number>): void {
     this.columnNames = [];
@@ -128,34 +124,32 @@ export class HistogramSectionComponent implements OnInit {
 
   /**
    * Creates the data for the charts.
-   * @param topics
    */
   private createData(topics: Map<string, number>): void {
     Object.keys(MOCK_DATA).forEach((date) => {
-    const row = Array((topics.size * NUM_OF_COL_PER_TOPIC) + 1).fill(EMPTY_STR);
-    this.initializeRowArray(row);
-    row[0] = date;
+      const row = Array((topics.size * NUM_OF_COL_PER_TOPIC) + 1).fill('');
+      this.initializeRowArray(row);
+      row[0] = date;
 
-    [...MOCK_DATA[date]].forEach((element) =>
-    {
-      const index = topics.get(element.name) * NUM_OF_COL_PER_TOPIC;
-      const indexColor = topics.get(element.name);
-      row[index + FIRST_TOPIC_COL] = element.volume;
-      row[index + SECOND_TOPIC_COL] = element.description;
-      row[index + THIRD_TOPIC_COL] =
-          this.coloresService._lightColorShow[indexColor];
+      [...MOCK_DATA[date]].forEach((element) => {
+        const index = topics.get(element.name) * NUM_OF_COL_PER_TOPIC;
+        const indexColor = topics.get(element.name);
+        row[index + FIRST_TOPIC_COL] = element.volume;
+        row[index + SECOND_TOPIC_COL] = element.description;
+        row[index + THIRD_TOPIC_COL] =
+            this.coloresService._lightColorShow[indexColor];
+      });
+      this.data.push(row);
     });
-    this.data.push(row);
-    });
-}
-
-/**
- * Initializes one row in the data.
- * @param array
- */
-initializeRowArray(array: Array<string|number>): void {
-  for (let i = 1; i < array.length; i += NUM_OF_COL_PER_TOPIC) {
-    array[i] = 0;
   }
-}
+
+  /**
+   * Initializes one row in the data.
+   * @param array
+   */
+  private initializeRowArray(array: Array<string|number>): void {
+    for (let i = 1; i < array.length; i += NUM_OF_COL_PER_TOPIC) {
+      array[i] = 0;
+    }
+  }
 }

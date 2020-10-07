@@ -33,51 +33,21 @@ describe('CountryInputComponent', () => {
     fixture.detectChanges();
   });
 
-  /**
-   * tets component creation.
-   */
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  /**
-   * tests the initialized value of the term.
-   */
   it('initial countryValue should be match', waitForAsync(() => {
        fixture.whenStable().then(() => {
          const el = input.nativeElement;
-
          expect(el.value).toBe(EMPTY_STR);
        });
      }));
 
-  /**
-   * tests emitter - should emit on change with default value.
-   */
   it('should emit on change default', () => {
-    spyOn(component.emitter, 'emit');
+    spyOn(component.countrySelected, 'emit');
     component.emitCountry();
-    expect(component.emitter.emit).toHaveBeenCalled();
-    expect(component.emitter.emit).toHaveBeenCalledWith(EMPTY_STR);
-  });
-
-  /**
-   * tests emitter - should emit and update on change with empty string.
-   */
-  it('should update and emit on change with empty str', () => {
-    spyOn(component.emitter, 'emit');
-    component.updateAndemitCountry(EMPTY_STR);
-    expect(component.emitter.emit).toHaveBeenCalled();
-    expect(component.emitter.emit).toHaveBeenCalledWith(EMPTY_STR);
-  });
-
-  /**
-   * tests emitter - should emit and update on change with an exist country.
-   */
-  it('should emit and update on change', () => {
-    spyOn(component.emitter, 'emit');
-    component.updateAndemitCountry(COUNTRY2);
-    expect(component.emitter.emit).toHaveBeenCalled();
-    expect(component.emitter.emit).toHaveBeenCalledWith(COUNTRY2_CODE);
+    expect(component.countrySelected.emit).toHaveBeenCalled();
+    expect(component.countrySelected.emit).toHaveBeenCalledWith(EMPTY_STR);
   });
 });

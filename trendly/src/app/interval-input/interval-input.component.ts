@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 
 @Component({
   selector: 'app-interval-input',
@@ -6,16 +6,14 @@ import {Component, EventEmitter, OnInit, Output} from '@angular/core';
   styleUrls: ['./interval-input.component.css']
 })
 export class IntervalInputComponent {
-  @Output() emitter = new EventEmitter<number>();
+  @Output() intervalSelected = new EventEmitter<number>();
   intervalValue: string = '1';
 
-  constructor() {}
-
   /**
-   * emits the interval to the parent 'inputs' component while the input value
+   * Emits the interval to the parent 'inputs' component while the input value
    * changes.
    */
   emitInterval(): void {
-    this.emitter.emit(Number(this.intervalValue));
+    this.intervalSelected.emit(Number(this.intervalValue));
   }
 }

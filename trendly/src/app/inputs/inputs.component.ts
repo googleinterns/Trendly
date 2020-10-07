@@ -1,12 +1,13 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 
 interface InputObj {
   startDate: Date, endDate: Date, term: string, country: string,
       interval: number,
 }
+;
 
 /**
- * responsible for all the user inputs.
+ * Responsible for all the user inputs.
  */
 @Component({
   selector: 'app-inputs',
@@ -18,15 +19,12 @@ interface InputObj {
 
 })
 export class InputsComponent {
-  // inputs initiallized to default values.
   startDate: Date = new Date(2004, 1, 1);
   endDate: Date = new Date();
   term: string = '';
   country: string = '';
   interval: number = 1;
   @Output() apply = new EventEmitter<InputObj>();
-
-  constructor() {}
 
   /**
    * emits all the user inputs to the parent component.
@@ -42,40 +40,35 @@ export class InputsComponent {
   }
 
   /**
-   * updates the term.
-   * @param newTerm
+   * Updates the term.
    */
   updateTerm(newTerm: string): void {
     this.term = newTerm;
   }
 
   /**
-   * updates the interval.
-   * @param newInterval
+   * Updates the interval.
    */
   updateInterval(newInterval: number): void {
     this.interval = newInterval;
   }
 
   /**
-   * updates the country.
-   * @param newCountry
+   * Updates the country.
    */
   updateCountry(newCountry: string): void {
     this.country = newCountry;
   }
 
   /**
-   * updates the start date
-   * @param newStartDate
+   * Updates the start date
    */
   updateStartDate(newStartDate): void {
     this.startDate = newStartDate;
   }
 
   /**
-   * updates the end date.
-   * @param newEndDate
+   * Updates the end date.
    */
   updateEndDate(newEndDate): void {
     this.endDate = newEndDate;

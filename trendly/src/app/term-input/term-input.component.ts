@@ -1,7 +1,7 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 
 /**
- * responsibles for the term input.
+ * Responsibles for the term input.
  */
 @Component({
   selector: 'app-term-input',
@@ -9,15 +9,15 @@ import {Component, EventEmitter, OnInit, Output} from '@angular/core';
   styleUrls: ['./term-input.component.css']
 })
 export class TermInputComponent {
-  @Output() emitter = new EventEmitter<string>();
+  @Output() termSelected = new EventEmitter<string>();
   termValue: string = '';
   constructor() {}
 
   /**
-   * emits the term to the parent 'inputs' component while the input value
+   * Emits the term to the parent 'inputs' component while the input value
    * changes.
    */
   emitTerm(): void {
-    this.emitter.emit(this.termValue);
+    this.termSelected.emit(this.termValue);
   }
 }

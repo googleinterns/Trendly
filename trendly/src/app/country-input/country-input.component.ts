@@ -3,8 +3,7 @@ import {FormControl} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 
-const EMPTY_STR = '';
-const COUNTRY_CODES: Object = {
+const COUNTRY_CODES: {[name: string]: string} = {
   'Albania': 'AL',
   'Algeria': 'DZ',
   'Angola': 'AO',
@@ -160,35 +159,33 @@ const COUNTRY_CODES: Object = {
   'Vietnam': 'VN',
   'Yemen': 'YE',
   'Zimbabwe': 'ZW'
-}
+};
 
 /**
- * responsibeles for the country input.
+ * Responsibles for the country input.
  */
 @Component({
   selector: 'app-country-input',
   templateUrl: './country-input.component.html',
   styleUrls: ['./country-input.component.css']
-}) export class CountryInputComponent implements OnInit {
-  @Output() emitter = new EventEmitter<string>();
+})
+export class CountryInputComponent implements OnInit {
+  @Output() countrySelected = new EventEmitter<string>();
   countryValue: string = '';
-  myControl = new FormControl();
-  options = Object.keys(COUNTRY_CODES);
+  formControl = new FormControl();
+  readonly options = Object.keys(COUNTRY_CODES);
   filteredOptions: Observable<string[]>;
 
-  constructor() {}
-
   /**
-   * called on init and initiallizes the filteredOptions variable.
+   * Called on init and initializes the filteredOptions variable.
    */
   ngOnInit(): void {
-    this.filteredOptions = this.myControl.valueChanges.pipe(
+    this.filteredOptions = this.formControl.valueChanges.pipe(
         startWith(''), map(value => this._filter(value)));
   }
 
   /**
-   * filter forthe options.
-   * @param value
+   * Filter for the options.
    */
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
@@ -198,22 +195,21 @@ const COUNTRY_CODES: Object = {
   }
 
   /**
-   * emit to parent component the country name while the input value changes.
+   * Emit to parent component the country name when the input value changes.
    */
   emitCountry(): void {
-    const countryCode = this.countryValue === EMPTY_STR ?
-        EMPTY_STR :
-        COUNTRY_CODES[this.countryValue];
-    this.emitter.emit(countryCode);
+    const countryCode =
+        this.countryValue === '' ? '' : COUNTRY_CODES[this.countryValue];
+    this.countrySelected.emit(countryCode);
   }
 
   /**
-   * emit to parent component the country name while the input value selected
+   * Emit to parent component the country name while the input value selected
    * from the options list.
    */
-  updateAndemitCountry(newCountry: string): void {
-    this.countryValue = newCountry;
-    const countryCode = COUNTRY_CODES[this.countryValue] || EMPTY_STR;
-    this.emitter.emit(countryCode);
-  }
+  // updateAndemitCountry(newCountry: string): void {
+  //   this.countryValue = newCountry;
+  //   const countryCode = COUNTRY_CODES[this.countryValue] || '';
+  //   this.countrySelected.emit(countryCode);
+  // }
 }
