@@ -14,73 +14,43 @@ describe('ColorsService', () => {
     expect(service).toBeTruthy();
   });
 
-  /**
-   * Checks the size of colors.colorShow == the size of
-   * colors.lightColorShow since each color in colorShow
-   * supposed to have a lighter version in lightColorShow
-   */
-  it('check colorShow size equals lightColorShow size', () => {
-    expect(service.colorShow.length === service.lightColorShow.length)
+  it('should create light color for each color', () => {
+    expect(service.colors.length === service.lightColors.length)
         .toBeTrue();
   });
 
-  /**
-   * Checks the size of colors.colorBlindShow == the size of
-   * colors.lightColorBlingShow since each color in colorBlindShow
-   * supposed to have a lighter version in lightColorBlingShow
-   */
-  it('check colorBlindShow size equals lightColorBlindShow size', () => {
-    expect(service.colorBlindShow.length === service.lightColorBlindShow.length)
+  it('should create light color for color blind for each such color', () => {
+    expect(service.colorsForColorBlind.length === service.lightColorForColorBlind.length)
         .toBeTrue();
   });
 
-  /**
-   * Checks the strings in colorShow are valid hex represantion
-   * of color
-   */
-  it('check colorShow has valid hex color representation',
-     () => {service.colorShow.forEach((color) => {
+  it('should create colors with valid hex color representation',
+     () => {service.colors.forEach((color) => {
        expect(/^#[0-9A-F]{6}$/i.test(color)).toBeTrue();
      })});
 
-  /**
-   * Checks the strings in lightColorShow are valid hex represantion
-   * of color
-   */
-  it('check lightColorShow has valid hex color representation',
-     () => {service.lightColorShow.forEach((color) => {
+  it('should create light colors with valid hex color representation',
+     () => {service.lightColors.forEach((color) => {
        expect(/^#[0-9A-F]{6}$/i.test(color)).toBeTrue();
      })});
 
-  /**
-   * Checks the strings in colorBlindShow are valid hex represantion
-   * of color
-   */
-  it('check colorBlindShow has valid hex color representation',
-     () => {service.colorBlindShow.forEach((color) => {
+  it('should create colors for color blind with valid hex color representation',
+     () => {service.colorsForColorBlind.forEach((color) => {
        expect(/^#[0-9A-F]{6}$/i.test(color)).toBeTrue();
      })});
 
-  /**
-   * Checks the strings in lightColorBlingShow are valid hex represantion
-   * of color
-   */
-  it('check lightColorBlingShow has valid hex color representation',
-     () => {service.lightColorBlindShow.forEach((color) => {
+  it('should create light colors for color blind with valid hex color representation',
+     () => {service.lightColorForColorBlind.forEach((color) => {
        expect(/^#[0-9A-F]{6}$/i.test(color)).toBeTrue();
      })});
 
-  /**
-   * Checks changeColorLightness with zero lightnessAmount dosen't
-   * change the color
-   */
-  it('check changeColorLightness with zero lightnessAmount', () => {
+  it('should not change color when given zero lightnessAmount', () => {
     expect(service.changeColorLightness('#64b5f6', 0)).toBe('#64b5f6');
   });
 
-  /** Checks changeColorLightness returns a valid hex color representation */
-  it('check changeColorLightness returns a valid color', () => {
-    const newColor = service.changeColorLightness('#64b5f6', 40);
-    expect(/^#[0-9A-F]{6}$/i.test(newColor)).toBeTrue();
-  });
+  it('should return a valid hex color representation after applying changeColorLightness',
+     () => {
+       const newColor = service.changeColorLightness('#64b5f6', 40);
+       expect(/^#[0-9A-F]{6}$/i.test(newColor)).toBeTrue();
+     });
 });

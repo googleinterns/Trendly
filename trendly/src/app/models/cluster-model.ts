@@ -1,5 +1,4 @@
 import {QueryData} from '../models/server-datatypes'
-
 import {Bubble} from './bubble-model'
 
 /**
@@ -9,22 +8,19 @@ import {Bubble} from './bubble-model'
  */
 
 export class Cluster {
-  readonly title: string;
-  readonly id: number;
-  readonly bubbles: Set<Bubble> = new Set<Bubble>();
+  readonly bubbles: Set<Bubble>;
 
-  constructor(title: string, id: number, queries: QueryData[]) {
-    this.title = title;
-    this.id = id;
-    queries.forEach(
-        (query) => this.bubbles.add(new Bubble(query.title, query.volume, id)));
+  constructor(
+      readonly title: string, readonly id: number, queries: QueryData[]) {
+    this.bubbles = new Set<Bubble>(
+        queries.map(query => new Bubble(query.title, query.value, id)));
   }
 
   /**
    * Removes the given bubble from this.bubbles and adds it
    * to anotherCluster.bubbles.
    */
-  moveBubbleToAnotherCluster(bubble: Bubble, anotherCluster: Cluster): void {
+  moveBubble(bubble: Bubble, anotherCluster: Cluster): void {
     bubble.clusterId = anotherCluster.id;
     this.bubbles.delete(bubble);
     anotherCluster.bubbles.add(bubble);

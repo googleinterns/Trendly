@@ -1,10 +1,10 @@
-/** Query data type as recieved from the server */
+/** Query data type as recieved from the server. */
 export interface QueryData {
   title: string;
-  volume: number;
+  value: number;
 }
 
-/** Cluster data type as recieved from the server */
+/** Cluster data type as recieved from the server. */
 export interface ClusterData {
   title: string;
   id: number;

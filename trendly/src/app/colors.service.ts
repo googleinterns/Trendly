@@ -1,13 +1,13 @@
 import {Injectable} from '@angular/core';
 
 /**
- * Colors service, for consistent color palette for Hitogramy and Clusterly
+ * Colors service, for consistent color palette for Histogramy and Clusterly.
  */
 @Injectable({
   providedIn: 'root',
 })
 export class ColorsService {
-  readonly colorShow: string[] = [
+  readonly colors: string[] = [
     '#2196f3',
     '#673ab7',
     '#009688',
@@ -17,17 +17,17 @@ export class ColorsService {
     '#3f51b5',
     '#ffeb3b',
   ];
-  readonly lightColorShow: string[] = [];
-  readonly colorBlindShow: string[] =
+  readonly lightColors: string[] = [];
+  // A colorblind-friendly palette.
+  readonly colorsForColorBlind: string[] =
       ['#f5793A', '#a95aa1', '#85C0f9', '#0f2080'];
-  readonly lightColorBlindShow: string[] = [];
+  readonly lightColorForColorBlind: string[] = [];
 
   constructor() {
-    this.colorShow.forEach(
-        (color) =>
-            this.lightColorShow.push(this.changeColorLightness(color, 45)));
-    this.colorBlindShow.forEach(
-        (color) => this.lightColorBlindShow.push(
+    this.colors.forEach(
+        (color) => this.lightColors.push(this.changeColorLightness(color, 45)));
+    this.colorsForColorBlind.forEach(
+        (color) => this.lightColorForColorBlind.push(
             this.changeColorLightness(color, 45)));
   }
 

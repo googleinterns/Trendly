@@ -5,8 +5,8 @@
 
 ::ng-deep .bubble-tooltip {
   display: none;
-  background-color: black;
-  color: white;
+  background-color: #000;
+  color: #fff;
   border: solid;
   border-width: 2px;
   border-radius: 5px;
