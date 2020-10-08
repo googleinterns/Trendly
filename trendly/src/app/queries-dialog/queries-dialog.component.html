@@ -1,0 +1,21 @@
+<h1 mat-dialog-title>Topic: {{data.currentCluster.title}}</h1>
+<div mat-dialog-content>
+  Queries:
+  <mat-selection-list #terms>
+    <mat-list-option *ngFor="let query of data.queries" [value]="query">
+      {{query.query}} (volume: {{query.volume}})
+    </mat-list-option>
+  </mat-selection-list>
+  <div class="cluster-selection">
+    <p>Move selected queries to </p>
+    <mat-form-field appearance="fill">
+      <mat-label>Select a cluster</mat-label>
+      <mat-select (selectionChange)="selected($event)">
+        <mat-option *ngFor="let cluster of data.clusters" [value]="cluster">{{cluster.title}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="btn">
+    <button class='apply-button' (click)="data.updateFunc(selectedCluster, terms.selectedOptions.selected, data.currentCluster, data.clusterly)">Apply</button>
+  </div>
+</div>
