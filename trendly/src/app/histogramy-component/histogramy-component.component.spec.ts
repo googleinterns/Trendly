@@ -1,6 +1,10 @@
+import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
+import {DataService} from '../data.service';
+
 import {HistogramyComponentComponent} from './histogramy-component.component';
+
 const DEF_OBJ = {
   term: '',
   startDate: new Date(2004, 1, 1),
@@ -13,6 +17,13 @@ describe('HistogramyComponentComponent', () => {
   let fixture: ComponentFixture<HistogramyComponentComponent>;
 
   beforeEach(async () => {
+    await TestBed
+        .configureTestingModule({
+          declarations: [HistogramyComponentComponent],
+          imports: [HttpClientTestingModule],
+          providers: [DataService]
+        })
+        .compileComponents();
     await TestBed
         .configureTestingModule({declarations: [HistogramyComponentComponent]})
         .compileComponents();

@@ -117,6 +117,7 @@ describe('HistogramSectionComponent', () => {
   });
 
   it('test output of the component given the mock data', () => {
+    component.trendsData = DATA1;
     component.convertDataToChartsFormat();
     expect(component.data).toEqual(EXPECT_OUTPUT);
   });

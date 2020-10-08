@@ -38,16 +38,12 @@ const STYLE_ROLE_NAME = 'style';
 const COLUMN_TOPIC = 'Topic';
 const COLUMN_CHART_TYPE = 'ColumnChart';
 const NUM_OF_COL_PER_TOPIC = 3;
-const FIRST_TOPIC_COL = 1;
-const SECOND_TOPIC_COL = 2;
-const THIRD_TOPIC_COL = 3;
 const TOOLTIP_ROLE: chartRole = {
   role: TOOLTIP_ROLE_NAME
 };
 const STYLE_ROLE = {
   role: STYLE_ROLE_NAME
 };
-
 
 /**
  * Responsibles for the charts view.
@@ -58,6 +54,7 @@ const STYLE_ROLE = {
   styleUrls: ['./histogram-section.component.css']
 })
 export class HistogramSectionComponent implements OnInit {
+  trendsData: DataType;
   @Input() title: string;  // get from parent
   @Input() type: string = COLUMN_CHART_TYPE;
   @Input() data: Array<Array<string|number>> = [];
@@ -72,14 +69,11 @@ export class HistogramSectionComponent implements OnInit {
     colors: this.coloresService._lightColorShow,
   };
 
-  /**
-   * The constructor - injects color service.
-   */
   constructor(private coloresService: ColorsService) {}
 
   ngOnInit(): void {
-    // this function should be call after data retrival from server, will change
-    // after creating backend
+    // TODO: this function should be call after data retrival from server, will
+    // change after creating backend
     this.convertDataToChartsFormat();
   }
 
@@ -130,14 +124,12 @@ export class HistogramSectionComponent implements OnInit {
       const row = Array((topics.size * NUM_OF_COL_PER_TOPIC) + 1).fill('');
       this.initializeRowArray(row);
       row[0] = date;
-
       [...MOCK_DATA[date]].forEach((element) => {
-        const index = topics.get(element.name) * NUM_OF_COL_PER_TOPIC;
+        let index = topics.get(element.name) * NUM_OF_COL_PER_TOPIC;
         const indexColor = topics.get(element.name);
-        row[index + FIRST_TOPIC_COL] = element.volume;
-        row[index + SECOND_TOPIC_COL] = element.description;
-        row[index + THIRD_TOPIC_COL] =
-            this.coloresService._lightColorShow[indexColor];
+        row[++index] = element.volume;
+        row[++index] = element.description;
+        row[++index] = this.coloresService._lightColorShow[indexColor];
       });
       this.data.push(row);
     });

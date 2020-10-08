@@ -1,8 +1,9 @@
 import {Component} from '@angular/core';
+import {DataService} from '../data.service';
 
 interface InputObj {
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
   term: string;
   country: string;
   interval: number;
@@ -19,16 +20,32 @@ interface InputObj {
 export class HistogramyComponentComponent {
   readonly TopTopicsTitle: string = 'Top Topics'
   readonly RisingTopicsTitle: string = 'Rising Topics'
+  dataTop;
+  dataRising;
+
+  constructor(private dataService: DataService) {}
 
   /**
    * Gets data from server according to the given parameters. (for now just
    * printing).
    */
   getDataFromServer(input: InputObj) {
-    console.log(input['term']);
-    console.log(input['interval']);
-    console.log(input['startDate']);
-    console.log(input['endDate']);
-    console.log(input['country']);
+    console.log(input);
+
+    this.dataService
+        .fetchTopTopics(
+            input['term'], input['startDate'], input['endDate'],
+            input['country'], input['interval'])
+        .subscribe((data) => {
+          this.dataTop = {...data};
+        });
+
+    this.dataService
+        .fetchRisingTopics(
+            input['term'], input['startDate'], input['endDate'],
+            input['country'], input['interval'])
+        .subscribe((data) => {
+          this.dataRising = {...data};
+        });
   }
 }
