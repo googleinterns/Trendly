@@ -1,4 +1,6 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {MatDialog} from '@angular/material/dialog';
+
 import * as d3 from 'd3';
 
 import {Bubble} from '../models/bubble-model';
@@ -12,11 +14,8 @@ const CLUSTER_DATA: ClusterData[] = [
   {title: '', id: 2, queries: [{title: '', value: 15}]}
 ];
 const CLUSTER_DATA2: ClusterData[] = [
-  {title: '', id: 1, queries: [{title: '', value: 1}]}, {
-    title: '',
-    id: 2,
-    queries: [{title: '', value: 1}, {title: '', value: 1}]
-  }
+  {title: '', id: 1, queries: [{title: '', value: 1}]},
+  {title: '', id: 2, queries: [{title: '', value: 1}, {title: '', value: 1}]}
 ];
 
 // Options for clusters property.
@@ -54,13 +53,21 @@ const CLUSTER_ID_TO_LOC_3_GROUPS: Map<number, Location> = new Map([
 describe('ClusterlyComponent', () => {
   let component: ClusterlyComponent;
   let fixture: ComponentFixture<ClusterlyComponent>;
+  let dialog: MatDialog;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({declarations: [ClusterlyComponent]})
+    await TestBed
+        .configureTestingModule({
+          declarations: [ClusterlyComponent],
+          providers: [
+            {provide: MatDialog, useValue: {}},
+          ]
+        })
         .compileComponents();
   });
 
   beforeEach(() => {
+    dialog = TestBed.inject(MatDialog);
     fixture = TestBed.createComponent(ClusterlyComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -320,25 +327,9 @@ describe('ClusterlyComponent', () => {
     (component as any).changeBubbleCluster(circle, bubble, clusterIdtoLoc);
     expect((component as any).clusters.get(2).bubbles.has(bubble)).toBeTrue();
   });
-
-  /**
-   * Checks updateCircleColor change the given circle color correctly based on
-   * new clusterId and colorScale.
-   */
-  it('should update color correctly (when move bubble between clusters)',
-     () => {
-       initialClusterData(component);
-       const svg = (component as any).addSvg(CLUSTERS_CONTAINER);
-       const circleGroup = (component as any).addGroup(svg);
-       const circle = circleGroup.append('circle');
-       (component as any).updateCircleColor(circle, 1, Scales.ColorScale);
-       expect(circle.style('fill'))
-           .toEqual(d3.rgb((component as any).scales.get(Scales.ColorScale)(1))
-                        .toString());
-     });
 });
 
-/* Helper function for changeBubbleCluster & addCircles tests. */
+/** Helper function for changeBubbleCluster & addCircles tests. */
 function initialClusterData(component) {
   const clustersData: ClusterData[] = CLUSTER_DATA2;
   (component as any).clusters = new Map<number, Cluster>();

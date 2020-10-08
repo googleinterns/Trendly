@@ -7,14 +7,14 @@ const CLUSTER = new Cluster(
 describe('Cluster', () => {
   /**
    * Checks the bubbles set property contains the same amount of
-   * queries as the given query data
+   * queries as the given query data.
    */
-  it('should create bubble with the correct size', () => {
+  it('should have the correct amount of queries', () => {
     const cluster = CLUSTER;
     expect(cluster.bubbles.size).toBe(3);
   });
 
-  /** Checks the bubbles were created with the correct cluster id */
+  /** Checks the bubbles were created with the correct cluster id. */
   it('should create bubble with the correct cluster id', () => {
     const cluster = CLUSTER;
     cluster.bubbles.forEach((bubble) => {
@@ -24,7 +24,7 @@ describe('Cluster', () => {
 
   /**
    * Checks moveBubbleToAnotherCluster correctly remove the given bubble from
-   * the current cluster its called on
+   * the current cluster its called on.
    */
   it('should remove bubble from current cluster', () => {
     const [currCluster, newCluster, bubble] = get2ClustersAndBubble();
@@ -34,7 +34,7 @@ describe('Cluster', () => {
 
   /**
    * Checks moveBubbleToAnotherCluster correctly adds the given bubble
-   * to the other cluster its given
+   * to the other cluster its given.
    */
   it('should add bubble to the given cluster', () => {
     const [currCluster, newCluster, bubble] = get2ClustersAndBubble();

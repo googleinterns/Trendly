@@ -21,6 +21,7 @@ export class Cluster {
    * to anotherCluster.bubbles.
    */
   moveBubble(bubble: Bubble, anotherCluster: Cluster): void {
+    bubble.clusterId = anotherCluster.id;
     this.bubbles.delete(bubble);
     anotherCluster.bubbles.add(bubble);
   }

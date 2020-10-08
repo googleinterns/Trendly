@@ -1,11 +1,14 @@
-//@ts-nocheck
 import {Component, OnInit} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
 import * as d3 from 'd3';
 
-import {ColorsService} from '../colors.service'
-import {Bubble} from '../models/bubble-model'
-import {Cluster} from '../models/cluster-model'
-import {ClusterData, QueryData} from '../models/server-datatypes'
+import {ColorsService} from '../colors.service';
+import {Bubble} from '../models/bubble-model';
+import {CircleDatum} from '../models/circle-datum';
+import {Cluster} from '../models/cluster-model';
+import {ClusterData, QueryData} from '../models/server-datatypes';
+import {QueriesDialogComponent} from '../queries-dialog/queries-dialog.component';
+
 import {CLUSTERS_DATA} from './mock-data'
 
 export const CLUSTERS_CONTAINER: string = '.clusters-container';
@@ -38,8 +41,17 @@ export class ClusterlyComponent implements OnInit {
   readonly clusters: Map<number, Cluster> = new Map<number, Cluster>();
   readonly queries: Array<Bubble> = new Array<Bubble>();
   readonly scales: Map<Scales, any> = new Map<Scales, any>();
+  private circles:
+      d3.Selection<SVGCircleElement, CircleDatum, SVGSVGElement, any>;
+  private lightCircles:
+      d3.Selection<SVGCircleElement, CircleDatum, SVGSVGElement, any>;
+  private simulation: d3.Simulation<d3.SimulationNodeDatum, undefined>;
+  private tooltip: d3.Selection<HTMLDivElement, any, any, any>;
+  private clusterIdToLoc: Map<number, Location>;
 
-  constructor(private colorsService: ColorsService) {}
+  constructor(
+      private colorsService: ColorsService, public queriesDialog: MatDialog) {}
+
 
   // TODO: Replace with ngOnChange when the server is connected.
   ngOnInit(): void {
@@ -58,30 +70,30 @@ export class ClusterlyComponent implements OnInit {
   /** Generates bubble clusters visualization based on the recieved data. */
   private addClustersVisualization(): void {
     // Map each cluster to its location on the screen.
-    const clusterIdToLoc: Map<number, Location> = this.gridDivision();
+    this.clusterIdToLoc = this.gridDivision();
 
     // Append the svg object to the cluster container.
-    const svgContainer = this.addSvg(CLUSTERS_CONTAINER);
+    const svgContainer: d3.Selection<SVGSVGElement, any, any, any> =
+        this.addSvg(CLUSTERS_CONTAINER);
 
     // Initialize the circle group.
-    const circleGroup = this.addGroup(svgContainer);
+    const circleGroup: d3.Selection<SVGGElement, any, any, any> =
+        this.addGroup(svgContainer);
 
     // Initialize outer and inner circle for each query circle.
-    const lightCircle = this.addCircles(
-        circleGroup, LIGHT_CIRCLE_CLASS, 25, clusterIdToLoc,
-        Scales.LightColorScale);
-    const circle =
-        this.addCircles(circleGroup, '', 0, clusterIdToLoc, Scales.ColorScale);
+    this.lightCircles = this.addCircles(
+        circleGroup, LIGHT_CIRCLE_CLASS, 25, Scales.LightColorScale);
+    this.circles = this.addCircles(circleGroup, '', 0, Scales.ColorScale);
 
     // Add tooltip with query string for each circle.
-    const tooltip = this.addTooltip(CLUSTERS_CONTAINER);
-    this.tooltipHandling(tooltip, circle);
+    this.tooltip = this.addTooltip(CLUSTERS_CONTAINER);
+    this.tooltipHandling();
 
     // Apply force clustering simulation + dragging functionallity.
-    const simulation = this.addForceSimulation(clusterIdToLoc);
-    this.applySimulation(simulation, circle, lightCircle);
-    this.applyDragging(
-        simulation, tooltip, circle, lightCircle, clusterIdToLoc);
+    this.simulation = this.addForceSimulation();
+    this.applySimulation();
+    this.applyDragging();
+    this.applyQueriesDialog();
   }
 
   private getRandomInt(max: number): number {
@@ -99,8 +111,7 @@ export class ClusterlyComponent implements OnInit {
       const queriesAmount: number = this.getRandomInt(6) + 2;
       for (let j = 1; j <= queriesAmount; j++) {
         currQueries.push({
-          title:
-              'this is query ' + j + ' from cluster ' + i + ' originally',
+          title: 'this is query ' + j + ' from cluster ' + i + ' originally',
           value: this.getRandomInt(100),
         })
       }
@@ -122,21 +133,22 @@ export class ClusterlyComponent implements OnInit {
   private addScales(): void {
     // A scale that gives a radius size for each query based on its volume.
     this.scales.set(Scales.RadiusScale, d3.scaleSqrt().domain([1, 100]).range([
-      (window.innerWidth + window.innerHeight) / 120, (window.innerWidth + window.innerHeight) / 50
+      (window.innerWidth + window.innerHeight) / 120,
+      (window.innerWidth + window.innerHeight) / 50
     ]));
 
     // A scale that gives a color for each bubble.
     this.scales.set(
         Scales.ColorScale,
         d3.scaleOrdinal()
-            .domain(Array.from(this.clusters.keys()))
+            .domain(Array.from(this.clusters.keys()).map(String))
             .range(this.colorsService.colors));
 
     // A scale that gives a light color for each outer bubble.
     this.scales.set(
         Scales.LightColorScale,
         d3.scaleOrdinal()
-            .domain(Array.from(this.clusters.keys()))
+            .domain(Array.from(this.clusters.keys()).map(String))
             .range(this.colorsService.lightColors));
 
     // A scale of the x position for each group.
@@ -180,7 +192,8 @@ export class ClusterlyComponent implements OnInit {
   /**
    * Adds a svg object to the container and returns the created svg.
    */
-  private addSvg(container: string) {
+  private addSvg(container: string):
+      d3.Selection<SVGSVGElement, any, any, any> {
     return d3.select(container)
         .append('svg')
         .attr('width', window.innerWidth)
@@ -190,15 +203,18 @@ export class ClusterlyComponent implements OnInit {
   /**
    * Adds a group (g object) to the svgContainer and returns the created group.
    */
-  private addGroup(svgContainer) {
+  private addGroup(svgContainer): d3.Selection<SVGGElement, any, any, any> {
     return svgContainer.append('g');
   }
 
   /**
    * Adds a tooltip div to the container and returns the created div.
    */
-  private addTooltip(container: string) {
-    return d3.select(container).append('div').attr('class', TOOLTIP_CLASS)
+  private addTooltip(container: string):
+      d3.Selection<HTMLDivElement, any, any, any> {
+    console.log(
+        d3.select(container).append('div').attr('class', TOOLTIP_CLASS));
+    return d3.select(container).append('div').attr('class', TOOLTIP_CLASS);
   }
 
   /**
@@ -206,8 +222,8 @@ export class ClusterlyComponent implements OnInit {
    * circles.
    */
   private addCircles(
-      circleGroup, id: string, radiusAddition: number,
-      clusterIdToLoc: Map<number, Location>, colorScale: Scales) {
+      circleGroup, id: string, radiusAddition: number, colorScale: Scales):
+      d3.Selection<SVGCircleElement, CircleDatum, SVGSVGElement, any> {
     return circleGroup.selectAll('g')
         .data(this.queries)
         .enter()
@@ -217,8 +233,8 @@ export class ClusterlyComponent implements OnInit {
             'r',
             (d) =>
                 this.scales.get(Scales.RadiusScale)(d.volume) + radiusAddition)
-        .attr('cx', (d) => clusterIdToLoc.get(d.clusterId).xPosition)
-        .attr('cy', (d) => clusterIdToLoc.get(d.clusterId).yPosition)
+        .attr('cx', (d) => this.clusterIdToLoc.get(d.clusterId).xPosition)
+        .attr('cy', (d) => this.clusterIdToLoc.get(d.clusterId).yPosition)
         .style('fill', (d) => this.scales.get(colorScale)(d.clusterId))
   }
 
@@ -244,40 +260,46 @@ export class ClusterlyComponent implements OnInit {
    * Adds to circle tooltip functionality (tooltip appears when the mouse is
    * over the circle and disapears when it moves).
    */
-  private tooltipHandling(tooltip, circle): void {
-    const mousemove = (event, d) => {
-      tooltip.html(d.query)
-          .style('left', (d3.pointer(event)[0] + 40) + 'px')
-          .style('top', (d3.pointer(event)[1]) + 75 + 'px');
+  private tooltipHandling(): void {
+    const mousemove = (d) => {
+      console.log(d3.event.pageY);
+      this.tooltip.html(d.query)
+          .style('left', (d3.event.pageX + 25) + 'px')
+          .style('top', (d3.event.pageY - 45) + 'px');
     };
-    circle
+    this.circles
         .on('mouseover',
             () => {
-              tooltip.style('display', 'inline');
+              this.tooltip.style('display', 'inline');
             })
         .on('mousemove', mousemove)
         .on('mouseleave', () => {
-          tooltip.style('display', 'none');
-        });
+          this.tooltip.style('display', 'none');
+        })
   }
 
   /**
    * Returns force simulation (x and y positions, centrering  and anti-collide).
    */
-  private addForceSimulation(clusterIdToLoc: Map<number, Location>) {
+  private addForceSimulation():
+      d3.Simulation<d3.SimulationNodeDatum, undefined> {
     return d3.forceSimulation()
         .force(
             'x',
             d3.forceX().strength(0.5).x(
-                (d) => clusterIdToLoc.get(d.clusterId).xPosition))
+                (d: CircleDatum) =>
+                    this.clusterIdToLoc.get(d.clusterId).xPosition))
         .force(
             'y',
             d3.forceY().strength(0.5).y(
-                (d) => clusterIdToLoc.get(d.clusterId).yPosition))
+                (d: CircleDatum) =>
+                    this.clusterIdToLoc.get(d.clusterId).yPosition))
         .force(
             'center',
-            d3.forceCenter().x(window.innerWidth / 2).y(
-                window.innerHeight / 2))  // Attraction to the center of the svg.
+            d3.forceCenter()
+                .x(window.innerWidth / 2)
+                .y(window.innerHeight /
+                   2))  // Attraction to the center of the svg.
         .force(
             'charge',
             d3.forceManyBody().strength(
@@ -287,96 +309,120 @@ export class ClusterlyComponent implements OnInit {
             d3.forceCollide()
                 .strength(1)
                 .radius(
-                    (d) => this.scales.get(Scales.RadiusScale)(d.volume) + 1)
+                    (d: CircleDatum) =>
+                        this.scales.get(Scales.RadiusScale)(d.volume) + 1)
                 .iterations(1))  // Avoids circle overlapping.
   }
 
   /** Applies given simulation on inner and outer circles. */
-  private applySimulation(simulation, circle, lightCircle): void {
-    simulation
-      .nodes(this.queries)
-      .on('tick', () => {
-        circle
-          .attr('cx', (d) => d.x)
+  private applySimulation(): void {
+    this.simulation.nodes(this.queries).on('tick', () => {
+      this.circles.attr('cx', (d) => d.x)
           .attr('cy', (d) => d.y)
-        lightCircle
-          .attr('cx', (d) => d.x)
+          .style(
+              'fill', (d) => this.scales.get(Scales.ColorScale)(d.clusterId));
+      this.lightCircles.attr('cx', (d) => d.x)
           .attr('cy', (d) => d.y)
-      });
+          .style(
+              'fill',
+              (d) => this.scales.get(Scales.LightColorScale)(d.clusterId))
+    });
   }
 
   /** Adds dragging functionality to inner and outer circles. */
-  private applyDragging(
-      simulation, tooltip, circle, lightCircle,
-      clusterIdToLoc: Map<number, Location>): void {
-    // A pointer to ClusterlyComponent instance
-    const clusterly = this;
+  private applyDragging(): void {
+    this.circles.call(d3.drag()
+                          .on('start', this.onDragCircleStarted.bind(this))
+                          .on('drag', this.onDraggedCircle.bind(this))
+                          .on('end', this.onDragCircleEnded.bind(this)));
+    this.lightCircles.call(d3.drag()
+                               .on('start', this.onDragCircleStarted.bind(this))
+                               .on('drag', this.onDraggedCircle.bind(this))
+                               .on('end', this.onDragCircleEnded.bind(this)));
+  }
 
-    circle.call(d3.drag()
-                    .on('start', dragstarted)
-                    .on('drag', dragged)
-                    .on('end', dragended));
-    lightCircle.call(d3.drag()
-                         .on('start', dragstarted)
-                         .on('drag', dragged)
-                         .on('end', dragended));
+  /** Handles circle's simulation properties in the beginning of drag event.*/
+  private onDragCircleStarted(d: CircleDatum): void {
+    console.log(d);
+    if (!d3.event.active) {
+      this.simulation.alphaTarget(.03).restart();
+    }
+    this.tooltip.style('display', 'none');
+    d.fx = d.x;
+    d.fy = d.y;
+  }
 
-    function dragstarted(event, d): void {
-      if (!event.active) {
-        simulation.alphaTarget(.03).restart();
-      }
-      tooltip.style('display', 'none');
-      d.fx = d.x;
-      d.fy = d.y;
+  /** Handles circle's simulation properties during drag event.*/
+  private onDraggedCircle(d: CircleDatum): void {
+    this.tooltip.style('display', 'none');
+    d.fx = d3.event.x;
+    d.fy = d3.event.y;
+  }
+
+  /** Handles circle's simulation properties at the end of drag event.*/
+  private onDragCircleEnded(d: CircleDatum): void {
+    if (!d3.event.active) {
+      this.simulation.alphaTarget(.03);
     }
-    function dragged(event, d): void {
-      tooltip.style('display', 'none');
-      d.fx = event.x;
-      d.fy = event.y;
-    }
-    function dragended(event, d): void {
-      if (!event.active) {
-        simulation.alphaTarget(.03);
-      }
-      tooltip.style('display', 'none');
-      clusterly.changeBubbleCluster(this, d, clusterIdToLoc);
-      clusterly.applySimulation(simulation, circle, lightCircle);
-      d.fx = null;
-      d.fy = null;
-    }
+    this.tooltip.style('display', 'none');
+    this.changeBubbleCluster(d, this.clusterIdToLoc);
+    this.applySimulation();
+    d.fx = null;
+    d.fy = null;
   }
 
   /** Changes bubble cluster based on current position. */
-  private changeBubbleCluster(circle, bubbleObj, clusterIdToLoc): void {
+  private changeBubbleCluster(
+      bubbleObj: CircleDatum, clusterIdToLoc: Map<number, Location>): void {
     const currentCluster: Cluster = this.clusters.get(bubbleObj.clusterId);
     // Get new ClusterId based on current position.
     bubbleObj.clusterId =
         this.closestGroupId(bubbleObj.x, bubbleObj.y, clusterIdToLoc);
     const newCluster: Cluster = this.clusters.get(bubbleObj.clusterId);
     currentCluster.moveBubble(bubbleObj, newCluster);
-
-    // Check if the catched circle is the inner or outer one.
-    const circleClass = d3.select(circle).attr('class');
-    const isCurrCircleLight: boolean = circleClass.endsWith(LIGHT_CIRCLE_CLASS);
-    const lightCircle = isCurrCircleLight ?
-        d3.select(circle) :
-        d3.select('.' + circleClass + LIGHT_CIRCLE_CLASS);
-    const innerCircle = isCurrCircleLight ?
-        d3.select('.' + circleClass.replace(LIGHT_CIRCLE_CLASS, '')) :
-        d3.select(circle);
-
-    // Change inner and outer circles colors.
-    this.updateCircleColor(innerCircle, bubbleObj.clusterId, Scales.ColorScale);
-    this.updateCircleColor(
-        lightCircle, bubbleObj.clusterId, Scales.LightColorScale);
   }
 
   /**
-   * Updates given circle fill color based on the appropriate color that match
-   * circleId at colorScale.
+   * Called from the dialog, updates the clusters based on the event chosen
+   * new cluster and queries to move.
    */
-  private updateCircleColor(circle, clusterId: number, colorScale: Scales):
-      void {
-    circle.style('fill', this.scales.get(colorScale)(clusterId));
+  updateClustersBasedOnDialog(
+      newCluster: Cluster, selections: any[], currCluster: Cluster,
+      clusterly: ClusterlyComponent): void {
+    selections.forEach((option) => {
+      const bubble: Bubble = option._value;
+      currCluster.moveBubble(bubble, newCluster);
+    });
+    clusterly.applySimulation();
+    clusterly.queriesDialog.closeAll();
+  }
+
+  /**
+   * Binds bubbles click event to opening queries dialog.
+   */
+  private applyQueriesDialog(): void {
+    this.circles.on('click', this.openQueriesDialog.bind(this));
+    this.lightCircles.on('click', this.openQueriesDialog.bind(this));
+  }
+
+  /**
+   * Adds a dialog with the queries belongs to a specific cluster
+   * when the user click on a bubble.
+   */
+  private openQueriesDialog(d: CircleDatum) {
+    const cluster: Cluster = this.clusters.get(d.clusterId);
+    const sortedQueries: Bubble[] =
+        Array.from(cluster.bubbles)
+            .sort((bubble1, bubble2) => bubble2.volume - bubble1.volume);
+
+    this.queriesDialog.open(QueriesDialogComponent, {
+      data: {
+        clusterly: this,
+        currentCluster: cluster,
+        queries: sortedQueries,
+        clusters: Array.from(this.clusters.values()),
+        updateFunc: this.updateClustersBasedOnDialog,
+      }
+    });
   }
 }

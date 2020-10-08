@@ -5,6 +5,7 @@
  */
 
 export class Bubble {
+  index?: number;
   constructor(
       readonly query: string, readonly volume: number,
       public clusterId: number) {}
