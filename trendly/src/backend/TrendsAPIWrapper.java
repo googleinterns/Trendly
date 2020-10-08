@@ -40,35 +40,18 @@ public class TrendsAPIWrapper {
   public static TrendsResult fetchDataFromTrends(
       String funcName, String term, String location, String startDate, String endDate)
       throws IOException {
-    FUNC_TO_CLASS.put(TrendsFunctions.TOP_TOPICS, TrendsTopicsResult.class);
-    FUNC_TO_CLASS.put(TrendsFunctions.RISING_TOPICS, TrendsRisingTopicsResult.class);
-    FUNC_TO_CLASS.put(TrendsFunctions.TOP_QUERIES, TrendsQueriesResult.class);
-    FUNC_TO_CLASS.put(TrendsFunctions.RISING_QUERIES, TrendsRisingQueriesResult.class);
     HttpTransport httpTransport = new NetHttpTransport();
-    GenericUrl url = buildUrl(funcName, term, location, startDate, endDate);
+    GenericUrl url = new GenericUrl(TrendsAPIWrapper.BASE_URL + funcName);
+    url.put(UrlParams.TERM, term);
+    url.put(UrlParams.GEO, location);
+    url.put(UrlParams.START_DATE, startDate);
+    url.put(UrlParams.END_DATE, endDate);
+    url.put(UrlParams.KEY, TrendsAPIWrapper.API_KEY);
+    url.put(UrlParams.ALT, UrlParams.JSON);
     HttpRequestFactory requestFactory = httpTransport.createRequestFactory();
     HttpRequest request = requestFactory.buildGetRequest(url);
     HttpResponse httpResponse = request.execute();
     Gson gson = new Gson();
     return gson.fromJson(httpResponse.parseAsString(), FUNC_TO_CLASS.get(funcName));
-  }
-
-  /** Builds the url for the request from Google Trands API based on the given parameters */
-  private static GenericUrl buildUrl(
-      String funcName, String term, String location, String startDate, String endDate) {
-    GenericUrl url = new GenericUrl(TrendsAPIWrapper.BASE_URL + funcName);
-    url.put(UrlParams.TERM, term);
-    if (!location.equals("")) {
-      url.put(UrlParams.GEO, location);
-    }
-    if (!startDate.equals("")) {
-      url.put(UrlParams.START_DATE, startDate);
-    }
-    if (!endDate.equals("")) {
-      url.put(UrlParams.END_DATE, endDate);
-    }
-    url.put(UrlParams.KEY, TrendsAPIWrapper.API_KEY);
-    url.put(UrlParams.ALT, UrlParams.JSON);
-    return url;
   }
 }
