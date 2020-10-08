@@ -329,7 +329,7 @@ describe('ClusterlyComponent', () => {
   });
 });
 
-/* Helper function for changeBubbleCluster & addCircles tests. */
+/** Helper function for changeBubbleCluster & addCircles tests. */
 function initialClusterData(component) {
   const clustersData: ClusterData[] = CLUSTER_DATA2;
   (component as any).clusters = new Map<number, Cluster>();

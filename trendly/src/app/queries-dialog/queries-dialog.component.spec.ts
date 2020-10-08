@@ -8,9 +8,9 @@ import {Cluster} from '../models/cluster-model';
 import {DialogData, QueriesDialogComponent} from './queries-dialog.component';
 
 const CLUSTER1: Cluster =
-    new Cluster('Cluster1 title', 1, [{title: '', volume: 1}]);
+    new Cluster('Cluster1 title', 1, [{title: '', value: 1}]);
 const CLUSTER2: Cluster =
-    new Cluster('Cluster2 title', 1, [{title: '', volume: 1}]);
+    new Cluster('Cluster2 title', 1, [{title: '', value: 1}]);
 const QUERIES: Bubble[] =
     [new Bubble('query 1', 10, 1), new Bubble('query 2', 15, 2)];
 const DATA: DialogData = {
@@ -60,16 +60,14 @@ describe('QueriesDialogComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  /** Checks dialog title was created with the given cluster title */
-  it('check dialog title', () => {
+  it('should create dialog\'s title correctly (with the cluster title)', () => {
     dialog.open(QueriesDialogComponent, CONFIG);
     fixture.detectChanges();
     const h1 = overlayContainerElement.querySelector('.mat-dialog-title');
     expect(h1.textContent).toBe(DIALOG_TITLE);
   });
 
-  /** Checks dialog select list options match given queries */
-  it('check dialog select list options', () => {
+  it('should create dialog\'s list options that match the queries', () => {
     dialog.open(QueriesDialogComponent, CONFIG);
     fixture.detectChanges();
     const matList = overlayContainerElement.querySelectorAll('mat-list-option');
@@ -77,8 +75,7 @@ describe('QueriesDialogComponent', () => {
     expect(matList.item(1).textContent).toBe(SECOND_QUERY_OPTION);
   });
 
-  /** Checks dialog select cluster titles options match given clusters */
-  it('check dialog select cluster titles options', () => {
+  it('should create select options thay match the clusters\' titles', () => {
     dialog.open(QueriesDialogComponent, CONFIG);
     fixture.detectChanges();
     const matForm = overlayContainerElement.querySelector('mat-select');

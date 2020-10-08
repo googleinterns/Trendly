@@ -9,7 +9,7 @@ describe('Cluster', () => {
    * Checks the bubbles set property contains the same amount of
    * queries as the given query data.
    */
-  it('should create bubble with the correct size', () => {
+  it('should have the correct amount of queries', () => {
     const cluster = CLUSTER;
     expect(cluster.bubbles.size).toBe(3);
   });

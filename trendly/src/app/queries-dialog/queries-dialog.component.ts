@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {Inject} from '@angular/core';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {MatSelectChange} from '@angular/material/select';
@@ -13,7 +13,7 @@ export interface DialogData {
   queries: Bubble[];
   clusters: Cluster[];
   updateFunc?:
-      (event: MatSelectChange, selections: any[], currCluster: Cluster,
+      (newCluster: Cluster, selections: any[], currCluster: Cluster,
        clusterly: ClusterlyComponent) => void;
 }
 
@@ -28,13 +28,11 @@ export interface DialogData {
   templateUrl: './queries-dialog.component.html',
   styleUrls: ['./queries-dialog.component.css']
 })
-export class QueriesDialogComponent implements OnInit {
-  selectedValue;
+export class QueriesDialogComponent {
+  selectedCluster: Cluster;
   constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {}
 
-  ngOnInit(): void {}
-
   selected(event: MatSelectChange) {
-    this.selectedValue = event.value;
+    this.selectedCluster = event.value;
   }
 }
