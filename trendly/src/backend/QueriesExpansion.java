@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A class that handles expansion of given terms to clustered related queries (currently, the
- * "clusters" are the topic with their related queries)
+ * "clusters" are the topic with their related queries).
  */
 public class QueriesExpansion {
   public static final int MAX_CLUSTERS = 8;
