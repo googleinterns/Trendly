@@ -1,0 +1,9 @@
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&display=swap" rel="stylesheet">
+<form class="form">
+  <app-term-input class='input-element' (termSelected)='updateTerm($event)'></app-term-input>
+  <app-country-input class='input-element' (countrySelected)='updateCountry($event)'></app-country-input>
+  <app-date-input class='input-element' (startSelected)="updateStartDate($event)" (endSelected)="updateEndDate($event)"></app-date-input>
+  <app-interval-input class='input-element' (intervalSelected)='updateInterval($event)'></app-interval-input>
+  <button class='input-element apply-button' (click)='sendParameters()'>Apply</button>
+</form>

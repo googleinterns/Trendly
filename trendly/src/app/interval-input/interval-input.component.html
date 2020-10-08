@@ -1,0 +1,4 @@
+<mat-form-field class="form-field">
+  <mat-label>Enter intervals: </mat-label>
+  <input matInput (change)='emitInterval()' placeholder="E.g: 1 (in monthes)" type="number" [(ngModel)]="intervalValue" min=1>
+</mat-form-field>
