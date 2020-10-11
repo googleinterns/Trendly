@@ -106,6 +106,8 @@ export class ClustersSectionComponent {
         circleGroup, LIGHT_CIRCLE_CLASS, 25, Scales.LightColorScale);
     this.circles = this.addCircles(circleGroup, '', 0, Scales.ColorScale);
 
+    this.addClusterTitles(circleGroup);
+
     // Add tooltip with query string for each circle.
     this.tooltip = this.addTooltip(CLUSTERS_CONTAINER);
     this.tooltipHandling();
@@ -115,10 +117,6 @@ export class ClustersSectionComponent {
     this.applySimulation();
     this.applyDragging();
     this.applyQueriesDialog();
-  }
-
-  private getRandomInt(max: number): number {
-    return Math.floor(Math.random() * Math.floor(max));
   }
 
   /** Adds scales to this.scales to be used in this component functions. */
@@ -247,6 +245,21 @@ export class ClustersSectionComponent {
                                              [closestId, closestDist],
                 [-1, Infinity]);
     return closestId;
+  }
+
+  /** Adds the clusters' titles as text above each group of bubbles */
+  private addClusterTitles(circleGroup) {
+    this.clusterIdToLoc.forEach((location, clusterID) => {
+      if (clusterID != -1) {
+        circleGroup.append('text')
+            .attr('class', 'clusters-titles')
+            .text(this.clusters.get(clusterID).title)
+            .attr('x', location.xPosition - window.innerWidth / 80)
+            .attr(
+                'y',
+                location.yPosition - Math.min(window.innerHeight / 4, 200));
+      }
+    });
   }
 
   /**
