@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A class that handles expansion of given terms to clustered related queries (currently, the
- * "clusters" are the topic with their related queries).
+ * "clusters" are the topic with their related queries)
  */
 public class QueriesExpansion {
   public static final int MAX_CLUSTERS = 8;
@@ -37,27 +37,29 @@ public class QueriesExpansion {
    * @throws IOException
    */
   public static List<Cluster> getAllClusters(
-      String[] terms, String location, String startDate, String endDate)
+      String[] terms, String location, String startDate, String endDate, String category)
       throws IOException, InterruptedException, ExecutionException {
     return terms.length == 0
         ? new ArrayList<Cluster>()
         : topicQueryProcess(
-            QueriesExpansion.getTopTopics(terms, location, startDate, endDate),
+            QueriesExpansion.getTopTopics(terms, location, startDate, endDate, category),
             location,
             startDate,
-            endDate);
+            endDate,
+            category);
   }
 
   /** Expands the given terms to related top topics and returns a set of topics titles. */
   private static Set<String> getTopTopics(
-      String[] terms, String location, String startDate, String endDate)
+      String[] terms, String location, String startDate, String endDate, String category)
       throws IOException, InterruptedException, ExecutionException {
     int max_related_topics = MAX_CLUSTERS / terms.length;
     ExecutorService executor = Executors.newFixedThreadPool(terms.length);
     List<Future<TrendsResult>> topicsResults = new ArrayList<>();
     for (String term : terms) {
       Callable<TrendsResult> callable =
-          new TrendsCallable(TrendsFunctions.TOP_TOPICS, term, location, startDate, endDate);
+          new TrendsCallable(
+              TrendsFunctions.TOP_TOPICS, term, location, startDate, endDate, category);
       topicsResults.add(executor.submit(callable));
     }
     executor.shutdown();
@@ -93,7 +95,7 @@ public class QueriesExpansion {
    * containing queries related to the topics.
    */
   private static List<Cluster> topicQueryProcess(
-      Set<String> topics, String location, String startDate, String endDate)
+      Set<String> topics, String location, String startDate, String endDate, String category)
       throws IOException, InterruptedException, ExecutionException {
     int max_related_queries = MAX_QUERIES / topics.size();
     ExecutorService executor = Executors.newFixedThreadPool(topics.size());
@@ -104,7 +106,7 @@ public class QueriesExpansion {
             (topic) -> {
               Callable<TrendsResult> callable =
                   new TrendsCallable(
-                      TrendsFunctions.TOP_QUERIES, topic, location, startDate, endDate);
+                      TrendsFunctions.TOP_QUERIES, topic, location, startDate, endDate, category);
               queriesResults.put(topic, executor.submit(callable));
             });
     executor.shutdown();

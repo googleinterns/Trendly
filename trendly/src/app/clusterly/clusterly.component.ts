@@ -24,7 +24,7 @@ export class ClusterlyComponent {
     this.dataService
         .fetchClustrlyData(
             input['terms'], input['startDate'], input['endDate'],
-            input['country'])
+            input['country'], 1, input['category'])
         .subscribe(
             (data) => {
               this.dataFromServer = {...data};

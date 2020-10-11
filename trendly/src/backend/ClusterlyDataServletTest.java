@@ -18,10 +18,12 @@ public final class ClusterlyDataServletTest extends HttpServlet {
   private static final String COUNTRY_PARAMETER = "country";
   private static final String START_DATE_PARAMETER = "startDate";
   private static final String END_DATE_PARAMETER = "endDate";
+  public static final String CATEGORY_PARAMETER = "category";
   private static final String[] TERMS = {""};
   private static final String COUNTRY = "US";
   private static final String START_DATE = "2019-10";
   private static final String END_DATE = "2020-10";
+  private static final String CATEGORY = "0";
 
   /** Tests ClusterlyDataServlet returns list of clusters */
   @Test
@@ -33,6 +35,7 @@ public final class ClusterlyDataServletTest extends HttpServlet {
     when(request.getParameter(COUNTRY_PARAMETER)).thenReturn(COUNTRY);
     when(request.getParameter(START_DATE_PARAMETER)).thenReturn(START_DATE);
     when(request.getParameter(END_DATE_PARAMETER)).thenReturn(END_DATE);
+    when(request.getParameter(CATEGORY_PARAMETER)).thenReturn(CATEGORY);
 
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);

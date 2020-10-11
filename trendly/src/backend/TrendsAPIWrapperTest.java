@@ -11,13 +11,14 @@ public final class TrendsAPIWrapperTest {
   private static final String LOCATION = "US";
   private static final String START_DATE = "2018-10";
   private static final String END_DATE = "2019-10";
+  private static final String CATEGORY = "0";
 
   /** Checks fetchDataFromTrends with topTopic API function returns TrendsTopicsResult object */
   @Test
   public void topTopicsReturnType() throws IOException {
     final TrendsResult res =
         TrendsAPIWrapper.fetchDataFromTrends(
-            TrendsFunctions.TOP_TOPICS, TERM, LOCATION, START_DATE, END_DATE);
+            TrendsFunctions.TOP_TOPICS, TERM, LOCATION, START_DATE, END_DATE, CATEGORY);
     Assert.assertTrue(res instanceof TrendsTopicsResult);
   }
 
@@ -29,7 +30,7 @@ public final class TrendsAPIWrapperTest {
   public void risingTopicsReturnType() throws IOException {
     final TrendsResult res =
         TrendsAPIWrapper.fetchDataFromTrends(
-            TrendsFunctions.RISING_TOPICS, TERM, LOCATION, START_DATE, END_DATE);
+            TrendsFunctions.RISING_TOPICS, TERM, LOCATION, START_DATE, END_DATE, CATEGORY);
     Assert.assertTrue(res instanceof TrendsRisingTopicsResult);
   }
 
@@ -38,7 +39,7 @@ public final class TrendsAPIWrapperTest {
   public void topQueriesReturnType() throws IOException {
     final TrendsResult res =
         TrendsAPIWrapper.fetchDataFromTrends(
-            TrendsFunctions.TOP_QUERIES, TERM, LOCATION, START_DATE, END_DATE);
+            TrendsFunctions.TOP_QUERIES, TERM, LOCATION, START_DATE, END_DATE, CATEGORY);
     Assert.assertTrue(res instanceof TrendsQueriesResult);
   }
 
@@ -50,7 +51,7 @@ public final class TrendsAPIWrapperTest {
   public void risingQueriesReturnType() throws IOException {
     final TrendsResult res =
         TrendsAPIWrapper.fetchDataFromTrends(
-            TrendsFunctions.RISING_QUERIES, TERM, LOCATION, START_DATE, END_DATE);
+            TrendsFunctions.RISING_QUERIES, TERM, LOCATION, START_DATE, END_DATE, CATEGORY);
     Assert.assertTrue(res instanceof TrendsRisingQueriesResult);
   }
 }
