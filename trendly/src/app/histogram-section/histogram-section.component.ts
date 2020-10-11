@@ -1,4 +1,5 @@
-import {Component, EventEmitter, Input, OnInit, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, HostListener, Input, Output, SimpleChanges} from '@angular/core';
+
 import {ColorsService} from '../colors.service';
 
 interface chartRole {
@@ -60,7 +61,7 @@ export class HistogramSectionComponent {
   @Input() data: Array<Array<string|number>> = [];
   @Input() columnNames: ColumnArray = [];
   @Input()
-  readonly options: object = {
+  options: object = {
     width: 3 * (window.innerWidth / 5),
     height: window.innerWidth / 4,
     legend: {position: 'top', maxLines: 3},
@@ -165,5 +166,22 @@ export class HistogramSectionComponent {
       this.convertDataToChartsFormat();
       this.progress.emit(false);
     }
+
+    if (changes['options']) {
+      this.options = {...changes['options'].currentValue};
+    }
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    this.options = {
+      width: 3 * (window.innerWidth / 5),
+      height: window.innerWidth / 4,
+      legend: {position: 'top', maxLines: 3},
+      bar: {groupWidth: '75%'},
+      isStacked: true,
+      colors: this.coloresService.lightColors,
+      explorer: {actions: ['dragToZoom', 'rightClickToReset']},
+    };
   }
 }
