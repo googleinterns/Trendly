@@ -1,9 +1,11 @@
+//@ts-nocheck
 import {Component, Input, SimpleChanges} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import * as d3 from 'd3';
 
 import {AddClusterDialogComponent} from '../add-cluster-dialog/add-cluster-dialog.component';
 import {ColorsService} from '../colors.service';
+import {DeleteConfirmationDialogComponent} from '../delete-confirmation-dialog/delete-confirmation-dialog.component';
 import {Bubble} from '../models/bubble-model';
 import {CircleDatum} from '../models/circle-datum';
 import {Cluster} from '../models/cluster-model';
@@ -15,6 +17,9 @@ import {CLUSTERS_DATA} from './mock-data'
 export const CLUSTERS_CONTAINER: string = '.clusters-container';
 export const TOOLTIP_CLASS: string = 'bubble-tooltip';
 const LIGHT_CIRCLE_CLASS = 'light';
+const DELETE_ID = -1;
+const DELETE_X_POS = 190;
+const DELETE_Y_POS = 700;
 
 export interface Location {
   xPosition: number;
@@ -57,7 +62,7 @@ export class ClustersSectionComponent {
 
   constructor(
       private colorsService: ColorsService, public queriesDialog: MatDialog,
-      public addClusterDialog: MatDialog) {}
+      public addClusterDialog: MatDialog, public deleteDialog: MatDialog) {}
 
   /**
    * On each change of the data received from the server, updates the
@@ -77,6 +82,10 @@ export class ClustersSectionComponent {
       }
       this.processClustersObjects(clustersData);
       console.log(this.clusters);
+      this.svgContainer.append('circle')
+          .attr('cx', DELETE_X_POS)
+          .attr('cy', DELETE_Y_POS)
+          .attr('r', 10)
       // If exist clusters to show, adds cluster visualization
       if (this.clusters.size > 0) {
         this.addClustersVisualization();
@@ -175,13 +184,16 @@ export class ClustersSectionComponent {
   private gridDivision(): Map<number, Location> {
     const height: number = window.innerHeight;
     const upperYPosition: number = Math.min(300, height / 3);
-    const lowerYPosition: number = 3 * height / 4;
+    const lowerYPosition: number = 2 * height / 3;
     const clusterIdToLoc: Map<number, Location> = new Map<number, Location>();
     this.clusters.forEach((cluster) => {
       const x: number = this.scales.get(Scales.XPositionSacle)(cluster.id);
       const y: number = cluster.id % 2 === 0 ? upperYPosition : lowerYPosition;
       clusterIdToLoc.set(cluster.id, {xPosition: x, yPosition: y});
     });
+    // Location for the delete
+    clusterIdToLoc.set(
+        DELETE_ID, {xPosition: DELETE_X_POS, yPosition: DELETE_Y_POS});
     return clusterIdToLoc;
   }
 
@@ -317,16 +329,21 @@ export class ClustersSectionComponent {
 
   /** Applies given simulation on inner and outer circles. */
   private applySimulation(): void {
-    this.simulation.nodes(this.queries).on('tick', () => {
+    this.simulation.nodes(Array.from(this.queries)).on('tick', () => {
       this.circles.attr('cx', (d) => d.x)
           .attr('cy', (d) => d.y)
           .style(
-              'fill', (d) => this.scales.get(Scales.ColorScale)(d.clusterId));
+              'fill',
+              (d) => d.clusterId == DELETE_ID ?
+                  '#696969' :
+                  this.scales.get(Scales.ColorScale)(d.clusterId));
       this.lightCircles.attr('cx', (d) => d.x)
           .attr('cy', (d) => d.y)
           .style(
               'fill',
-              (d) => this.scales.get(Scales.LightColorScale)(d.clusterId))
+              (d) => d.clusterId == DELETE_ID ?
+                  '#a9a9a9' :
+                  this.scales.get(Scales.LightColorScale)(d.clusterId));
     });
   }
 
@@ -374,10 +391,18 @@ export class ClustersSectionComponent {
   /** Changes bubble cluster based on current position. */
   private changeBubbleCluster(bubbleObj: CircleDatum): void {
     const currentCluster: Cluster = this.clusters.get(bubbleObj.clusterId);
-    // Get new ClusterId based on current position.
-    bubbleObj.clusterId = this.closestGroupId(bubbleObj.x, bubbleObj.y);
-    const newCluster: Cluster = this.clusters.get(bubbleObj.clusterId);
-    currentCluster.moveBubble(bubbleObj, newCluster);
+    // Get new ClusterId based on current position
+    const circle = null;
+    const newID =
+        this.closestGroupId(bubbleObj.x, bubbleObj.y, this.clusterIdToLoc);
+    if (newID == DELETE_ID) {
+      console.log(bubbleObj);
+      bubbleObj.clusterId = newID;
+      this.openDeleteDialog(circle, bubbleObj, currentCluster);
+    } else {
+      const newCluster: Cluster = this.clusters.get(newID);
+      currentCluster.moveBubble(bubbleObj, newCluster);
+    }
   }
 
   /**
@@ -449,5 +474,46 @@ export class ClustersSectionComponent {
         clusterly: this
       }
     });
+  }
+
+  /**
+   * Deletes the circle d3 Object and corresponding bubble from the clusters
+   * visualization.
+   */
+  deleteCircle(bubbleObj: CircleDatum, cluster: Cluster) {
+    cluster.bubbles.delete(bubbleObj);
+    this.queries = this.queries.filter((value) => value !== bubbleObj);
+    this.circles.filter((d: CircleDatum) => d.clusterId === DELETE_ID)
+        .transition()
+        .duration(1000)
+        .attr('r', 0)
+        .remove();
+    this.lightCircles.filter((d: CircleDatum) => d.clusterId === DELETE_ID)
+        .transition()
+        .duration(1000)
+        .attr('r', 0)
+        .remove();
+    this.deleteDialog.closeAll();
+  }
+
+  /**
+   * Called when a user drag a bubble to the delete button, opens delete
+   * confirmation dialog.
+   */
+  private openDeleteDialog(
+      circle: SVGCircleElement, bubbleObj: CircleDatum, cluster: Cluster) {
+    this.deleteDialog.open(
+        DeleteConfirmationDialogComponent,
+        {data: {cluster: cluster, bubble: bubbleObj, clusterly: this}});
+  }
+
+  /**
+   * Called when a user click "No" on the delete confirmation dialog. Returns
+   * the bubble to its original clusters and close the dialog.
+   */
+  closeDeleteDialog(bubleObj: CircleDatum, id: number) {
+    this.deleteDialog.closeAll();
+    bubleObj.clusterId = id;
+    this.applySimulation();
   }
 }

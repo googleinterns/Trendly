@@ -19,12 +19,12 @@
 }
 
 ::ng-deep .delete-button {
-  top: -45vh;
+  top: -60vh;
   left: 140px;
 }
 
 ::ng-deep .add-button {
-  top: -55vh;
+  top: -70vh;
   left: 40px;
 }
 
