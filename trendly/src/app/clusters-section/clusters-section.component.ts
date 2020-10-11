@@ -9,17 +9,15 @@ import {DeleteConfirmationDialogComponent} from '../delete-confirmation-dialog/d
 import {Bubble} from '../models/bubble-model';
 import {CircleDatum} from '../models/circle-datum';
 import {Cluster} from '../models/cluster-model';
-import {ClusterDataObj, QueryData} from '../models/server-datatypes';
+import {ClusterDataObj} from '../models/server-datatypes';
 import {QueriesDialogComponent} from '../queries-dialog/queries-dialog.component';
-
-import {CLUSTERS_DATA} from './mock-data'
 
 export const CLUSTERS_CONTAINER: string = '.clusters-container';
 export const TOOLTIP_CLASS: string = 'bubble-tooltip';
 const LIGHT_CIRCLE_CLASS = 'light';
 const DELETE_ID = -1;
 const DELETE_X_POS = 190;
-const DELETE_Y_POS = 700;
+const DELETE_Y_POS = window.innerHeight / 2 - window.innerHeight / 20;
 
 export interface Location {
   xPosition: number;
@@ -72,20 +70,14 @@ export class ClustersSectionComponent {
     if (changes['trendsData']) {
       const isUndefined = (obj) => typeof obj === 'undefined';
       this.trendsData = changes['trendsData'].currentValue;
-      console.log(CLUSTERS_DATA);
       const clustersData: ClusterDataObj =
-          isUndefined(this.trendsData) ? CLUSTERS_DATA : this.trendsData;
+          isUndefined(this.trendsData) ? [] : this.trendsData;
       if (isUndefined(this.svgContainer)) {
         this.svgContainer = this.addSvg(CLUSTERS_CONTAINER);
       } else {
         this.initializeProperties();
       }
       this.processClustersObjects(clustersData);
-      console.log(this.clusters);
-      this.svgContainer.append('circle')
-          .attr('cx', DELETE_X_POS)
-          .attr('cy', DELETE_Y_POS)
-          .attr('r', 10)
       // If exist clusters to show, adds cluster visualization
       if (this.clusters.size > 0) {
         this.addClustersVisualization();
@@ -95,10 +87,12 @@ export class ClustersSectionComponent {
 
   /** Initializes svg content and queries + clusters data structure. */
   private initializeProperties() {
-    this.tooltip.remove();
     this.svgContainer.selectAll('*').remove();
     this.clusters = new Map<number, Cluster>();
     this.queries = new Array<Bubble>();
+    if (!(typeof this.tooltip === 'undefined')) {
+      this.tooltip.remove();
+    }
   }
 
   /** Generates bubble clusters visualization based on the recieved data. */
@@ -396,7 +390,6 @@ export class ClustersSectionComponent {
     const newID =
         this.closestGroupId(bubbleObj.x, bubbleObj.y, this.clusterIdToLoc);
     if (newID == DELETE_ID) {
-      console.log(bubbleObj);
       bubbleObj.clusterId = newID;
       this.openDeleteDialog(circle, bubbleObj, currentCluster);
     } else {
