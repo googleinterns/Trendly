@@ -1,6 +1,12 @@
-<app-inputs (apply)="getDataFromServer($event)">
-</app-inputs>
+<mat-progress-bar *ngIf="showMatProgress"
+                  mode="indeterminate"></mat-progress-bar>
+<app-histogramy-inputs (apply)="getDataFromServer($event)">
+</app-histogramy-inputs>
 <div id="charts-container">
-  <app-histogram-section [title]="TopTopicsTitle"></app-histogram-section>
-  <app-histogram-section [title]="RisingTopicsTitle"></app-histogram-section>
+  <app-histogram-section [title]="TopTopicsTitle"
+                         [trendsData]="dataTop"
+                         (progress)='changeProgress($event)'></app-histogram-section>
+  <app-histogram-section [title]="RisingTopicsTitle"
+                         [trendsData]="dataRising"
+                         (progress)='changeProgress($event)'></app-histogram-section>
 </div>

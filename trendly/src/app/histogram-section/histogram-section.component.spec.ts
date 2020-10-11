@@ -2,55 +2,55 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {HistogramSectionComponent} from './histogram-section.component';
 
 interface Topic {
-  name: string, volume: number, description: string,
+  title: string, value: number, description: string,
 }
 interface DataType {
   [index: string]: Array<Topic>;
 }
 const DATA1: DataType = {
   '8/2010': [
-    {name: 'apple', volume: 50, description: 'big tech company'},
-    {name: 'corona', volume: 50, description: 'a dangerous virus'}
+    {title: 'apple', value: 50, description: 'big tech company'},
+    {title: 'corona', value: 50, description: 'a dangerous virus'}
   ],
   '9/2010': [
-    {name: 'apple', volume: 30, description: 'big tech company'},
-    {name: 'elections', volume: 10, description: 'elections'},
-    {name: 'corona', volume: 80, description: 'a dangerous virus'}
+    {title: 'apple', value: 30, description: 'big tech company'},
+    {title: 'elections', value: 10, description: 'elections'},
+    {title: 'corona', value: 80, description: 'a dangerous virus'}
   ],
   '10/2010': [
-    {name: 'elections', volume: 80, description: 'elections'},
-    {name: 'corona', volume: 100, description: 'a dangerous virus'},
-    {name: 'pizza', volume: 20, description: 'very tasty food'}
+    {title: 'elections', value: 80, description: 'elections'},
+    {title: 'corona', value: 100, description: 'a dangerous virus'},
+    {title: 'pizza', value: 20, description: 'very tasty food'}
   ],
 };
 const DATA2: DataType = {
   '8/2010': [
-    {name: 'food', volume: 40, description: 'yummy'},
-    {name: 'corona', volume: 50, description: 'a dangerous virus'}
+    {title: 'food', value: 40, description: 'yummy'},
+    {title: 'corona', value: 50, description: 'a dangerous virus'}
   ],
   '9/2010': [
-    {name: 'ninja', volume: 30, description: 'kitchen instrument'},
-    {name: 'elections', volume: 10, description: 'elections'},
-    {name: 'corona', volume: 80, description: 'a dangerous virus'}
+    {title: 'ninja', value: 30, description: 'kitchen instrument'},
+    {title: 'elections', value: 10, description: 'elections'},
+    {title: 'corona', value: 80, description: 'a dangerous virus'}
   ],
   '10/2010': [
-    {name: 'elections', volume: 80, description: 'elections'},
-    {name: 'corona', volume: 100, description: 'a dangerous virus'},
-    {name: 'pizza', volume: 20, description: 'very tasty food'}
+    {title: 'elections', value: 80, description: 'elections'},
+    {title: 'corona', value: 100, description: 'a dangerous virus'},
+    {title: 'pizza', value: 20, description: 'very tasty food'}
   ],
 };
 const EXPECT_OUTPUT: Array<Array<string|number>> = [
   [
-    '8/2010', 50, 'big tech company', '#64B5F6', 50, 'a dangerous virus',
-    '#9575CD', 0, '', '', 0, '', ''
+    '8/2010', 50, 'big tech company', '#4ec3ff', 50, 'a dangerous virus',
+    '#9467e4', 0, '', '', 0, '', ''
   ],
   [
-    '9/2010', 30, 'big tech company', '#64B5F6', 80, 'a dangerous virus',
-    '#9575CD', 10, 'elections', '#4DB6AC', 0, '', ''
+    '9/2010', 30, 'big tech company', '#4ec3ff', 80, 'a dangerous virus',
+    '#9467e4', 10, 'elections', '#2dc3b5', 0, '', ''
   ],
   [
-    '10/2010', 0, '', '', 100, 'a dangerous virus', '#9575CD', 80, 'elections',
-    '#4DB6AC', 20, 'very tasty food', '#FFB74D'
+    '10/2010', 0, '', '', 100, 'a dangerous virus', '#9467e4', 80, 'elections',
+    '#2dc3b5', 20, 'very tasty food', '#ffc52d'
   ]
 ];
 const TERM1 = 'corona';
@@ -86,7 +86,7 @@ describe('HistogramSectionComponent', () => {
     topics.set(TERM3, 2);
     topics.set(TERM4, 3);
 
-    expect(component.extractTopics(DATA1)).toEqual(topics);
+    expect((component as any).extractTopics(DATA1)).toEqual(topics);
   });
 
   it('test extract topics with data2', () => {
@@ -96,7 +96,7 @@ describe('HistogramSectionComponent', () => {
     topics.set(TERM6, 2);
     topics.set(TERM3, 3);
     topics.set(TERM4, 4);
-    expect(component.extractTopics(DATA2)).toEqual(topics);
+    expect((component as any).extractTopics(DATA2)).toEqual(topics);
   });
 
   it('test creat coulumns', () => {
@@ -112,7 +112,7 @@ describe('HistogramSectionComponent', () => {
       {role: 'style'}, TERM3, {role: 'tooltip'}, {role: 'style'}, TERM2,
       {role: 'tooltip'}, {role: 'style'}
     ];
-    component.createColumnNames(topics);
+    (component as any).createColumnNames(topics);
     expect(component.columnNames).toEqual(columns);
   });
 

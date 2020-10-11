@@ -1,18 +1,21 @@
 #chart-container {
   display: flex;
-  flex-direction: row;
+  flex-flow: column wrap;
   justify-content: center;
+  align-items: center;
+  text-align: center;
   align-items: center;
 }
 
 google-chart {
-  padding: 40px;
-  border: 4px solid #6d9eebff;
+  padding: 20px;
+  border: 4px solid #808080;
   border-radius: 25px;
 }
 
 .headline {
-  padding: 30px;
-  font-size: 30px;
+  padding: 20px;
+  font-size: 40px;
   font-family: 'Amatic SC', cursive;
+  text-align: center;
 }

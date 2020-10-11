@@ -3,7 +3,7 @@ import {FormControl} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 
-const COUNTRY_CODES: {[name: string]: string} = {
+export const COUNTRY_CODES: {[name: string]: string} = {
   'Albania': 'AL',
   'Algeria': 'DZ',
   'Angola': 'AO',
@@ -202,14 +202,4 @@ export class CountryInputComponent implements OnInit {
         this.countryValue === '' ? '' : COUNTRY_CODES[this.countryValue];
     this.countrySelected.emit(countryCode);
   }
-
-  /**
-   * Emit to parent component the country name while the input value selected
-   * from the options list.
-   */
-  // updateAndemitCountry(newCountry: string): void {
-  //   this.countryValue = newCountry;
-  //   const countryCode = COUNTRY_CODES[this.countryValue] || '';
-  //   this.countrySelected.emit(countryCode);
-  // }
 }
