@@ -23,33 +23,33 @@ describe('Cluster', () => {
   });
 
   /**
-   * Checks moveBubbleToAnotherCluster correctly remove the given bubble from
+   * Checks moveBubble correctly remove the given bubble from
    * the current cluster its called on.
    */
   it('should remove bubble from current cluster', () => {
     const [currCluster, newCluster, bubble] = get2ClustersAndBubble();
-    currCluster.moveBubbleToAnotherCluster(bubble, newCluster);
+    currCluster.moveBubble(bubble, newCluster);
     expect(currCluster.bubbles.has(bubble)).toBeFalse();
   });
 
   /**
-   * Checks moveBubbleToAnotherCluster correctly adds the given bubble
+   * Checks moveBubble correctly adds the given bubble
    * to the other cluster its given.
    */
   it('should add bubble to the given cluster', () => {
     const [currCluster, newCluster, bubble] = get2ClustersAndBubble();
     expect(newCluster.bubbles.has(bubble)).toBeFalse();
-    currCluster.moveBubbleToAnotherCluster(bubble, newCluster);
+    currCluster.moveBubble(bubble, newCluster);
     expect(newCluster.bubbles.has(bubble)).toBeTrue();
   });
 });
 /**
- * Helper function for moveBubbleToAnotherCluster tests.
+ * Helper function for moveBubble tests.
  *  Returns 2 created clusters and a bubble that belongs to the first one.
  */
 function get2ClustersAndBubble() {
   const currCluster = new Cluster('', 1, [{title: '', value: 15}]);
   const newCluster = new Cluster('', 2, [{title: '', value: 100}]);
-  const bubble = currCluster.bubbles[0];
+  const bubble = currCluster.bubbles.values().next().value;
   return [currCluster, newCluster, bubble];
 }
