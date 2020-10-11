@@ -2,6 +2,7 @@ import {Component, Input, SimpleChanges} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import * as d3 from 'd3';
 
+import {AddClusterDialogComponent} from '../add-cluster-dialog/add-cluster-dialog.component';
 import {ColorsService} from '../colors.service';
 import {Bubble} from '../models/bubble-model';
 import {CircleDatum} from '../models/circle-datum';
@@ -55,7 +56,8 @@ export class ClustersSectionComponent {
   @Input() trendsData: ClusterDataObj;
 
   constructor(
-      private colorsService: ColorsService, public queriesDialog: MatDialog) {}
+      private colorsService: ColorsService, public queriesDialog: MatDialog,
+      public addClusterDialog: MatDialog) {}
 
   /**
    * On each change of the data received from the server, updates the
@@ -300,12 +302,6 @@ export class ClustersSectionComponent {
                 (d: CircleDatum) =>
                     this.clusterIdToLoc.get(d.clusterId).yPosition))
         .force(
-            'center',
-            d3.forceCenter()
-                .x(window.innerWidth / 2)
-                .y(window.innerHeight /
-                   2))  // Attraction to the center of the svg.
-        .force(
             'charge',
             d3.forceManyBody().strength(
                 1))  // Nodes are attracted one each other.
@@ -424,6 +420,33 @@ export class ClustersSectionComponent {
         queries: sortedQueries,
         clusters: Array.from(this.clusters.values()),
         updateFunc: this.updateClustersBasedOnDialog,
+      }
+    });
+  }
+
+  /**
+   * Called from the addClusterDialog, adds new cluster with the given title
+   * and initialize visualization
+   */
+  private addCluster(title: string, clusterly: ClustersSectionComponent) {
+    const newCluster: Cluster =
+        new Cluster(title, clusterly.clusters.size + 1, []);
+    clusterly.clusters.set(clusterly.clusters.size + 1, newCluster);
+    clusterly.simulation.stop();
+    d3.selectAll('.' + TOOLTIP_CLASS).remove();
+    clusterly.svgContainer.selectAll('*').remove();
+    clusterly.addClustersVisualization();
+    clusterly.addClusterDialog.closeAll();
+  }
+
+  /** Opens addClusterDialog (called when the + button is clicked) */
+  openAddClusterDialog() {
+    this.addClusterDialog.open(AddClusterDialogComponent, {
+      data: {
+        addCluster: this.addCluster,
+        clustersTitles:
+            Array.from(this.clusters.values()).map((cluster) => cluster.title),
+        clusterly: this
       }
     });
   }

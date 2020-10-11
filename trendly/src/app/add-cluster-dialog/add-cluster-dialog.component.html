@@ -1,0 +1,23 @@
+<h1 mat-dialog-title>Add a Cluster</h1>
+<div mat-dialog-content>
+  Please choose a title for the new cluster:
+  <mat-form-field #title>
+    <mat-label>Title</mat-label>
+    <input matInput
+           placeholder="Ex. New Cluster"
+           [formControl]="titleFormControl"
+           [errorStateMatcher]="matcher"
+           [(ngModel)]="clusterTitle">
+    <mat-error *ngIf="titleFormControl.hasError('required')">
+      Title is <strong>required</strong>
+    </mat-error>
+    <mat-error *ngIf="titleFormControl.hasError('forbiddenName')">
+      Please enter a title that doesn't already exist.
+    </mat-error>
+  </mat-form-field>
+  <div class="btn">
+    <button class='apply-button'
+            [disabled]="!titleFormControl.valid"
+            (click)="data.addCluster(clusterTitle, data.clusterly)">Apply</button>
+  </div>
+</div>
