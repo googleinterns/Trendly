@@ -1,0 +1,14 @@
+<mat-form-field class="chip-list">
+  <mat-chip-list #chipList aria-label="Terms selection">
+    <mat-chip *ngFor="let term of terms" [selectable]="selectable"
+             [removable]="removable" (removed)="remove(term)">
+      {{term}}
+      <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+    </mat-chip>
+    <input placeholder="New term..."
+           [matChipInputFor]="chipList"
+           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+           [matChipInputAddOnBlur]="addOnBlur"
+           (matChipInputTokenEnd)="add($event)">
+  </mat-chip-list>
+</mat-form-field>
