@@ -33,7 +33,7 @@ export class ClusterlyComponent {
             (err) => {
               console.log(err);
               alert(
-                  'an error occurred while processing your request. please try again.')
+                  'An error occurred while processing your request. Please try again.')
             });
   }
 }
