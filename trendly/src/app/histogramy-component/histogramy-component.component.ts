@@ -62,15 +62,27 @@ export class HistogramyComponentComponent {
       term: string, startDate: string, endDate: string, country: string,
       interval: number) {
     this.dataService.fetchTopTopics(term, startDate, endDate, country, interval)
-        .subscribe((data) => {
-          this.dataTop = {...data};
-        });
+        .subscribe(
+            (data) => {
+              this.dataTop = {...data};
+            },
+            (err) => {
+              console.log(err);
+              alert(
+                  'an error occurred while processing your request. please try again.')
+            });
 
     this.dataService
         .fetchRisingTopics(term, startDate, endDate, country, interval)
-        .subscribe((data) => {
-          this.dataRising = {...data};
-        });
+        .subscribe(
+            (data) => {
+              this.dataRising = {...data};
+            },
+            (err) => {
+              console.log(err);
+              alert(
+                  'an error occurred while processing your request. please try again.')
+            });
   }
 
   /**

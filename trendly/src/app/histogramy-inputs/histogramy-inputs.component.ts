@@ -72,14 +72,14 @@ export class InputsComponent {
   /**
    * Updates the start date
    */
-  updateStartDate(newStartDate): void {
+  updateStartDate(newStartDate: string): void {
     this.startDate = newStartDate;
   }
 
   /**
    * Updates the end date.
    */
-  updateEndDate(newEndDate): void {
+  updateEndDate(newEndDate: string): void {
     this.endDate = newEndDate;
   }
 
@@ -99,7 +99,7 @@ export class InputsComponent {
 
     return !(
         startSplit[0] > endSplit[0] ||
-        (startSplit[0] == endSplit[0] && startSplit[1] > endSplit[1]));
+        (startSplit[0] === endSplit[0] && startSplit[1] > endSplit[1]));
   }
 
   /**

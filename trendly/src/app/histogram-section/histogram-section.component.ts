@@ -110,7 +110,7 @@ export class HistogramSectionComponent {
     this.columnNames.push(COLUMN_TOPIC);
 
     // No topics gor these restricsions.
-    if (topics.size == 0) {
+    if (topics.size === 0) {
       this.columnNames[1] = 'NO TOPICS FOUND';
       return;
     }
@@ -131,7 +131,7 @@ export class HistogramSectionComponent {
       const row = Array((topics.size * NUM_OF_COL_PER_TOPIC) + 1).fill('');
       this.initializeRowArray(row);
       row[0] = date;
-      if (topics.size == 0) {
+      if (topics.size === 0) {
         row[1] = 0;
       } else {
         [...this.trendsData[date]].forEach((element) => {
@@ -165,10 +165,6 @@ export class HistogramSectionComponent {
       console.log(this.trendsData);
       this.convertDataToChartsFormat();
       this.progress.emit(false);
-    }
-
-    if (changes['options']) {
-      this.options = {...changes['options'].currentValue};
     }
   }
 

@@ -61,28 +61,28 @@ describe('InputsComponent', () => {
     expect(component.apply.emit).toHaveBeenCalledWith(CHANGED_OBJ);
   });
 
-  it('should be invalide - start date after end date', () => {
+  it('should be invalid - start date after end date', () => {
     component.startDate = '2010-01';
     component.endDate = '2006-01';
     expect(!(component as any).dateValidity()).toBeTruthy();
   });
 
-  it('should be invalide - wrong date format', () => {
+  it('should be invalid - wrong date format', () => {
     component.startDate = '2010/01/03';
     expect(!(component as any).dateValidity()).toBeTruthy();
   });
 
-  it('should be invalide - negative interval', () => {
+  it('should be invalid - negative interval', () => {
     component.interval = -1;
     expect(!(component as any).intervalValidity()).toBeTruthy();
   });
 
-  it('should be invalide - decimal interval', () => {
+  it('should be invalid - decimal interval', () => {
     component.interval = 3.4;
     expect(!(component as any).intervalValidity()).toBeTruthy();
   });
 
-  it('should be invalide - country not from the list', () => {
+  it('should be invalid - country not from the list', () => {
     component.country = 'wonderland';
     expect(!(component as any).countryValidity()).toBeTruthy();
   });
