@@ -39,7 +39,6 @@ const CATEGORIES: object = {
   categoryValue: string = 'All categories';
   categoriesOptions = Object.keys(CATEGORIES);
 
-  constructor() {}
   /**
    * Emits to parent component the country name while the input value changes.
    */

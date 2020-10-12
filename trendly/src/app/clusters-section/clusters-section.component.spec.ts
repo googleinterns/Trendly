@@ -1,12 +1,16 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {MatDialog} from '@angular/material/dialog';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import * as d3 from 'd3';
 
 import {Bubble} from '../models/bubble-model';
+import {CircleDatum} from '../models/circle-datum';
 import {Cluster} from '../models/cluster-model';
-import {ClusterData, ClusterDataObj} from '../models/server-datatypes'
 
 import {CLUSTERS_CONTAINER, ClustersSectionComponent, Location, Scales, TOOLTIP_CLASS} from './clusters-section.component';
+
+
 
 // Mock data recieved from server.
 const CLUSTER_DATA = {
@@ -63,6 +67,10 @@ describe('ClustersSectionComponent', () => {
     await TestBed
         .configureTestingModule({
           declarations: [ClustersSectionComponent],
+          imports: [
+            BrowserAnimationsModule,
+            MatTooltipModule,
+          ],
           providers: [
             {provide: MatDialog, useValue: {}},
           ]
@@ -75,6 +83,8 @@ describe('ClustersSectionComponent', () => {
     fixture = TestBed.createComponent(ClustersSectionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    (component as any).clusters = new Map<number, Cluster>();
+    (component as any).queries = new Array<Bubble>();
   });
 
   it('should create', () => {
@@ -95,21 +105,10 @@ describe('ClustersSectionComponent', () => {
   });
 
   /**
-   * Checks processClustersObjects adds correctly the clusters at clustersData
-   * to this.clusters.
-   */
-  it('should create correct clusters', () => {
-    (component as any).clusters = new Map<number, Cluster>();
-    (component as any).processClustersObjects(CLUSTER_DATA);
-    expect((component as any).clusters).toEqual(CLUSTERS_2_GROUPS);
-  });
-
-  /**
    * Checks processClustersObjects adds correctly the queries at clustersData to
    * this.queries.
    */
   it('should create correct queries', () => {
-    (component as any).queries = new Array<Bubble>();
     (component as any).processClustersObjects(CLUSTER_DATA);
     expect((component as any).queries).toEqual(QUERIES);
   });
@@ -227,7 +226,7 @@ describe('ClustersSectionComponent', () => {
     (component as any).svgContainer =
         (component as any).addSvg(CLUSTERS_CONTAINER);
     const circleGroup = (component as any).addGroup();
-    (component as any).clusterIdtoLoc = CLUSTER_ID_TO_LOC_3_GROUPS;
+    // (component as any).clusterIdtoLoc = CLUSTER_ID_TO_LOC_3_GROUPS;
     (component as any).addCircles(circleGroup, '', 0, Scales.ColorScale);
     expect(circleGroup.selectAll('circle').size()).toBe(3);
   });
@@ -271,8 +270,8 @@ describe('ClustersSectionComponent', () => {
      () => {
        initialClusterData(component);
        const bubble = new Bubble('', 10, 1);
-       bubble['x'] = 25;
-       bubble['y'] = 25;
+       bubble['x'] = 0;
+       bubble['y'] = 0;
        (component as any).changeBubbleCluster(bubble);
        expect(bubble.clusterId).toBe(2);
      });
@@ -283,10 +282,9 @@ describe('ClustersSectionComponent', () => {
   it('should remove bubble correctly (when move bubble between clusters)',
      () => {
        initialClusterData(component);
-       (component as any).clusterIdtoLoc = CLUSTER_ID_TO_LOC_2_GROUPS;
        const bubble = new Bubble('', 10, 1);
-       bubble['x'] = 25;
-       bubble['y'] = 25;
+       bubble['x'] = 0;
+       bubble['y'] = 0;
        (component as any).changeBubbleCluster(bubble);
        expect((component as any).clusters.get(1).bubbles.has(bubble))
            .toBeFalse();
@@ -297,11 +295,10 @@ describe('ClustersSectionComponent', () => {
    */
   it('should add bubble correctly (when move bubble between clusters)', () => {
     initialClusterData(component);
-    (component as any).clusterIdtoLoc = CLUSTER_ID_TO_LOC_2_GROUPS;
     const bubble = new Bubble('', 10, 1);
-    bubble['x'] = 25;
-    bubble['y'] = 25;
-    (component as any).changeBubbleCluster(bubble);
+    bubble['x'] = 0;
+    bubble['y'] = 0;
+    (component as any).changeBubbleCluster((bubble as CircleDatum));
     expect((component as any).clusters.get(2).bubbles.has(bubble)).toBeTrue();
   });
 });
@@ -311,8 +308,8 @@ function initialClusterData(component) {
   const clustersData = CLUSTER_DATA2;
   (component as any).svgContainer =
       (component as any).addSvg(CLUSTERS_CONTAINER);
-  (component as any).clusters = new Map<number, Cluster>();
-  (component as any).queries = new Array<Bubble>();
   (component as any).processClustersObjects(clustersData);
   (component as any).addClustersVisualization();
+  (component as any).clusters = CLUSTERS_2_GROUPS;
+  (component as any).clusterIdToLoc = CLUSTER_ID_TO_LOC_2_GROUPS;
 }

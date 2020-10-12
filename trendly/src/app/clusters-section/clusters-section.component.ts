@@ -11,6 +11,7 @@ import {CircleDatum} from '../models/circle-datum';
 import {Cluster} from '../models/cluster-model';
 import {ClusterDataObj} from '../models/server-datatypes';
 import {QueriesDialogComponent} from '../queries-dialog/queries-dialog.component';
+import {CLUSTERS_DATA} from './mock-data';
 
 export const CLUSTERS_CONTAINER: string = '.clusters-container';
 export const TOOLTIP_CLASS: string = 'bubble-tooltip';
@@ -86,7 +87,7 @@ export class ClustersSectionComponent {
   }
 
   /** Initializes svg content and queries + clusters data structure. */
-  private initializeProperties() {
+  private initializeProperties(): void {
     this.svgContainer.selectAll('*').remove();
     this.clusters = new Map<number, Cluster>();
     this.queries = new Array<Bubble>();
@@ -222,7 +223,8 @@ export class ClustersSectionComponent {
    * circles.
    */
   private addCircles(
-      circleGroup, id: string, radiusAddition: number, colorScale: Scales):
+      circleGroup: d3.Selection<SVGGElement, any, any, any>, id: string,
+      radiusAddition: number, colorScale: Scales):
       d3.Selection<SVGCircleElement, CircleDatum, SVGSVGElement, any> {
     return circleGroup.selectAll('g')
         .data(this.queries)
@@ -256,7 +258,8 @@ export class ClustersSectionComponent {
   }
 
   /** Adds the clusters' titles as text above each group of bubbles */
-  private addClusterTitles(circleGroup) {
+  private addClusterTitles(circleGroup:
+                               d3.Selection<SVGGElement, any, any, any>): void {
     this.clusterIdToLoc.forEach((location, clusterID) => {
       if (clusterID != -1) {
         circleGroup.append('text')
@@ -386,12 +389,11 @@ export class ClustersSectionComponent {
   private changeBubbleCluster(bubbleObj: CircleDatum): void {
     const currentCluster: Cluster = this.clusters.get(bubbleObj.clusterId);
     // Get new ClusterId based on current position
-    const circle = null;
     const newID =
         this.closestGroupId(bubbleObj.x, bubbleObj.y, this.clusterIdToLoc);
     if (newID == DELETE_ID) {
       bubbleObj.clusterId = newID;
-      this.openDeleteDialog(circle, bubbleObj, currentCluster);
+      this.openDeleteDialog(bubbleObj, currentCluster);
     } else {
       const newCluster: Cluster = this.clusters.get(newID);
       currentCluster.moveBubble(bubbleObj, newCluster);
@@ -425,7 +427,7 @@ export class ClustersSectionComponent {
    * Adds a dialog with the queries belongs to a specific cluster
    * when the user click on a bubble.
    */
-  private openQueriesDialog(d: CircleDatum) {
+  private openQueriesDialog(d: CircleDatum): void {
     const cluster: Cluster = this.clusters.get(d.clusterId);
     const sortedQueries: Bubble[] =
         Array.from(cluster.bubbles)
@@ -446,7 +448,7 @@ export class ClustersSectionComponent {
    * Called from the addClusterDialog, adds new cluster with the given title
    * and initialize visualization
    */
-  private addCluster(title: string, clusterly: ClustersSectionComponent) {
+  private addCluster(title: string, clusterly: ClustersSectionComponent): void {
     const newCluster: Cluster =
         new Cluster(title, clusterly.clusters.size + 1, []);
     clusterly.clusters.set(clusterly.clusters.size + 1, newCluster);
@@ -458,7 +460,7 @@ export class ClustersSectionComponent {
   }
 
   /** Opens addClusterDialog (called when the + button is clicked) */
-  openAddClusterDialog() {
+  openAddClusterDialog(): void {
     this.addClusterDialog.open(AddClusterDialogComponent, {
       data: {
         addCluster: this.addCluster,
@@ -473,7 +475,7 @@ export class ClustersSectionComponent {
    * Deletes the circle d3 Object and corresponding bubble from the clusters
    * visualization.
    */
-  deleteCircle(bubbleObj: CircleDatum, cluster: Cluster) {
+  deleteCircle(bubbleObj: CircleDatum, cluster: Cluster): void {
     cluster.bubbles.delete(bubbleObj);
     this.queries = this.queries.filter((value) => value !== bubbleObj);
     this.circles.filter((d: CircleDatum) => d.clusterId === DELETE_ID)
@@ -494,7 +496,8 @@ export class ClustersSectionComponent {
    * confirmation dialog.
    */
   private openDeleteDialog(
-      circle: SVGCircleElement, bubbleObj: CircleDatum, cluster: Cluster) {
+      circle: SVGCircleElement, bubbleObj: CircleDatum,
+      cluster: Cluster): void {
     this.deleteDialog.open(
         DeleteConfirmationDialogComponent,
         {data: {cluster: cluster, bubble: bubbleObj, clusterly: this}});
@@ -504,7 +507,7 @@ export class ClustersSectionComponent {
    * Called when a user click "No" on the delete confirmation dialog. Returns
    * the bubble to its original clusters and close the dialog.
    */
-  closeDeleteDialog(bubleObj: CircleDatum, id: number) {
+  closeDeleteDialog(bubleObj: CircleDatum, id: number): void {
     this.deleteDialog.closeAll();
     bubleObj.clusterId = id;
     this.applySimulation();

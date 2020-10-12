@@ -7,14 +7,14 @@ import {AddClusterDialogComponent, AddClusterDialogData} from './add-cluster-dia
 
 const DATA: AddClusterDialogData = {
   addCluster: null,
-  clustersTitles: null,
+  clustersTitles: [],
   clusterly: null
 };
 const CONFIG = {
   data: DATA
 };
 const DIALOG_TITLE = 'Add a Cluster';
-const DIALOG_CONTENT = ' Please choose a title for the new cluster: titleApply';
+const DIALOG_CONTENT = 'Please choose a title for the new cluster:';
 
 describe('AddClusterDialogComponent', () => {
   let component: AddClusterDialogComponent;
@@ -62,6 +62,6 @@ describe('AddClusterDialogComponent', () => {
     dialog.open(AddClusterDialogComponent, CONFIG);
     fixture.detectChanges();
     const h1 = overlayContainerElement.querySelector('.mat-dialog-content');
-    expect(h1.textContent).toBe(DIALOG_CONTENT);
+    expect(h1.textContent.includes(DIALOG_CONTENT)).toBeTrue;
   });
 });

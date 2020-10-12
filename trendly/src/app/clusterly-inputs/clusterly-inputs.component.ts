@@ -12,14 +12,12 @@ export interface InputObj {
 })
 export class ClusterlyInputsComponent implements OnInit {
   // Inputs are initialized to default values.
-  startDate: string = '2020-10';
+  startDate: string = '2004-01';
   endDate: string = '';
   terms: string[] = [''];
   country: string = '';
   category: string = '0';
   @Output() apply = new EventEmitter<InputObj>();
-
-  constructor() {}
 
   /** Sends the default input values when the component is loaded. */
   ngOnInit(): void {
@@ -59,7 +57,7 @@ export class ClusterlyInputsComponent implements OnInit {
    * Updates the start date.
    * @param newStartDate
    */
-  updateStartDate(newStartDate): void {
+  updateStartDate(newStartDate: string): void {
     this.startDate = newStartDate;
   }
 
@@ -67,7 +65,7 @@ export class ClusterlyInputsComponent implements OnInit {
    * Updates the end date.
    * @param newEndDate
    */
-  updateEndDate(newEndDate): void {
+  updateEndDate(newEndDate: string): void {
     this.endDate = newEndDate;
   }
 
