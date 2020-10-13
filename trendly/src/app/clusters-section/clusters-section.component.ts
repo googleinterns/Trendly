@@ -495,9 +495,7 @@ export class ClustersSectionComponent {
    * Called when a user drag a bubble to the delete button, opens delete
    * confirmation dialog.
    */
-  private openDeleteDialog(
-      circle: SVGCircleElement, bubbleObj: CircleDatum,
-      cluster: Cluster): void {
+  private openDeleteDialog(bubbleObj: CircleDatum, cluster: Cluster): void {
     this.deleteDialog.open(
         DeleteConfirmationDialogComponent,
         {data: {cluster: cluster, bubble: bubbleObj, clusterly: this}});
