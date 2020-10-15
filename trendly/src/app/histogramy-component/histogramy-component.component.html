@@ -5,8 +5,8 @@
 <div id="charts-container">
   <app-histogram-section [title]="TopTopicsTitle"
                          [trendsData]="dataTop"
-                         (progress)='changeProgress($event)'></app-histogram-section>
-  <app-histogram-section [title]="RisingTopicsTitle"
-                         [trendsData]="dataRising"
-                         (progress)='changeProgress($event)'></app-histogram-section>
+                         (progress)="changeProgress($event)"></app-histogram-section>
+  <app-histogram-section [title]="RisingTopicsTitle "
+                         [trendsData]="dataRising "
+                         (progress)="changeProgress($event)"></app-histogram-section>
 </div>

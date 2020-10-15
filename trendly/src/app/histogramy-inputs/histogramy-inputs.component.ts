@@ -3,8 +3,11 @@ import {Component, EventEmitter, Output} from '@angular/core';
 import {COUNTRY_CODES} from 'src/app/country-input/country-input.component';
 
 interface InputObj {
-  startDate: string, endDate: string, term: string, country: string,
-      interval: number,
+  startDate: string;
+  endDate: string;
+  term: string;
+  country: string;
+  interval: number;
 }
 ;
 
@@ -46,41 +49,6 @@ export class InputsComponent {
         interval: this.interval
       });
     }
-  }
-
-  /**
-   * Updates the term.
-   */
-  updateTerm(newTerm: string): void {
-    this.term = newTerm;
-  }
-
-  /**
-   * Updates the interval.
-   */
-  updateInterval(newInterval: number): void {
-    this.interval = newInterval;
-  }
-
-  /**
-   * Updates the country.
-   */
-  updateCountry(newCountry: string): void {
-    this.country = newCountry;
-  }
-
-  /**
-   * Updates the start date
-   */
-  updateStartDate(newStartDate: string): void {
-    this.startDate = newStartDate;
-  }
-
-  /**
-   * Updates the end date.
-   */
-  updateEndDate(newEndDate: string): void {
-    this.endDate = newEndDate;
   }
 
   // Validity checks.

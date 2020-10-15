@@ -2,10 +2,12 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {HistogramSectionComponent} from './histogram-section.component';
 
 interface Topic {
-  title: string, value: number, description: string,
+  title: string;
+  value: number;
+  description: string;
 }
 interface DataType {
-  [index: string]: Array<Topic>;
+  [index: string]: Topic[];
 }
 const DATA1: DataType = {
   '8/2010': [

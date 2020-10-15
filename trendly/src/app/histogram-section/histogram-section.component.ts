@@ -1,4 +1,4 @@
-import {Component, EventEmitter, HostListener, Input, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, HostListener, Input, OnInit, Output, SimpleChanges} from '@angular/core';
 
 import {ColorsService} from '../colors.service';
 
@@ -54,26 +54,20 @@ const STYLE_ROLE = {
   templateUrl: './histogram-section.component.html',
   styleUrls: ['./histogram-section.component.css']
 })
-export class HistogramSectionComponent {
+export class HistogramSectionComponent implements OnInit {
   @Input() trendsData: DataType;
-  @Input() title: string;  // get from parent
+  @Input() title: string;
   @Input() type: string = COLUMN_CHART_TYPE;
   @Input() data: Array<Array<string|number>> = [];
   @Input() columnNames: ColumnArray = [];
-  @Input()
-  options: object = {
-    width: 3 * (window.innerWidth / 5),
-    height: window.innerWidth / 4,
-    legend: {position: 'top', maxLines: 3},
-    bar: {groupWidth: '75%'},
-    isStacked: true,
-    colors: this.coloresService.lightColors,
-    explorer: {actions: ['dragToZoom', 'rightClickToReset']},
-  };
+  @Input() options: object = {};
   @Output() progress = new EventEmitter<boolean>();
 
   constructor(private coloresService: ColorsService) {}
 
+  ngOnInit() {
+    this.onResize();
+  }
 
   /**
    * Converts the data from the server to charts format.
@@ -116,11 +110,13 @@ export class HistogramSectionComponent {
     }
 
     // Sort map according values in rising order.
-    topics = new Map([...topics.entries()].sort((a, b) => a[1] - b[1]));
-    [...topics.keys()].forEach(
-        (key) => this.columnNames.push(...[key, TOOLTIP_ROLE, STYLE_ROLE]));
-    console.log(this.columnNames);
+    const entries = [...topics.entries()].sort(
+        ([aKey, aValue], [bKey, bValue]) => aValue - bValue);
+    for (const [key, value] of entries) {
+      this.columnNames.push(key, TOOLTIP_ROLE, STYLE_ROLE);
+    }
   }
+
 
   /**
    * Creates the data for the charts.
@@ -161,7 +157,7 @@ export class HistogramSectionComponent {
    */
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['trendsData']) {
-      this.trendsData = changes['trendsData'].currentValue;
+      // this.trendsData = changes['trendsData'].currentValue;
       console.log(this.trendsData);
       this.convertDataToChartsFormat();
       this.progress.emit(false);
