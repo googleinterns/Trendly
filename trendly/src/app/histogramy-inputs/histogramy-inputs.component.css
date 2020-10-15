@@ -1,0 +1,41 @@
+.form {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  max-width: 700px;
+  min-width: 400px;
+  width: 100%;
+}
+
+.input-element {
+  float: left;
+  font-family: "Roboto", cursive;
+  font-size: 15px;
+  padding: 40px 20px;
+  width: 100%;
+}
+
+.button {
+  align-items: center;
+  display: flex;
+  padding: 0px 5px 25px;
+}
+
+.apply-button {
+  background-color: rgb(57, 99, 161);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-family: "Roboto";
+  font-weight: 500;
+  height: 50px;
+  padding: 10px 20px 10px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.inputs {
+  display: flex;
+  justify-content: center;
+}

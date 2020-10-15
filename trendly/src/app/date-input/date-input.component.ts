@@ -37,11 +37,10 @@ export const DATE_FORMAT = {
 export class DateInputComponent {
   @Output() startSelected = new EventEmitter<any>();
   @Output() endSelected = new EventEmitter<any>();
-  startDate = new FormControl(moment());
+  startDate = new FormControl(moment('2004-01-01'));
   endDate = new FormControl(moment());
-  readonly minDate = new Date(2004, 1, 1);
+  readonly minDate = new Date(2003, 12, 1);
   readonly maxDate = new Date();
-
 
   /**
    * Handler for choosing year for the start date.

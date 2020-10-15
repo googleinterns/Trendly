@@ -31,7 +31,7 @@ describe('DataService', () => {
   it('should return object with keys of type string', () => {
     let result;
     (service as any)
-        .callServlet('/top-topics', 'term', '9/2010', '10/2010', 'US', 3)
+        .fetchTopTopics('term', '9/2010', '10/2010', 'US', 3)
         .subscribe((data) => {
           result = {...data};
         });
