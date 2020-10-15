@@ -15,12 +15,19 @@ export class ColorsService {
     '#ff5722',
     '#e91e63',
     '#3f51b5',
-    '#ffeb3b',
+    '#2e7d32',
+    '#E65100',
+    '#4A148C',
+    '#D50000',
   ];
   readonly lightColors: string[] = [];
   // A colorblind-friendly palette.
-  readonly colorsForColorBlind: string[] =
-      ['#f5793A', '#a95aa1', '#85C0f9', '#0f2080'];
+  readonly colorsForColorBlind: string[] = [
+    '#f5793A',
+    '#a95aa1',
+    '#85C0f9',
+    '#0f2080',
+  ];
   readonly lightColorForColorBlind: string[] = [];
 
   constructor() {

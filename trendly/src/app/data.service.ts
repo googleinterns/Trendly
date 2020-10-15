@@ -16,7 +16,7 @@ export class DataService {
       term: string|string[], startDate: string, endDate: string,
       country: string, interval: number = 1) {
     return this.callServlet(
-        '/top-topics', term, startDate, endDate, country, interval)
+        '/top-topics', term, startDate, endDate, country, interval, '0')
   }
 
   /**
@@ -26,7 +26,7 @@ export class DataService {
       term: string|string[], startDate: string, endDate: string,
       country: string, interval: number = 1) {
     return this.callServlet(
-        '/rising-topics', term, startDate, endDate, country, interval)
+        '/rising-topics', term, startDate, endDate, country, interval, '0')
   }
 
   /**
@@ -34,9 +34,10 @@ export class DataService {
    */
   public fetchClustrlyData(
       term: string|string[], startDate: string, endDate: string,
-      country: string, interval: number = 1) {
+      country: string, interval: number = 1, category: string) {
     return this.callServlet(
-        '/clusterly-data', term, startDate, endDate, country, interval)
+        '/clusterly-data', term, startDate, endDate, country, interval,
+        category)
   }
 
   /**
@@ -45,10 +46,11 @@ export class DataService {
    */
   private callServlet(
       servletName: string, term: string|string[], startDate: string,
-      endDate: string, country: string, interval: number) {
+      endDate: string, country: string, interval: number, category: string) {
     const basrUrl: string = servletName + '?';
     const url = basrUrl +
-        this.buildURLParameters(term, startDate, endDate, country, interval)
+        this.buildURLParameters(
+            term, startDate, endDate, country, interval, category)
     return this.http.get(url, {observe: 'body', responseType: 'json'});
   }
 
@@ -57,14 +59,16 @@ export class DataService {
    */
   private buildURLParameters(
       termOrTerms: string|string[], startDate: string, endDate: string,
-      country: string, interval: number): string {
+      country: string, interval: number, category: string): string {
     const termParameter: string = this.makeTermParameter(termOrTerms);
     const dateParameter: string = 'startDate=' + startDate + '&' +
         'endDate=' + endDate + '&';
     const countryParameter: string = 'country=' + country + '&';
-    const intervalParameter: string = 'interval=' + interval;
+    const intervalParameter: string = 'interval=' + interval + '&';
+    const categoryParameter: string = 'category=' + category + '&';
 
-    return termParameter + dateParameter + countryParameter + intervalParameter;
+    return termParameter + dateParameter + countryParameter +
+        intervalParameter + categoryParameter;
   }
 
   /**

@@ -1,0 +1,7 @@
+.chip-list {
+  width: 45vh;
+}
+
+mat-chip {
+  font-size: 1.8vh;
+}

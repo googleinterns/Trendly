@@ -1,0 +1,15 @@
+<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+      rel="stylesheet">
+<div class="clusters-container"></div>
+<button class="icon-button delete-button"
+        matTooltip="Drag bubble here in order to delete it"
+        matTooltipPosition="right"
+        matTooltipClass="custom-tooltip"
+        #tooltip="matTooltip"
+        (click)="tooltip.show()">
+  <mat-icon class="md-48">delete</mat-icon>
+</button>
+<button class="icon-button add-button"
+        (click)="openAddClusterDialog()">
+  <mat-icon class="md-48">add</mat-icon>
+</button>

@@ -18,6 +18,7 @@ public final class QueriesExpansionTest {
   private static final String LOCATION = "US";
   private static final String START_DATE = "2016-08";
   private static final String END_DATE = "2020-08";
+  private static final String CATEGORY = "0";
 
   /**
    * Checks the returned clusters amount from getAllClusters with 2 given terms <= MAX_CLUSTERS
@@ -27,7 +28,8 @@ public final class QueriesExpansionTest {
    */
   @Test
   public void maxClustersWith2Terms() throws IOException, InterruptedException, ExecutionException {
-    List<Cluster> clusters = QueriesExpansion.getAllClusters(TERMS, LOCATION, START_DATE, END_DATE);
+    List<Cluster> clusters =
+        QueriesExpansion.getAllClusters(TERMS, LOCATION, START_DATE, END_DATE, CATEGORY);
     Assert.assertTrue(clusters.size() <= QueriesExpansion.MAX_CLUSTERS);
   }
 
@@ -35,7 +37,7 @@ public final class QueriesExpansionTest {
   @Test
   public void maxClustersWith3Terms() throws IOException, InterruptedException, ExecutionException {
     List<Cluster> clusters =
-        QueriesExpansion.getAllClusters(TERMS2, LOCATION, START_DATE, END_DATE);
+        QueriesExpansion.getAllClusters(TERMS2, LOCATION, START_DATE, END_DATE, CATEGORY);
     Assert.assertTrue(clusters.size() <= QueriesExpansion.MAX_CLUSTERS);
   }
 
@@ -43,7 +45,7 @@ public final class QueriesExpansionTest {
   @Test
   public void maxClustersWith5Terms() throws IOException, InterruptedException, ExecutionException {
     List<Cluster> clusters =
-        QueriesExpansion.getAllClusters(TERMS3, LOCATION, START_DATE, END_DATE);
+        QueriesExpansion.getAllClusters(TERMS3, LOCATION, START_DATE, END_DATE, CATEGORY);
     Assert.assertTrue(clusters.size() <= QueriesExpansion.MAX_CLUSTERS);
   }
 
@@ -61,7 +63,8 @@ public final class QueriesExpansionTest {
    */
   @Test
   public void maxQueriesWith2Terms() throws IOException, InterruptedException, ExecutionException {
-    List<Cluster> clusters = QueriesExpansion.getAllClusters(TERMS, LOCATION, START_DATE, END_DATE);
+    List<Cluster> clusters =
+        QueriesExpansion.getAllClusters(TERMS, LOCATION, START_DATE, END_DATE, CATEGORY);
     Assert.assertTrue(countQueries(clusters) <= QueriesExpansion.MAX_QUERIES);
   }
 
@@ -72,7 +75,7 @@ public final class QueriesExpansionTest {
   @Test
   public void maxQueriesWith3Terms() throws IOException, InterruptedException, ExecutionException {
     List<Cluster> clusters =
-        QueriesExpansion.getAllClusters(TERMS2, LOCATION, START_DATE, END_DATE);
+        QueriesExpansion.getAllClusters(TERMS2, LOCATION, START_DATE, END_DATE, CATEGORY);
     Assert.assertTrue(countQueries(clusters) <= QueriesExpansion.MAX_QUERIES);
   }
 
@@ -83,7 +86,7 @@ public final class QueriesExpansionTest {
   @Test
   public void maxQueriesWith5Terms() throws IOException, InterruptedException, ExecutionException {
     List<Cluster> clusters =
-        QueriesExpansion.getAllClusters(TERMS3, LOCATION, START_DATE, END_DATE);
+        QueriesExpansion.getAllClusters(TERMS3, LOCATION, START_DATE, END_DATE, CATEGORY);
     Assert.assertTrue(countQueries(clusters) <= QueriesExpansion.MAX_QUERIES);
   }
 
@@ -91,7 +94,7 @@ public final class QueriesExpansionTest {
   @Test
   public void emptyTerms() throws IOException, InterruptedException, ExecutionException {
     List<Cluster> clusters =
-        QueriesExpansion.getAllClusters(EMPTY_TERMS, LOCATION, START_DATE, END_DATE);
+        QueriesExpansion.getAllClusters(EMPTY_TERMS, LOCATION, START_DATE, END_DATE, CATEGORY);
     Assert.assertTrue(clusters.isEmpty());
   }
 }

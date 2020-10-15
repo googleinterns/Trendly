@@ -10,3 +10,8 @@ export interface ClusterData {
   id: number;
   queries: QueryData[]
 }
+
+/** The final object that the sever returns. */
+export interface ClusterDataObj {
+  '1': ClusterData;
+}

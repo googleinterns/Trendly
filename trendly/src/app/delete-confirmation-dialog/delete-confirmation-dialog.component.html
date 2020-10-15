@@ -1,0 +1,14 @@
+<h1 mat-dialog-title>Delete Confirmation</h1>
+<div mat-dialog-content>
+  Are you sure you want to delete this bubble-query?
+  <div class="btn-row">
+    <div class="btn">
+      <button class="apply-button"
+              (click)="data.clusterly.deleteCircle(data.bubble, data.cluster)">Yes</button>
+    </div>
+    <div class="btn">
+      <button class="no-button"
+              (click)="data.clusterly.closeDeleteDialog(data.bubble, data.cluster.id)">No</button>
+    </div>
+  </div>
+</div>
