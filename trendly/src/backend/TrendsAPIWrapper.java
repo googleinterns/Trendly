@@ -45,10 +45,6 @@ public class TrendsAPIWrapper {
       String endDate,
       String category)
       throws IOException {
-    FUNC_TO_CLASS.put(TrendsFunctions.TOP_TOPICS, TrendsTopicsResult.class);
-    FUNC_TO_CLASS.put(TrendsFunctions.RISING_TOPICS, TrendsRisingTopicsResult.class);
-    FUNC_TO_CLASS.put(TrendsFunctions.TOP_QUERIES, TrendsQueriesResult.class);
-    FUNC_TO_CLASS.put(TrendsFunctions.RISING_QUERIES, TrendsRisingQueriesResult.class);
     HttpTransport httpTransport = new NetHttpTransport();
     GenericUrl url = buildUrl(funcName, term, location, startDate, endDate, category);
     HttpRequestFactory requestFactory = httpTransport.createRequestFactory();

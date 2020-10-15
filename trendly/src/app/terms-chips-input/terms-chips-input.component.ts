@@ -26,19 +26,19 @@ export class TermsChipsInputComponent {
     const input: HTMLInputElement = event.input;
     const value: String = event.value;
 
-    // Add a term + emits the updated terms list
+    // Add a term + emits the updated terms list.
     if ((value || '').trim()) {
       this.terms.push(value.trim());
       this.emitTerms();
     }
-    // Reset the input value
+    // Reset the input value.
     if (input) {
       input.value = '';
     }
   }
 
   /**
-   * Removes the given term from the terms list
+   * Removes the given term from the terms list.
    */
   remove(term: string): void {
     const index: number = this.terms.indexOf(term);
@@ -48,10 +48,6 @@ export class TermsChipsInputComponent {
     }
   }
 
-  /**
-   * Emits the terms to the parent 'inputs' component when the input value
-   * changes.
-   */
   private emitTerms(): void {
     this.termsSelected.emit(this.terms);
   }

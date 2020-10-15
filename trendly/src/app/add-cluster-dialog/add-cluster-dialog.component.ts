@@ -32,16 +32,14 @@ export interface AddClusterDialogData {
 })
 export class AddClusterDialogComponent {
   clusterTitle: String;
-  titleFormControl: FormControl;
-  matcher = new AddClusterErrorStateMatcher();
-
+  readonly titleFormControl: FormControl;
+  readonly matcher = new AddClusterErrorStateMatcher();
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: AddClusterDialogData) {
     this.titleFormControl = new FormControl(
         '', [Validators.required, this.existingTitle(data.clustersTitles)]);
     this.titleFormControl.updateValueAndValidity(
         {onlySelf: true, emitEvent: false});
-    //
   }
 
   /** An added title can't match any existing title. */

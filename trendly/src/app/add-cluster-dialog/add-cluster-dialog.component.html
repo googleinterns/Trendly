@@ -4,7 +4,7 @@
   <mat-form-field #title>
     <mat-label>Title</mat-label>
     <input matInput
-           placeholder="Ex. New Cluster"
+           placeholder="E.g. New Cluster"
            [formControl]="titleFormControl"
            [errorStateMatcher]="matcher"
            [(ngModel)]="clusterTitle">
@@ -16,7 +16,7 @@
     </mat-error>
   </mat-form-field>
   <div class="btn">
-    <button class='apply-button'
+    <button class="apply-button"
             [disabled]="!titleFormControl.valid"
             (click)="data.addCluster(clusterTitle, data.clusterly)">Apply</button>
   </div>

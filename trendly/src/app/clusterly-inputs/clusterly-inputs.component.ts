@@ -36,44 +36,4 @@ export class ClusterlyInputsComponent implements OnInit {
       category: this.category
     });
   }
-
-  /**
-   * Updates the term.
-   * @param newTerm
-   */
-  updateTerms(newTerms: string[]): void {
-    this.terms = newTerms;
-  }
-
-  /**
-   * Updates the country.
-   * @param newCountry
-   */
-  updateCountry(newCountry: string): void {
-    this.country = newCountry;
-  }
-
-  /**
-   * Updates the start date.
-   * @param newStartDate
-   */
-  updateStartDate(newStartDate: string): void {
-    this.startDate = newStartDate;
-  }
-
-  /**
-   * Updates the end date.
-   * @param newEndDate
-   */
-  updateEndDate(newEndDate: string): void {
-    this.endDate = newEndDate;
-  }
-
-  /**
-   * Updates the category.
-   * @param newCategory
-   */
-  updateCategory(newCategory: string): void {
-    this.category = newCategory;
-  }
 }

@@ -70,7 +70,6 @@ export class ClustersSectionComponent {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['trendsData']) {
       const isUndefined = (obj) => typeof obj === 'undefined';
-      this.trendsData = changes['trendsData'].currentValue;
       const clustersData: ClusterDataObj =
           isUndefined(this.trendsData) ? [] : this.trendsData;
       if (isUndefined(this.svgContainer)) {

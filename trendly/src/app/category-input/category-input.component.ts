@@ -1,6 +1,6 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 
-const CATEGORIES: object = {
+const CATEGORIES: {[name: string]: string} = {
   'All categories': '0',
   'Arts & Entertainment': '3',
   'Autos & Vehicles': '47',
@@ -27,17 +27,18 @@ const CATEGORIES: object = {
   'Shopping': '18',
   'Sports': '20',
   'Travel': '67'
-}
+};
 
 /** A selection input between Google Trends categories */
 @Component({
   selector: 'app-category-input',
   templateUrl: './category-input.component.html',
   styleUrls: ['./category-input.component.css']
-}) export class CategoryInputComponent {
+})
+export class CategoryInputComponent {
   @Output() categorySelected = new EventEmitter<string>();
   categoryValue: string = 'All categories';
-  categoriesOptions = Object.keys(CATEGORIES);
+  readonly categoriesOptions = Object.keys(CATEGORIES);
 
   /**
    * Emits to parent component the country name while the input value changes.
