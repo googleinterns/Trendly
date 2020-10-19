@@ -1,7 +1,10 @@
 import java.util.ArrayList;
 import java.util.List;
 
-/** Cluster data type, Contains the cluster's title, its id and an Array of queries. */
+/**
+ * Cluster data type, Contains the cluster's title, its id, array of queries and the IDs of clusters
+ * similar to it.
+ */
 public class Cluster {
   String title;
   int id;

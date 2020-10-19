@@ -1,15 +1,18 @@
-/** An object that contains a cluster and it's bag-of-word */
+import java.util.Map;
+
+/** An object that contains a cluster and it's bag-of-word. */
 public class ClusterBOW {
 
   Cluster cluster;
-  int[] bow;
+  Map<String, Double> bow;
 
   /**
-   * @param cluster
-   * @param n - size of bag-of-word array
+   * @param cluster - The cluster object.
+   * @param bow - The cluster's bag-of-word, a map between a word and it's frequency in the
+   *     cluster's queries.
    */
-  public ClusterBOW(Cluster cluster, int n) {
+  public ClusterBOW(Cluster cluster, Map<String, Double> bow) {
     this.cluster = cluster;
-    this.bow = new int[n];
+    this.bow = bow;
   }
 }
