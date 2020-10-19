@@ -1,7 +1,8 @@
 <mat-form-field class="form-field">
+  <mat-label>Pick a Country: </mat-label>
   <input (change)="emitCountry()"
          type="text"
-         placeholder="Pick a Country"
+         placeholder="E.g. 'United States'"
          aria-label="text"
          matInput
          [formControl]="formControl"

@@ -1,4 +1,4 @@
-import {HashLocationStrategy, LocationStrategy} from '@angular/common';
+import {HashLocationStrategy, LocationStrategy, DatePipe} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -25,7 +25,7 @@ import {DateInputComponent} from './date-input/date-input.component';
 import {DeleteConfirmationDialogComponent} from './delete-confirmation-dialog/delete-confirmation-dialog.component';
 import {HistogramSectionComponent} from './histogram-section/histogram-section.component';
 import {HistogramyComponentComponent} from './histogramy-component/histogramy-component.component';
-import {InputsComponent} from './inputs/inputs.component';
+import {InputsComponent} from './histogramy-inputs/histogramy-inputs.component';
 import {IntervalInputComponent} from './interval-input/interval-input.component';
 import {MainPageComponent} from './main-page/main-page.component';
 import {DemoMaterialModule} from './material-module';
@@ -80,7 +80,7 @@ import {TopBarComponent} from './top-bar/top-bar.component';
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},
     {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'fill'}},
-    HttpClientModule
+    HttpClientModule, DatePipe,
   ],
   bootstrap: [AppComponent]
 })

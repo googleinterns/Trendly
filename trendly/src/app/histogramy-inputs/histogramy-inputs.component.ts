@@ -8,6 +8,7 @@ interface InputObj {
   term: string;
   country: string;
   interval: number;
+  category: string;
 }
 ;
 
@@ -29,6 +30,7 @@ export class InputsComponent {
   term: string = '';
   country: string = '';
   interval: number = 1;
+  category: string = '';
   @Output() apply = new EventEmitter<InputObj>();
 
   constructor(private datePipe: DatePipe) {
@@ -46,7 +48,8 @@ export class InputsComponent {
         startDate: this.startDate,
         endDate: this.endDate,
         country: this.country,
-        interval: this.interval
+        interval: this.interval,
+        category: this.category
       });
     }
   }

@@ -1,5 +1,6 @@
 <div class="dates">
   <mat-form-field class="form-field">
+    <mat-label>Pick a Start Date: </mat-label>
     <input matInput
            (ngModelChange)="emitStartDate()"
            [matDatepicker]="pickerstart"
@@ -18,6 +19,7 @@
   </mat-form-field>
 
   <mat-form-field class="form-field">
+    <mat-label>Pick an End Date: </mat-label>
     <input matInput
            (ngModelChange)="emitEndDate()"
            [matDatepicker]="pickerend"
