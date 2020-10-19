@@ -27,13 +27,13 @@ public class HistogramyDataRetrieval {
    * @throws IOException
    */
   public static LinkedHashMap<String, ArrayList<HistogramTopic>> getDataForServlet(String term,
-      String startDate, String endDate, String country, String interval, String funcName)
+      String startDate, String endDate, String country, String interval, String category, String funcName)
       throws NumberFormatException, IOException {
     ArrayList<DateRange> dates = dateProcessing(startDate, endDate, Integer.parseInt(interval));
     LinkedHashMap<String, ArrayList<HistogramTopic>> results = new LinkedHashMap<>();
     for (DateRange date : dates) {
       results.put(date.getStart() + " : " + date.getEnd(),
-          retriveDataFromApi(date, country, term, funcName));
+          retriveDataFromApi(date, country, term, category, funcName));
     }
     return results;
   }
@@ -96,11 +96,11 @@ public class HistogramyDataRetrieval {
    * @throws IOException
    */
   static ArrayList<HistogramTopic> retriveDataFromApi(
-      DateRange date, String country, String term, String funcName) throws IOException {
+      DateRange date, String country, String term, String category, String funcName) throws IOException {
     ArrayList<HistogramTopic> allTopics = new ArrayList<HistogramTopic>();
     TrendsHistogramResult allAPITopics =
         (TrendsHistogramResult) TrendsAPIWrapper.fetchDataFromTrends(
-            funcName, term, country, date.getStart(), date.getEnd());
+            funcName, term, country, date.getStart(), date.getEnd(), category);
     if (allAPITopics.getItem() != null) {
       int counter = 0;
       for (TrendsTopic topic : allAPITopics.getItem()) {

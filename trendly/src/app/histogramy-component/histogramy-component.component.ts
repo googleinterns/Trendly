@@ -7,6 +7,7 @@ interface InputObj {
   term: string;
   country: string;
   interval: number;
+  category: string;
 }
 
 /**
@@ -26,7 +27,7 @@ export class HistogramyComponentComponent {
 
   constructor(private dataService: DataService) {
     const defaultDates: string[] = this.getDefaultDates();
-    this.callServlets('', defaultDates[0], defaultDates[1], '', 1);
+    this.callServlets('', defaultDates[0], defaultDates[1], '', 1, '0');
   }
 
   /**
@@ -51,7 +52,7 @@ export class HistogramyComponentComponent {
     this.showMatProgress = true;
     this.callServlets(
         input['term'], input['startDate'], input['endDate'], input['country'],
-        input['interval']);
+        input['interval'], input['category']);
   }
 
   /**
@@ -60,11 +61,13 @@ export class HistogramyComponentComponent {
    */
   private callServlets(
       term: string, startDate: string, endDate: string, country: string,
-      interval: number) {
-    this.dataService.fetchTopTopics(term, startDate, endDate, country, interval)
+      interval: number, category: string) {
+    this.dataService
+        .fetchTopTopics(term, startDate, endDate, country, interval, category)
         .subscribe(
             (data) => {
               this.dataTop = {...data};
+              console.log(this.dataTop);
             },
             (err) => {
               console.log(err);
@@ -73,7 +76,8 @@ export class HistogramyComponentComponent {
             });
 
     this.dataService
-        .fetchRisingTopics(term, startDate, endDate, country, interval)
+        .fetchRisingTopics(
+            term, startDate, endDate, country, interval, category)
         .subscribe(
             (data) => {
               this.dataRising = {...data};
