@@ -13,7 +13,11 @@
                     (endSelected)="endDate = $event"></app-date-input>
     <app-interval-input class="input-element"
                         (intervalSelected)="interval = $event"></app-interval-input>
-    <button class="input-element apply-button"
-            (click)="sendParameters()">Apply</button>
+    <app-category-input class="input-element"
+                        (categorySelected)="category = $event"></app-category-input>
+    <div class="btn">
+      <button class="input-element apply-button"
+              (click)="sendParameters()">Apply</button>
+    </div>
   </form>
 </div>

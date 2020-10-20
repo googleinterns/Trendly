@@ -1,4 +1,4 @@
-import {HashLocationStrategy, LocationStrategy} from '@angular/common';
+import {DatePipe, HashLocationStrategy, LocationStrategy} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -80,7 +80,8 @@ import {TopBarComponent} from './top-bar/top-bar.component';
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},
     {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'fill'}},
-    HttpClientModule
+    HttpClientModule,
+    DatePipe,
   ],
   bootstrap: [AppComponent]
 })

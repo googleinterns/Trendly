@@ -18,6 +18,7 @@ public class RisingTopicsServlet extends HttpServlet {
   public static final String START_DATE_PARAMETER = "startDate";
   public static final String END_DATE_PARAMETER = "endDate";
   public static final String INTERVAL_PARAMETER = "interval";
+  public static final String CATEGORY_PARAMETER = "category";
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -26,10 +27,11 @@ public class RisingTopicsServlet extends HttpServlet {
     String interval = request.getParameter(INTERVAL_PARAMETER);
     String startDate = request.getParameter(START_DATE_PARAMETER);
     String endDate = request.getParameter(END_DATE_PARAMETER);
+    String category = request.getParameter(CATEGORY_PARAMETER);
 
     LinkedHashMap<String, ArrayList<HistogramTopic>> results =
         HistogramyDataRetrieval.getDataForServlet(
-            term, startDate, endDate, country, interval, TrendsFunctions.RISING_TOPICS);
+            term, startDate, endDate, country, interval, category, TrendsFunctions.RISING_TOPICS);
     response.setContentType(RESPONSE_JSON);
     String json = new Gson().toJson(results);
     response.getWriter().println(json);
