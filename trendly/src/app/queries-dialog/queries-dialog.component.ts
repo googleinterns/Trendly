@@ -1,7 +1,8 @@
-import {Component} from '@angular/core';
+import {SelectionModel} from '@angular/cdk/collections';
+import {Component, ViewEncapsulation} from '@angular/core';
 import {Inject} from '@angular/core';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
-import {MatSelectChange} from '@angular/material/select';
+import {MatTableDataSource} from '@angular/material/table';
 
 import {ClusterlyComponent} from '../clusterly/clusterly.component'
 import {Bubble} from '../models/bubble-model';
@@ -13,8 +14,8 @@ export interface DialogData {
   queries: Bubble[];
   clusters: Cluster[];
   updateFunc?:
-      (newCluster: Cluster, selections: any[], currCluster: Cluster,
-       clusterly: ClusterlyComponent) => void;
+      (newCluster: Cluster, selections: SelectionModel<Bubble>,
+       currCluster: Cluster, clusterly: ClusterlyComponent) => void;
 }
 
 /**
@@ -26,13 +27,34 @@ export interface DialogData {
 @Component({
   selector: 'app-queries-dialog',
   templateUrl: './queries-dialog.component.html',
-  styleUrls: ['./queries-dialog.component.css']
+  styleUrls: ['./queries-dialog.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class QueriesDialogComponent {
   selectedCluster: Cluster;
-  constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+  readonly displayedColumns = ['select', 'query', 'volume'];
+  readonly dataSource: MatTableDataSource<Bubble>;
+  readonly selectedQueries = new SelectionModel<Bubble>(true, []);
 
-  selected(event: MatSelectChange) {
-    this.selectedCluster = event.value;
+  constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {
+    this.dataSource = new MatTableDataSource<Bubble>(data.queries);
+  }
+
+  /**
+   * Returns true iff the number of selected elements matches the total number of rows.
+   */
+  isAllSelected(): boolean {
+    const numSelected = this.selectedQueries.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  /**
+   * Selects all rows if they are not all selected; otherwise clear selection.
+   */
+  masterToggle() {
+    this.isAllSelected() ?
+        this.selectedQueries.clear() :
+        this.dataSource.data.forEach(row => this.selectedQueries.select(row));
   }
 }
