@@ -1,5 +1,7 @@
 //@ts-nocheck
-import {Component, Input, SimpleChanges} from '@angular/core';
+import {SelectionModel} from '@angular/cdk/collections';
+import {Component, Input, Output, SimpleChanges} from '@angular/core';
+import {KeyValueChanges, KeyValueDiffer, KeyValueDiffers} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import * as d3 from 'd3';
 
@@ -11,6 +13,7 @@ import {CircleDatum} from '../models/circle-datum';
 import {Cluster} from '../models/cluster-model';
 import {ClusterDataObj} from '../models/server-datatypes';
 import {QueriesDialogComponent} from '../queries-dialog/queries-dialog.component';
+
 import {CLUSTERS_DATA} from './mock-data';
 
 export const CLUSTERS_CONTAINER: string = '.clusters-container';
@@ -19,6 +22,7 @@ const LIGHT_CIRCLE_CLASS = 'light';
 const DELETE_ID = -1;
 const DELETE_X_POS = 190;
 const DELETE_Y_POS = window.innerHeight / 2 - window.innerHeight / 20;
+const DELETE_CLUSTER = new Cluster('Trash (Delete)', -1, 0, [], [], []);
 
 export interface Location {
   xPosition: number;
@@ -44,13 +48,14 @@ export enum Scales {
 })
 
 export class ClustersSectionComponent {
-  private clusters: Map<number, Cluster> = new Map<number, Cluster>();
+  @Output() clusters: Map<number, Cluster> = new Map<number, Cluster>();
+  private clustersListDiffer: KeyValueDiffer<string, any>;
+  private clustersDiffer: Map<number, KeyValueDiffer<string, any>>;
   private queries: Array<Bubble> = new Array<Bubble>();
   readonly scales: Map<Scales, any> = new Map<Scales, any>();
-  private circles:
-      d3.Selection<SVGCircleElement, CircleDatum, SVGSVGElement, any>;
+  private circles: d3.Selection<SVGCircleElement, Bubble, SVGGElement, any>;
   private lightCircles:
-      d3.Selection<SVGCircleElement, CircleDatum, SVGSVGElement, any>;
+      d3.Selection<SVGCircleElement, Bubble, SVGGElement, any>;
   private simulation: d3.Simulation<d3.SimulationNodeDatum, undefined>;
   private tooltip: d3.Selection<HTMLDivElement, any, any, any>;
   private svgContainer: d3.Selection<SVGSVGElement, any, any, any>;
@@ -58,10 +63,16 @@ export class ClustersSectionComponent {
   private maxQueryVolume: number = 0;
   private minQueryVolume: number = Infinity;
   @Input() trendsData: ClusterDataObj;
+  @Input() clustersToDisplay: Map<number, Cluster>;
 
   constructor(
       private colorsService: ColorsService, public queriesDialog: MatDialog,
-      public addClusterDialog: MatDialog, public deleteDialog: MatDialog) {}
+      public addClusterDialog: MatDialog, public deleteDialog: MatDialog,
+      private differs: KeyValueDiffers) {
+    this.clustersListDiffer = this.differs.find(this.clusters).create(null);
+    this.clustersDiffer = new Map<number, KeyValueDiffer<string, any>>()
+    console.log(this.clustersDiffer);
+  }
 
   /**
    * On each change of the data received from the server, updates the
@@ -71,7 +82,7 @@ export class ClustersSectionComponent {
     if (changes['trendsData']) {
       const isUndefined = (obj) => typeof obj === 'undefined';
       const clustersData: ClusterDataObj =
-          isUndefined(this.trendsData) ? [] : this.trendsData;
+          isUndefined(this.trendsData) ? CLUSTERS_DATA : this.trendsData;
       if (isUndefined(this.svgContainer)) {
         this.svgContainer = this.addSvg(CLUSTERS_CONTAINER);
       } else {
@@ -85,6 +96,21 @@ export class ClustersSectionComponent {
     }
   }
 
+  /**
+   * Detects changes in the clusters list and objects in order to emit the new
+   * clusters map to the clusters' sidenave.
+   */
+  ngDoCheck(): void {
+    if (this.clustersListDiffer.diff(this.clusters)) {
+      this.clusters.emit();
+    }
+    this.clusters.forEach((cluster, id) => {
+      if (this.clustersDiffer.has(id) &&
+          this.clustersDiffer.get(id).diff(cluster)) {
+        this.clusters.emit();
+      }
+    })
+  }
   /** Initializes svg content and queries + clusters data structure. */
   private initializeProperties(): void {
     this.svgContainer.selectAll('*').remove();
@@ -160,14 +186,17 @@ export class ClustersSectionComponent {
    */
   private processClustersObjects(clustersData: ClusterDataObj): void {
     Object.values(clustersData).forEach((cluster) => {
-      const newCluster: Cluster =
-          new Cluster(cluster.title, cluster.id, cluster.queries);
+      const newCluster: Cluster = new Cluster(
+          cluster.title, cluster.id, cluster.volume, cluster.queriesToDisplay,
+          cluster.additionalQueries, cluster.relatedClustersIds);
       newCluster.bubbles.forEach((bubble) => {
         this.minQueryVolume = Math.min(this.minQueryVolume, bubble.volume);
         this.maxQueryVolume = Math.max(this.maxQueryVolume, bubble.volume);
         this.queries.push(bubble);
       });
       this.clusters.set(newCluster.id, newCluster);
+      this.clustersDiffer.set(
+          newCluster.id, this.differs.find(newCluster).create(null));
     });
   }
 
@@ -224,7 +253,7 @@ export class ClustersSectionComponent {
   private addCircles(
       circleGroup: d3.Selection<SVGGElement, any, any, any>, id: string,
       radiusAddition: number, colorScale: Scales):
-      d3.Selection<SVGCircleElement, CircleDatum, SVGSVGElement, any> {
+      d3.Selection<SVGCircleElement, Bubble, SVGGElement, any> {
     return circleGroup.selectAll('g')
         .data(this.queries)
         .enter()
@@ -326,15 +355,15 @@ export class ClustersSectionComponent {
   /** Applies given simulation on inner and outer circles. */
   private applySimulation(): void {
     this.simulation.nodes(Array.from(this.queries)).on('tick', () => {
-      this.circles.attr('cx', (d) => d.x)
-          .attr('cy', (d) => d.y)
+      this.circles.attr('cx', (d: CircleDatum) => d.x)
+          .attr('cy', (d: CircleDatum) => d.y)
           .style(
               'fill',
               (d) => d.clusterId == DELETE_ID ?
                   '#696969' :
                   this.scales.get(Scales.ColorScale)(d.clusterId));
-      this.lightCircles.attr('cx', (d) => d.x)
-          .attr('cy', (d) => d.y)
+      this.lightCircles.attr('cx', (d: CircleDatum) => d.x)
+          .attr('cy', (d: CircleDatum) => d.y)
           .style(
               'fill',
               (d) => d.clusterId == DELETE_ID ?
@@ -388,8 +417,7 @@ export class ClustersSectionComponent {
   private changeBubbleCluster(bubbleObj: CircleDatum): void {
     const currentCluster: Cluster = this.clusters.get(bubbleObj.clusterId);
     // Get new ClusterId based on current position
-    const newID =
-        this.closestGroupId(bubbleObj.x, bubbleObj.y, this.clusterIdToLoc);
+    const newID = this.closestGroupId(bubbleObj.x, bubbleObj.y);
     if (newID == DELETE_ID) {
       bubbleObj.clusterId = newID;
       this.openDeleteDialog(bubbleObj, currentCluster);
@@ -404,11 +432,16 @@ export class ClustersSectionComponent {
    * new cluster and queries to move.
    */
   updateClustersBasedOnDialog(
-      newCluster: Cluster, selections: any[], currCluster: Cluster,
-      clusterly: ClustersSectionComponent): void {
-    selections.forEach((option) => {
-      const bubble: Bubble = option._value;
-      currCluster.moveBubble(bubble, newCluster);
+      newCluster: Cluster, selectedQueries: SelectionModel<Bubble>,
+      currCluster: Cluster, clusterly: ClustersSectionComponent): void {
+    selectedQueries.selected.forEach((bubble) => {
+      if (newCluster.id === DELETE_ID) {
+        bubble.clusterId = DELETE_ID;
+        clusterly.applySimulation();
+        clusterly.deleteCircle(bubble, currCluster);
+      } else {
+        currCluster.moveBubble(bubble, newCluster);
+      }
     });
     clusterly.applySimulation();
     clusterly.queriesDialog.closeAll();
@@ -430,14 +463,14 @@ export class ClustersSectionComponent {
     const cluster: Cluster = this.clusters.get(d.clusterId);
     const sortedQueries: Bubble[] =
         Array.from(cluster.bubbles)
+            .concat(cluster.additionalBubbles)
             .sort((bubble1, bubble2) => bubble2.volume - bubble1.volume);
-
     this.queriesDialog.open(QueriesDialogComponent, {
       data: {
         clusterly: this,
         currentCluster: cluster,
         queries: sortedQueries,
-        clusters: Array.from(this.clusters.values()),
+        clusters: [DELETE_CLUSTER].concat(Array.from(this.clusters.values())),
         updateFunc: this.updateClustersBasedOnDialog,
       }
     });
@@ -449,8 +482,10 @@ export class ClustersSectionComponent {
    */
   private addCluster(title: string, clusterly: ClustersSectionComponent): void {
     const newCluster: Cluster =
-        new Cluster(title, clusterly.clusters.size + 1, []);
+        new Cluster(title, clusterly.clusters.size + 1, 0, [], [], []);
     clusterly.clusters.set(clusterly.clusters.size + 1, newCluster);
+    clusterly.clustersDiffer.set(
+        newCluster.id, clusterly.differs.find(newCluster).create(null));
     clusterly.simulation.stop();
     d3.selectAll('.' + TOOLTIP_CLASS).remove();
     clusterly.svgContainer.selectAll('*').remove();
@@ -472,10 +507,11 @@ export class ClustersSectionComponent {
 
   /**
    * Deletes the circle d3 Object and corresponding bubble from the clusters
-   * visualization.
+   * visualization (called from delete ).
    */
-  deleteCircle(bubbleObj: CircleDatum, cluster: Cluster): void {
+  deleteCircle(bubbleObj: Bubble, cluster: Cluster): void {
     cluster.bubbles.delete(bubbleObj);
+    cluster.volume -= bubbleObj.volume;
     this.queries = this.queries.filter((value) => value !== bubbleObj);
     this.circles.filter((d: CircleDatum) => d.clusterId === DELETE_ID)
         .transition()
