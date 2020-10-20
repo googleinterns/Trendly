@@ -1,7 +1,6 @@
-//@ts-nocheck
 import {SelectionModel} from '@angular/cdk/collections';
 import {Component, Input, Output, SimpleChanges} from '@angular/core';
-import {KeyValueChanges, KeyValueDiffer, KeyValueDiffers} from '@angular/core';
+import {EventEmitter, KeyValueDiffer, KeyValueDiffers} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import * as d3 from 'd3';
 
@@ -48,7 +47,8 @@ export enum Scales {
 })
 
 export class ClustersSectionComponent {
-  @Output() clusters: Map<number, Cluster> = new Map<number, Cluster>();
+  private clusters: Map<number, Cluster> = new Map<number, Cluster>();
+  @Output() clustersEmitter = new EventEmitter<Map<number, Cluster>>();
   private clustersListDiffer: KeyValueDiffer<string, any>;
   private clustersDiffer: Map<number, KeyValueDiffer<string, any>>;
   private queries: Array<Bubble> = new Array<Bubble>();
@@ -63,13 +63,15 @@ export class ClustersSectionComponent {
   private maxQueryVolume: number = 0;
   private minQueryVolume: number = Infinity;
   @Input() trendsData: ClusterDataObj;
+  // TOOD: recieve clustersToDisplay from sidenav and update  clusters'
+  // visualization.
   @Input() clustersToDisplay: Map<number, Cluster>;
 
   constructor(
       private colorsService: ColorsService, public queriesDialog: MatDialog,
       public addClusterDialog: MatDialog, public deleteDialog: MatDialog,
       private differs: KeyValueDiffers) {
-    this.clustersListDiffer = this.differs.find(this.clusters).create(null);
+    this.clustersListDiffer = this.differs.find(this.clusters).create();
     this.clustersDiffer = new Map<number, KeyValueDiffer<string, any>>()
     console.log(this.clustersDiffer);
   }
@@ -82,7 +84,7 @@ export class ClustersSectionComponent {
     if (changes['trendsData']) {
       const isUndefined = (obj) => typeof obj === 'undefined';
       const clustersData: ClusterDataObj =
-          isUndefined(this.trendsData) ? CLUSTERS_DATA : this.trendsData;
+          isUndefined(this.trendsData) ? [] : this.trendsData;
       if (isUndefined(this.svgContainer)) {
         this.svgContainer = this.addSvg(CLUSTERS_CONTAINER);
       } else {
@@ -102,12 +104,12 @@ export class ClustersSectionComponent {
    */
   ngDoCheck(): void {
     if (this.clustersListDiffer.diff(this.clusters)) {
-      this.clusters.emit();
+      this.clustersEmitter.emit(this.clusters);
     }
     this.clusters.forEach((cluster, id) => {
       if (this.clustersDiffer.has(id) &&
           this.clustersDiffer.get(id).diff(cluster)) {
-        this.clusters.emit();
+        this.clustersEmitter.emit(this.clusters);
       }
     })
   }
@@ -196,7 +198,7 @@ export class ClustersSectionComponent {
       });
       this.clusters.set(newCluster.id, newCluster);
       this.clustersDiffer.set(
-          newCluster.id, this.differs.find(newCluster).create(null));
+          newCluster.id, this.differs.find(newCluster).create());
     });
   }
 
@@ -485,7 +487,7 @@ export class ClustersSectionComponent {
         new Cluster(title, clusterly.clusters.size + 1, 0, [], [], []);
     clusterly.clusters.set(clusterly.clusters.size + 1, newCluster);
     clusterly.clustersDiffer.set(
-        newCluster.id, clusterly.differs.find(newCluster).create(null));
+        newCluster.id, clusterly.differs.find(newCluster).create());
     clusterly.simulation.stop();
     d3.selectAll('.' + TOOLTIP_CLASS).remove();
     clusterly.svgContainer.selectAll('*').remove();
