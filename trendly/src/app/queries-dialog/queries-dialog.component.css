@@ -1,0 +1,40 @@
+::ng-deep .mat-list-text,
+.mat-dialog-content {
+  font-size: 20px;
+}
+
+::ng-deep #mat-dialog-title-0 {
+  font-size: 25px;
+}
+
+.space {
+  margin-left: 1rem;
+}
+
+.apply-button {
+  background-color: rgb(57, 99, 161);
+  height: 50px;
+  padding: 10px 20px 10px;
+  font-family: "Roboto";
+  font-size: 25px;
+  color: white;
+  text-align: center;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  vertical-align: middle;
+}
+
+.btn {
+  display: flex;
+  justify-content: center;
+}
+
+.cluster-selection {
+  display: flex;
+  flex-direction: row;
+}
+
+mat-form-field {
+  padding-left: 20px;
+}

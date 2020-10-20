@@ -1,12 +1,17 @@
-/** Query data type as recieved from the server */
+/** Query data type as recieved from the server. */
 export interface QueryData {
-    queryString: string;
-    volume: number;
+  title: string;
+  value: number;
 }
 
-/** Cluster data type as recieved from the server */
+/** Cluster data type as recieved from the server. */
 export interface ClusterData {
-    title: string;
-    id: number;
-    queries: QueryData[]
+  title: string;
+  id: number;
+  queries: QueryData[]
+}
+
+/** The final object that the sever returns. */
+export interface ClusterDataObj {
+  '1': ClusterData;
 }

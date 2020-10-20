@@ -1,8 +1,15 @@
-
-<div class ="dates">
+<div class="dates">
   <mat-form-field class="form-field">
-    <input matInput (ngModelChange)="emitStartDate()" [matDatepicker]="pickerstart" placeholder="Start Date" [formControl]="startDate" [min]="minDate" [max]="maxDate">
-    <mat-datepicker-toggle matSuffix [for]="pickerstart"></mat-datepicker-toggle>
+    <mat-label>Pick a Start Date: </mat-label>
+    <input matInput
+           (ngModelChange)="emitStartDate()"
+           [matDatepicker]="pickerstart"
+           placeholder="Start Date"
+           [formControl]="startDate"
+           [min]="minDate"
+           [max]="maxDate">
+    <mat-datepicker-toggle matSuffix
+                           [for]="pickerstart"></mat-datepicker-toggle>
     <mat-datepicker #pickerstart
                     startView="multi-year"
                     (yearSelected)="chosenYearHandlerStart($event)"
@@ -11,10 +18,17 @@
     </mat-datepicker>
   </mat-form-field>
 
-  <!-- //TODO - handle min = start -->
   <mat-form-field class="form-field">
-    <input matInput (ngModelChange)="emitEndDate()" [matDatepicker]="pickerend" placeholder="End Date" [formControl]="endDate" [min]="minDate" [max]="maxDate">
-    <mat-datepicker-toggle matSuffix [for]="pickerend"></mat-datepicker-toggle>
+    <mat-label>Pick an End Date: </mat-label>
+    <input matInput
+           (ngModelChange)="emitEndDate()"
+           [matDatepicker]="pickerend"
+           placeholder="End Date"
+           [formControl]="endDate"
+           [min]="minDate"
+           [max]="maxDate">
+    <mat-datepicker-toggle matSuffix
+                           [for]="pickerend"></mat-datepicker-toggle>
     <mat-datepicker #pickerend
                     startView="multi-year"
                     (yearSelected)="chosenYearHandlerEnd($event)"
@@ -23,4 +37,3 @@
     </mat-datepicker>
   </mat-form-field>
 </div>
-  

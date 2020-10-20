@@ -1,5 +1,8 @@
-
 <mat-form-field class="form-field">
-    <mat-label>Enter a term: </mat-label>
-    <input (change)='emitTerm()' matInput placeholder="E.g: 'Corona'" type="text" [(ngModel)]="termValue">
+  <mat-label>Pick a Term: </mat-label>
+  <input (change)="emitTerm()"
+         matInput
+         placeholder="E.g. 'Corona'"
+         type="text"
+         [(ngModel)]="termValue">
 </mat-form-field>

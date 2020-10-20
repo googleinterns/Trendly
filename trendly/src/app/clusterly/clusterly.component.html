@@ -1,4 +1,4 @@
-
-<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-
-<div class="clusters-container"></div>
+<mat-progress-bar *ngIf="isLoading"
+                  mode="indeterminate"></mat-progress-bar>
+<app-clusterly-inputs (apply)="getDataFromServer($event)"></app-clusterly-inputs>
+<app-clusters-section [trendsData]="dataFromServer"></app-clusters-section>

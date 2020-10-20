@@ -19,6 +19,7 @@ public class ClusterlyDataServlet extends HttpServlet {
   public static final String COUNTRY_PARAMETER = "country";
   public static final String START_DATE_PARAMETER = "startDate";
   public static final String END_DATE_PARAMETER = "endDate";
+  public static final String CATEGORY_PARAMETER = "category";
 
   /** Returns json of List<Cluster> based on the given url parameters */
   @Override
@@ -27,8 +28,11 @@ public class ClusterlyDataServlet extends HttpServlet {
     String country = request.getParameter(COUNTRY_PARAMETER);
     String startDate = request.getParameter(START_DATE_PARAMETER);
     String endDate = request.getParameter(END_DATE_PARAMETER);
+    String category = request.getParameter(CATEGORY_PARAMETER);
+
     try {
-      List<Cluster> clusters = QueriesExpansion.getAllClusters(terms, country, startDate, endDate);
+      List<Cluster> clusters =
+          QueriesExpansion.getAllClusters(terms, country, startDate, endDate, category);
       Gson gson = new Gson();
       String clustersJson = gson.toJson(clusters);
       response.setContentType(JSON_CONTENT);

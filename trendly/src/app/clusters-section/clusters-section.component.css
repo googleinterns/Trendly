@@ -1,0 +1,86 @@
+.clusters-container {
+  margin: auto;
+}
+
+::ng-deep .bubble-tooltip {
+  display: none;
+  background-color: #000;
+  color: #fff;
+  border: solid;
+  border-width: 2px;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+  font-size: 2.7vh;
+  font-family: 'Roboto', sans-serif;
+  max-width: 300px;
+  word-wrap: break-word;
+  text-align: center;
+}
+
+::ng-deep .delete-button {
+  top: -60vh;
+  left: 140px;
+}
+
+::ng-deep .add-button {
+  top: -70vh;
+  left: 40px;
+}
+
+::ng-deep .icon-button {
+  width: 100px;
+  height: 100px;
+  appearance: none;
+  border-radius: 50%;
+  border: 0;
+  background-color: hsla(4, 0%, 0%, 1);
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+  transition: background-color 200ms ease-out;
+  outline: none;
+}
+
+::ng-deep .add-button:hover {
+  background-color: hsla(4, 0%, 0%, 0.7);
+}
+
+::ng-deep .delete-button:hover {
+  background-color: hsla(4, 0%, 0%, 0.4);
+}
+
+::ng-deep .icon-button::before {
+  content: "";
+  display: block;
+  width: 50%;
+  height: 50%;
+  pointer-events: none;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  mask-image: var(--icon);
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: 100%;
+}
+
+.material-icons.md-48 {
+  font-size: 48px;
+  color: #fff;
+  margin-right: 22px;
+}
+
+::ng-deep .custom-tooltip {
+  font-size: 25px;
+}
+
+::ng-deep .clusters-titles {
+  font-family: 'Roboto', sans-serif;
+  font-size: 25px;
+  font-weight: 800;
+  stroke: #fff;
+  stroke-width: 2px;
+  stroke-opacity: 0.6;
+}
