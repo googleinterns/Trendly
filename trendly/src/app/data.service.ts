@@ -14,7 +14,7 @@ export class DataService {
    */
   public fetchTopTopics(
       term: string|string[], startDate: string, endDate: string,
-      country: string, interval: number = 1, category : string) {
+      country: string, interval: number = 1, category: string) {
     return this.callServlet(
         '/top-topics', term, startDate, endDate, country, interval, category)
   }
@@ -24,7 +24,7 @@ export class DataService {
    */
   public fetchRisingTopics(
       term: string|string[], startDate: string, endDate: string,
-      country: string, interval: number = 1, category : string) {
+      country: string, interval: number = 1, category: string) {
     return this.callServlet(
         '/rising-topics', term, startDate, endDate, country, interval, category)
   }
@@ -51,7 +51,7 @@ export class DataService {
     const url = basrUrl +
         this.buildURLParameters(
             term, startDate, endDate, country, interval, category);
-            console.log(url);
+    console.log(url);
     return this.http.get(url, {observe: 'body', responseType: 'json'});
   }
 
