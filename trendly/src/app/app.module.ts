@@ -25,7 +25,7 @@ import {DateInputComponent} from './date-input/date-input.component';
 import {DeleteConfirmationDialogComponent} from './delete-confirmation-dialog/delete-confirmation-dialog.component';
 import {HistogramSectionComponent} from './histogram-section/histogram-section.component';
 import {HistogramyComponentComponent} from './histogramy-component/histogramy-component.component';
-import {InputsComponent} from './inputs/inputs.component';
+import {InputsComponent} from './histogramy-inputs/histogramy-inputs.component';
 import {IntervalInputComponent} from './interval-input/interval-input.component';
 import {MainPageComponent} from './main-page/main-page.component';
 import {DemoMaterialModule} from './material-module';
