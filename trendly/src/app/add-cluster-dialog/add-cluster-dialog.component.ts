@@ -10,7 +10,6 @@ import {ClustersSectionComponent} from '../clusters-section/clusters-section.com
 export class AddClusterErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl|null, form: FormGroupDirective|NgForm|null):
       boolean {
-    console.log(form, control);
     const isSubmitted = form && form.submitted;
     return !!(
         control && control.invalid &&
