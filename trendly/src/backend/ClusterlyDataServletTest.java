@@ -47,6 +47,6 @@ public final class ClusterlyDataServletTest extends HttpServlet {
     Cluster[] clusters = gson.fromJson(stringWriter.toString(), Cluster[].class);
     assertTrue(clusters != null);
     assertTrue(clusters[0].title instanceof String);
-    assertTrue(clusters[0].queries instanceof TrendsQuery[]);
+    assertTrue(clusters[0].queriesToDisplay instanceof TrendsQuery[]);
   }
 }
