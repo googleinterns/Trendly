@@ -32,27 +32,27 @@ export interface DialogData {
 })
 export class QueriesDialogComponent {
   selectedCluster: Cluster;
-  readonly displayedColumns = ['select', 'query', 'volume'];
+  readonly displayedColumns: string[] = ['select', 'query', 'volume'];
   readonly dataSource: MatTableDataSource<Bubble>;
-  readonly selectedQueries = new SelectionModel<Bubble>(true, []);
+  readonly selectedQueries: SelectionModel<Bubble> =
+      new SelectionModel<Bubble>(true, []);
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {
     this.dataSource = new MatTableDataSource<Bubble>(data.queries);
   }
 
   /**
-   * Returns true iff the number of selected elements matches the total number of rows.
+   * Returns true iff the number of selected elements matches the total number
+   * of rows.
    */
   isAllSelected(): boolean {
-    const numSelected = this.selectedQueries.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
+    return this.selectedQueries.selected.length === this.dataSource.data.length;
   }
 
   /**
    * Selects all rows if they are not all selected; otherwise clear selection.
    */
-  masterToggle() {
+  masterToggle(): void {
     this.isAllSelected() ?
         this.selectedQueries.clear() :
         this.dataSource.data.forEach(row => this.selectedQueries.select(row));
