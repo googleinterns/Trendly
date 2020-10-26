@@ -9,11 +9,16 @@ import {Bubble} from './bubble-model'
 
 export class Cluster {
   readonly bubbles: Set<Bubble>;
+  readonly additionalBubbles: Bubble[];
 
   constructor(
-      readonly title: string, readonly id: number, queries: QueryData[]) {
-    this.bubbles = new Set<Bubble>(
-        queries.map(query => new Bubble(query.title, query.value, id)));
+      readonly title: string, readonly id: number, public volume: number,
+      queriesToDisplay: QueryData[], additionalQueries: QueryData[],
+      readonly relatedClustersIds: number[]) {
+    this.bubbles = new Set<Bubble>(queriesToDisplay.map(
+        query => new Bubble(query.title, query.value, id)));
+    this.additionalBubbles = additionalQueries.map(
+        query => new Bubble(query.title, query.value, id));
   }
 
   /**
@@ -22,6 +27,8 @@ export class Cluster {
    */
   moveBubble(bubble: Bubble, anotherCluster: Cluster): void {
     bubble.clusterId = anotherCluster.id;
+    this.volume -= bubble.volume;
+    anotherCluster.volume += bubble.volume;
     this.bubbles.delete(bubble);
     anotherCluster.bubbles.add(bubble);
   }

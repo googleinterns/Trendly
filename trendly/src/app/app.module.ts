@@ -20,6 +20,7 @@ import {CategoryInputComponent} from './category-input/category-input.component'
 import {ClusterlyInputsComponent} from './clusterly-inputs/clusterly-inputs.component';
 import {ClusterlyComponent} from './clusterly/clusterly.component';
 import {ClustersSectionComponent} from './clusters-section/clusters-section.component';
+import {ClustersSideNavComponent} from './clusters-side-nav/clusters-side-nav.component'
 import {CountryInputComponent} from './country-input/country-input.component';
 import {DateInputComponent} from './date-input/date-input.component';
 import {DeleteConfirmationDialogComponent} from './delete-confirmation-dialog/delete-confirmation-dialog.component';
@@ -56,6 +57,7 @@ import {TopBarComponent} from './top-bar/top-bar.component';
     AddClusterDialogComponent,
     CategoryInputComponent,
     DeleteConfirmationDialogComponent,
+    ClustersSideNavComponent,
   ],
   imports: [
     BrowserModule,

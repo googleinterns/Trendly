@@ -1,14 +1,14 @@
-::ng-deep .mat-list-text,
+.mat-cell,
 .mat-dialog-content {
   font-size: 20px;
 }
 
-::ng-deep #mat-dialog-title-0 {
-  font-size: 25px;
+.mat-header-cell {
+  font-size: 22px;
 }
 
-.space {
-  margin-left: 1rem;
+#mat-dialog-title-0 {
+  font-size: 25px;
 }
 
 .apply-button {
@@ -33,6 +33,7 @@
 .cluster-selection {
   display: flex;
   flex-direction: row;
+  padding-top: 30px;
 }
 
 mat-form-field {

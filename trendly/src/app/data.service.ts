@@ -24,7 +24,7 @@ export class DataService {
    */
   public fetchRisingTopics(
       term: string|string[], startDate: string, endDate: string,
-      country: string, interval: number = 1, category : string) {
+      country: string, interval: number = 1, category: string) {
     return this.callServlet(
         '/rising-topics', term, startDate, endDate, country, interval, category)
   }
