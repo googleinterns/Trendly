@@ -1,4 +1,60 @@
 <mat-progress-bar *ngIf="isLoading"
                   mode="indeterminate"></mat-progress-bar>
-<app-clusterly-inputs (apply)="getDataFromServer($event)"></app-clusterly-inputs>
-<app-clusters-section [trendsData]="dataFromServer"></app-clusters-section>
+
+
+
+<mat-sidenav-container class="side-nav-container">
+  <mat-sidenav #sidenav
+               mode="side"
+               opened="true">
+    All-Clusters
+    <mat-tree [dataSource]="dataSource"
+              [treeControl]="treeControl">
+      <mat-tree-node *matTreeNodeDef="let node"
+                     matTreeNodeToggle
+                     matTreeNodePadding>
+        <button mat-icon-button
+                disabled></button>
+
+        <div class="rowWrap">
+          <mat-checkbox class="checklist-leaf-node column"
+                        [checked]="checklistSelection.isSelected(node)"
+                        (change)="childItemSelectionToggle(node);">
+            {{node.item.title}}
+          </mat-checkbox>
+          <p class="column vol">[Volume:{{node.item.volume}}]</p>
+        </div>
+      </mat-tree-node>
+
+      <mat-tree-node *matTreeNodeDef="let node; when: hasChild"
+                     matTreeNodePadding>
+        <button mat-icon-button
+                matTreeNodeToggle
+                [attr.aria-label]="'toggle ' + node.filename">
+          <mat-icon class="mat-icon-rtl-mirror">
+            {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+          </mat-icon>
+        </button>
+        <div class="rowWrapper">
+          <mat-checkbox class="column"
+                        [checked]="descendantsAllSelected(node) && checklistSelection.isSelected(node)"
+                        [indeterminate]="descendantsPartiallySelected(node) && !descendantsAllSelected(node) && checklistSelection.isSelected(node)"
+                        (change)="parentItemSelectionToggle(node)">{{node.item.title}}
+          </mat-checkbox>
+          <p class="column vol"> [Volume:{{node.item.volume}}]</p>
+        </div>
+      </mat-tree-node>
+    </mat-tree>
+    <button mat-button
+            (click)="sidenav.close()"> close</button>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <app-clusterly-inputs (apply)="getDataFromServer($event);"></app-clusterly-inputs>
+    <app-clusters-section (clustersEmitter)="clusters = $event; log(clusters); changeView();"
+                          [trendsData]="dataFromServer"
+                          [clustersToDisplay]="clustersToShow"></app-clusters-section>
+    <button mat-button
+            (click)="sidenav.toggle()">press</button>
+  </mat-sidenav-content>
+</mat-sidenav-container>
