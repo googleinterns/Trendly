@@ -16,6 +16,11 @@ mat-sidenav.mat-closed.mat-locked-open-add-active {
   max-width: 800px !important;
 }
 
+table {
+  width: 100%;
+}
+
+
 .rowWrap {
   display: table;
 }
