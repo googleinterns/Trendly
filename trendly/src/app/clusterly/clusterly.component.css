@@ -11,15 +11,14 @@
 mat-sidenav,
 mat-sidenav.mat-locked-open,
 mat-sidenav.mat-closed.mat-locked-open-add-active {
-  min-width: 600px !important;
+  min-width: 300px !important;
 
-  max-width: 800px !important;
+  max-width: 500px !important;
 }
 
 table {
   width: 100%;
 }
-
 
 .rowWrap {
   display: table;
@@ -40,6 +39,39 @@ table {
 .mat-checkbox-background,
 .mat-checkbox-anim-unchecked-checked .mat-checkbox-anim-checked-unchecked {
   transform: scale(2);
+}
+
+/* materia designm icons */
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 25px;
+  /* Preferred icon size */
+  display: inline-flex;
+  vertical-align: top;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
+#title {
+  font-family: 'Amatic SC', cursive;
+  font-size: 25px;
 }
 
 

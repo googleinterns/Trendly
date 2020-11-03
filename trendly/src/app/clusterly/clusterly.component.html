@@ -7,18 +7,25 @@
   <mat-sidenav #sidenav
                mode="side"
                opened="true">
-    All-Clusters
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <span id="title"><button mat-button
+              class="material-icons"
+              (click)="sidenav.close()">clear</button>
+      All-Clusters</span>
+    <table mat-table
+           [dataSource]="dataSource"
+           class="mat-elevation-z8">
 
       <!-- Checkbox Column -->
       <ng-container matColumnDef="select">
-        <th mat-header-cell *matHeaderCellDef>
+        <th mat-header-cell
+            *matHeaderCellDef>
           <mat-checkbox (change)="$event ? masterToggle() : null"
                         [checked]="selection.hasValue() && isAllSelected()"
                         [indeterminate]="selection.hasValue() && !isAllSelected()">
           </mat-checkbox>
         </th>
-        <td mat-cell *matCellDef="let row">
+        <td mat-cell
+            *matCellDef="let row">
           <mat-checkbox (click)="$event.stopPropagation()"
                         (change)="$event ? ItemToggle(row) : null"
                         [checked]="selection.isSelected(row)">
@@ -28,32 +35,39 @@
 
       <!-- Name Column -->
       <ng-container matColumnDef="title">
-        <th mat-header-cell *matHeaderCellDef> Title</th>
-        <td mat-cell *matCellDef="let element"> {{element.title}} </td>
+        <th mat-header-cell
+            *matHeaderCellDef> Title</th>
+        <td mat-cell
+            *matCellDef="let element"> {{element.title}} </td>
       </ng-container>
 
       <!-- vol Column -->
       <ng-container matColumnDef="volume">
-        <th mat-header-cell *matHeaderCellDef> Volume</th>
-        <td mat-cell *matCellDef="let element"> {{element.volume}} </td>
+        <th mat-header-cell
+            *matHeaderCellDef> Volume</th>
+        <td mat-cell
+            *matCellDef="let element"> {{element.volume}} </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+      <tr mat-header-row
+          *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row
+          *matRowDef="let row; columns: displayedColumns;"
           (click)="selection.toggle(row)">
       </tr>
     </table>
-    <button mat-button
-            (click)="sidenav.close()"> close</button>
   </mat-sidenav>
 
   <mat-sidenav-content>
+    <button mat-button
+            class="material-icons"
+            *ngIf="!this.sidenav.opened"
+            (click)="sidenav.toggle()">arrow_forward</button>
     <app-clusterly-inputs (apply)="getDataFromServer($event);"></app-clusterly-inputs>
     <app-clusters-section (clustersEmitter)="clusters = $event; changeView();"
+                          (clustersToShowEmitter)="clustersToShow = $event;"
                           [trendsData]="dataFromServer"
                           [clustersToDisplay]="clustersToShow"></app-clusters-section>
-    <button mat-button
-            (click)="sidenav.toggle()">press</button>
   </mat-sidenav-content>
 </mat-sidenav-container>
 
