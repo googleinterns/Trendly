@@ -149,9 +149,7 @@ export class ClustersSectionComponent {
   }
   /** Generates bubble clusters visualization based on the recieved data. */
   private addClustersVisualization(): void {
-    if (this.simulation) {
-      this.simulation.stop();
-    }
+    (this.simulation) ? this.simulation.stop() : null; 
     this.processQueries();
     this.addScales();
 
