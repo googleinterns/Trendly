@@ -90,7 +90,7 @@ export class ClustersSectionComponent {
     if (changes['trendsData']) {
       const isUndefined = (obj) => typeof obj === 'undefined';
       const clustersData: ClusterDataObj =
-          isUndefined(this.trendsData) ? CLUSTERS_DATA : this.trendsData;
+          isUndefined(this.trendsData) ? [] : this.trendsData;
       if (isUndefined(this.svgContainer)) {
         this.svgContainer = this.addSvg(CLUSTERS_CONTAINER);
       } else {
@@ -149,7 +149,7 @@ export class ClustersSectionComponent {
   }
   /** Generates bubble clusters visualization based on the recieved data. */
   private addClustersVisualization(): void {
-    (this.simulation) ? this.simulation.stop() : null; 
+    (this.simulation) ? this.simulation.stop() : null;
     this.processQueries();
     this.addScales();
 
@@ -270,7 +270,7 @@ export class ClustersSectionComponent {
       d3.Selection<SVGSVGElement, any, any, any> {
     return d3.select(container)
         .append('svg')
-        .attr('width', window.innerWidth)
+        .attr('width', window.innerWidth - 100)
         .attr('height', window.innerHeight);
   }
 
@@ -457,8 +457,8 @@ export class ClustersSectionComponent {
   private tooltipHandling(): void {
     const mousemove = (d) => {
       this.tooltip.html(d.query)
-          .style('left', (d3.event.pageX + 25) + 'px')
-          .style('top', (d3.event.pageY - 65) + 'px');
+          .style('left', (d3.event.pageX - 265) + 'px')
+          .style('top', (d3.event.pageY - 125) + 'px');
     };
     this.circles
         .on('mouseover',
