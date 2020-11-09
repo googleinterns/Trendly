@@ -1,15 +1,9 @@
 import {SelectionModel} from '@angular/cdk/collections';
-import {FlatTreeControl} from '@angular/cdk/tree';
-import {Component, OnChanges, SimpleChanges} from '@angular/core';
-import {Injectable} from '@angular/core';
+import {Component} from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
-import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
-import {BehaviorSubject, Observable} from 'rxjs';
-
 import {InputObj} from '../clusterly-inputs/clusterly-inputs.component';
 import {DataService} from '../data.service';
 import {Cluster} from '../models/cluster-model';
-
 /**
  * Clusterly component - includes Clusterly inputs & clusters-section
  * components and handles fetching data from server based on the user inputs and
@@ -18,18 +12,17 @@ import {Cluster} from '../models/cluster-model';
 @Component({
   selector: 'app-clusterly',
   templateUrl: './clusterly.component.html',
-  styleUrls: ['./clusterly.component.css']
+  styleUrls: ['./clusterly.component.css'],
 })
 export class ClusterlyComponent {
   dataFromServer: any;
   isLoading: boolean = false;
-
   clusters: Map<number, Cluster> = new Map<number, Cluster>();
   clustersToShow: Map<number, Cluster>;
   displayedColumns: string[] = ['select', 'title', 'volume'];
   dataSource: MatTableDataSource<Cluster>;
-  selection = new SelectionModel<Cluster>(true, []);
-  
+  selection: SelectionModel<Cluster> = new SelectionModel<Cluster>(true, []);
+
   constructor(private dataService: DataService) {
     this.clustersToShow = new Map<number, Cluster>();
     this.dataSource =
@@ -39,13 +32,38 @@ export class ClusterlyComponent {
   /**
    * Changes side-nav view according changes that done in the UI.
    */
-  changeView(): void {
+  changSideNavClusters(): void {
     const sortedClusters: Map<number, Cluster> = new Map(
         [...this.clusters.entries()].sort((a, b) => b[1].volume - a[1].volume));
     this.dataSource =
         new MatTableDataSource<Cluster>([...sortedClusters.values()]);
   }
 
+  /**
+   * Executed when changes done in cluster section and updates accordingly the
+   * selections and clusters to show.
+   * @param newClustersToShow list of clusters to show from the child
+   *     cluster-section.
+   */
+  changeInUiHandler(newClustersToShow: Map<number, Cluster>): void {
+    this.changSideNavClusters();
+    console.log(this.clustersToShow);
+    let hasChanged: boolean = false;
+    this.dataSource.data.forEach((cluster => {
+      if ((this.selection.isSelected(cluster) &&
+           !newClustersToShow.has(cluster.id)) ||
+          (!this.selection.isSelected(cluster) &&
+           newClustersToShow.has(cluster.id))) {
+        this.selection.toggle(cluster);
+        hasChanged = true;
+      }
+    }));
+    (hasChanged) ? this.updateClustersToShow() : null;
+  }
+
+  /**
+   * Gets data from the server and updates the dataFromServer property.
+   */
   getDataFromServer(input: InputObj) {
     this.isLoading = true;
     this.dataService
@@ -65,9 +83,10 @@ export class ClusterlyComponent {
   }
 
   /**
-   * Change the row selection when clicked and accordingly updates the clusters to show.
+   * Change the row selection when clicked and accordingly updates the clusters
+   * to show.
    */
-  ItemToggle(row) {
+  itemToggle(row): void {
     this.selection.toggle(row);
     this.updateClustersToShow();
   }
@@ -85,7 +104,7 @@ export class ClusterlyComponent {
   /**
    * Whether the number of selected elements matches the total number of rows.
    */
-  isAllSelected() {
+  isAllSelected(): boolean {
     const numSelected = this.selection.selected.length;
     const numRows = this.dataSource.data.length;
     return numSelected === numRows;
@@ -94,7 +113,7 @@ export class ClusterlyComponent {
   /**
    * Selects all rows if they are not all selected; otherwise clear selection.
    */
-  masterToggle() {
+  masterToggle(): void {
     this.isAllSelected() ?
         this.selection.clear() :
         this.dataSource.data.forEach((row) => this.selection.select(row));

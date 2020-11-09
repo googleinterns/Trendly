@@ -2,17 +2,12 @@
   position: absolute;
   width: 100%;
   height: 100%;
-  /* top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0; */
 }
 
 mat-sidenav,
 mat-sidenav.mat-locked-open,
 mat-sidenav.mat-closed.mat-locked-open-add-active {
   min-width: 300px !important;
-
   max-width: 500px !important;
 }
 
@@ -41,13 +36,11 @@ table {
   transform: scale(2);
 }
 
-/* materia designm icons */
 .material-icons {
   font-family: 'Material Icons';
   font-weight: normal;
   font-style: normal;
   font-size: 25px;
-  /* Preferred icon size */
   display: inline-flex;
   vertical-align: top;
   line-height: 1;
@@ -56,15 +49,12 @@ table {
   word-wrap: normal;
   white-space: nowrap;
   direction: ltr;
-
   /* Support for all WebKit browsers. */
   -webkit-font-smoothing: antialiased;
   /* Support for Safari and Chrome. */
   text-rendering: optimizeLegibility;
-
   /* Support for Firefox. */
   -moz-osx-font-smoothing: grayscale;
-
   /* Support for IE. */
   font-feature-settings: 'liga';
 }
@@ -73,20 +63,3 @@ table {
   font-family: 'Amatic SC', cursive;
   font-size: 25px;
 }
-
-
-/* .table-container {
-  display: flex;
-  flex-direction: column;
-  max-height: 500px;
-  min-width: 300px;
-}
-
-.mat-table {
-  overflow: auto;
-  max-height: 500px;
-}
-
-.mat-column-select {
-  overflow: visible;
-} */

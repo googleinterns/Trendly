@@ -1,8 +1,5 @@
 <mat-progress-bar *ngIf="isLoading"
                   mode="indeterminate"></mat-progress-bar>
-
-
-
 <mat-sidenav-container class="side-nav-container">
   <mat-sidenav #sidenav
                mode="side"
@@ -14,7 +11,6 @@
     <table mat-table
            [dataSource]="dataSource"
            class="mat-elevation-z8">
-
       <!-- Checkbox Column -->
       <ng-container matColumnDef="select">
         <th mat-header-cell
@@ -27,12 +23,11 @@
         <td mat-cell
             *matCellDef="let row">
           <mat-checkbox (click)="$event.stopPropagation()"
-                        (change)="$event ? ItemToggle(row) : null"
+                        (change)="($event) ? itemToggle(row) :null"
                         [checked]="selection.isSelected(row)">
           </mat-checkbox>
         </td>
       </ng-container>
-
       <!-- Name Column -->
       <ng-container matColumnDef="title">
         <th mat-header-cell
@@ -40,7 +35,6 @@
         <td mat-cell
             *matCellDef="let element"> {{element.title}} </td>
       </ng-container>
-
       <!-- vol Column -->
       <ng-container matColumnDef="volume">
         <th mat-header-cell
@@ -48,69 +42,22 @@
         <td mat-cell
             *matCellDef="let element"> {{element.volume}} </td>
       </ng-container>
-
       <tr mat-header-row
           *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row
-          *matRowDef="let row; columns: displayedColumns;"
-          (click)="selection.toggle(row)">
+          *matRowDef="let row; columns: displayedColumns;">
       </tr>
     </table>
   </mat-sidenav>
-
   <mat-sidenav-content>
     <button mat-button
             class="material-icons"
             *ngIf="!this.sidenav.opened"
             (click)="sidenav.toggle()">arrow_forward</button>
     <app-clusterly-inputs (apply)="getDataFromServer($event);"></app-clusterly-inputs>
-    <app-clusters-section (clustersEmitter)="clusters = $event; changeView();"
-                          (clustersToShowEmitter)="clustersToShow = $event;"
+    <app-clusters-section (clustersEmitter)="clusters = $event; changSideNavClusters();"
+                          (displayedClustersEmitter)="changeInUiHandler($event);"
                           [trendsData]="dataFromServer"
                           [clustersToDisplay]="clustersToShow"></app-clusters-section>
   </mat-sidenav-content>
 </mat-sidenav-container>
-
-
-
-
-
-
-
-<!-- <mat-tree [dataSource]="dataSource"
-              [treeControl]="treeControl">
-      <mat-tree-node *matTreeNodeDef="let node"
-                     matTreeNodeToggle
-                     matTreeNodePadding>
-        <button mat-icon-button
-                disabled></button>
-
-        <div class="rowWrap">
-          <mat-checkbox class="checklist-leaf-node column"
-                        [checked]="checklistSelection.isSelected(node)"
-                        (change)="childItemSelectionToggle(node);">
-            {{node.item.title}}
-          </mat-checkbox>
-          <p class="column vol">[Volume:{{node.item.volume}}]</p>
-        </div>
-      </mat-tree-node>
-
-      <mat-tree-node *matTreeNodeDef="let node; when: hasChild"
-                     matTreeNodePadding>
-        <button mat-icon-button
-                matTreeNodeToggle
-                [attr.aria-label]="'toggle ' + node.filename">
-          <mat-icon class="mat-icon-rtl-mirror">
-            {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-          </mat-icon>
-        </button>
-        <div class="rowWrapper">
-          <mat-checkbox class="column"
-                        [checked]="descendantsAllSelected(node) && checklistSelection.isSelected(node)"
-                        [indeterminate]="descendantsPartiallySelected(node) && !descendantsAllSelected(node) && checklistSelection.isSelected(node)"
-                        (change)="parentItemSelectionToggle(node)">{{node.item.title}}
-          </mat-checkbox>
-          <p class="column vol"> [Volume:{{node.item.volume}}]</p>
-        </div>
-      </mat-tree-node>
-    </mat-tree> -->
