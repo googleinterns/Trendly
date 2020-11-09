@@ -1,10 +1,11 @@
 import {SelectionModel} from '@angular/cdk/collections';
-import {Component, Input, Output, SimpleChanges} from '@angular/core';
+import {Component, HostListener, Input, Output, SimpleChanges, ViewEncapsulation} from '@angular/core';
 import {EventEmitter, KeyValueDiffer, KeyValueDiffers} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import * as d3 from 'd3';
 
 import {AddClusterDialogComponent} from '../add-cluster-dialog/add-cluster-dialog.component';
+import {AddSimilarDialogComponent} from '../add-similar-dialog/add-similar-dialog.component';
 import {ColorsService} from '../colors.service';
 import {DeleteConfirmationDialogComponent} from '../delete-confirmation-dialog/delete-confirmation-dialog.component';
 import {Bubble} from '../models/bubble-model';
@@ -17,6 +18,7 @@ import {CLUSTERS_DATA} from './mock-data';
 
 export const CLUSTERS_CONTAINER: string = '.clusters-container';
 export const TOOLTIP_CLASS: string = 'bubble-tooltip';
+const MAX_CLUSTERS = 0;
 const LIGHT_CIRCLE_CLASS = 'light';
 const DELETE_ID = -1;
 const DELETE_X_POS = 190;
@@ -44,13 +46,18 @@ export enum Scales {
   selector: 'app-clusters-section',
   templateUrl: './clusters-section.component.html',
   styleUrls: ['./clusters-section.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 
 export class ClustersSectionComponent {
   private clusters: Map<number, Cluster> = new Map<number, Cluster>();
   @Output() clustersEmitter = new EventEmitter<Map<number, Cluster>>();
+  @Output() displayedClustersEmitter = new EventEmitter<Map<number, Cluster>>();
+  @Input() trendsData: ClusterDataObj;
+  @Input() clustersToDisplay: Map<number, Cluster> = new Map<number, Cluster>();
   private clustersListDiffer: KeyValueDiffer<string, any>;
-  private clustersDiffer: Map<number, KeyValueDiffer<string, any>>;
+  private displayedClustersListDiffer: KeyValueDiffer<string, any>;
+  private displayedClustersDiffer: Map<number, KeyValueDiffer<string, any>>;
   private queries: Array<Bubble> = new Array<Bubble>();
   readonly scales: Map<Scales, any> = new Map<Scales, any>();
   private circles: d3.Selection<SVGCircleElement, Bubble, SVGGElement, any>;
@@ -62,18 +69,17 @@ export class ClustersSectionComponent {
   private clusterIdToLoc: Map<number, Location>;
   private maxQueryVolume: number = 0;
   private minQueryVolume: number = Infinity;
-  @Input() trendsData: ClusterDataObj;
-  // TOOD: recieve clustersToDisplay from sidenav and update  clusters'
-  // visualization.
-  @Input() clustersToDisplay: Map<number, Cluster>;
+
 
   constructor(
       private colorsService: ColorsService, public queriesDialog: MatDialog,
       public addClusterDialog: MatDialog, public deleteDialog: MatDialog,
-      private differs: KeyValueDiffers) {
+      public addSimilarDialog: MatDialog, private differs: KeyValueDiffers) {
     this.clustersListDiffer = this.differs.find(this.clusters).create();
-    this.clustersDiffer = new Map<number, KeyValueDiffer<string, any>>()
-    console.log(this.clustersDiffer);
+    this.displayedClustersListDiffer =
+        this.differs.find(this.clustersToDisplay).create();
+    this.displayedClustersDiffer =
+        new Map<number, KeyValueDiffer<string, any>>()
   }
 
   /**
@@ -84,17 +90,32 @@ export class ClustersSectionComponent {
     if (changes['trendsData']) {
       const isUndefined = (obj) => typeof obj === 'undefined';
       const clustersData: ClusterDataObj =
-          isUndefined(this.trendsData) ? [] : this.trendsData;
+          isUndefined(this.trendsData) ? CLUSTERS_DATA : this.trendsData;
       if (isUndefined(this.svgContainer)) {
         this.svgContainer = this.addSvg(CLUSTERS_CONTAINER);
       } else {
-        this.initializeProperties();
+        this.removeSvgContent();
       }
       this.processClustersObjects(clustersData);
-      // If exist clusters to show, adds cluster visualization
-      if (this.clusters.size > 0) {
+    }
+    if (changes['clustersToDisplay']) {
+      this.removeSvgContent();
+      if (this.clustersToDisplay && this.clustersToDisplay.size > 0) {
         this.addClustersVisualization();
       }
+    }
+  }
+
+  /**
+   * Handles changing svg's & clusters' size on window resize event.
+   */
+  @HostListener('window:resize')
+  onResize() {
+    this.removeSvgContent();
+    this.svgContainer.remove();
+    this.svgContainer = this.addSvg(CLUSTERS_CONTAINER);
+    if (this.clustersToDisplay && this.clustersToDisplay.size > 0) {
+      this.addClustersVisualization();
     }
   }
 
@@ -106,30 +127,36 @@ export class ClustersSectionComponent {
     if (this.clustersListDiffer.diff(this.clusters)) {
       this.clustersEmitter.emit(this.clusters);
     }
-    this.clusters.forEach((cluster, id) => {
-      if (this.clustersDiffer.has(id) &&
-          this.clustersDiffer.get(id).diff(cluster)) {
-        this.clustersEmitter.emit(this.clusters);
+    if (this.displayedClustersListDiffer.diff(this.clustersToDisplay)) {
+      console.log(this.clustersToDisplay);
+      this.displayedClustersEmitter.emit(this.clustersToDisplay);
+    }
+    this.clustersToDisplay.forEach((cluster, id) => {
+      if (this.displayedClustersDiffer.has(id) &&
+          this.displayedClustersDiffer.get(id).diff(cluster)) {
+        console.log(this.clustersToDisplay);
+        this.displayedClustersEmitter.emit(this.clustersToDisplay);
       }
     })
   }
-  /** Initializes svg content and queries + clusters data structure. */
-  private initializeProperties(): void {
+
+  /** Initializes svg content. */
+  private removeSvgContent(): void {
     this.svgContainer.selectAll('*').remove();
-    this.clusters = new Map<number, Cluster>();
-    this.queries = new Array<Bubble>();
     if (!(typeof this.tooltip === 'undefined')) {
       this.tooltip.remove();
     }
   }
-
   /** Generates bubble clusters visualization based on the recieved data. */
   private addClustersVisualization(): void {
+    if (this.simulation) {
+      this.simulation.stop();
+    }
+    this.processQueries();
     this.addScales();
 
     // Map each cluster to its location on the screen.
     this.clusterIdToLoc = this.gridDivision();
-
     // Initialize the circle group.
     const circleGroup: d3.Selection<SVGGElement, any, any, any> =
         this.addGroup();
@@ -139,7 +166,7 @@ export class ClustersSectionComponent {
         circleGroup, LIGHT_CIRCLE_CLASS, 25, Scales.LightColorScale);
     this.circles = this.addCircles(circleGroup, '', 0, Scales.ColorScale);
 
-    this.addClusterTitles(circleGroup);
+    this.addClusterTitlesAndBtn(circleGroup);
 
     // Add tooltip with query string for each circle.
     this.tooltip = this.addTooltip(CLUSTERS_CONTAINER);
@@ -155,29 +182,33 @@ export class ClustersSectionComponent {
   /** Adds scales to this.scales to be used in this component functions. */
   private addScales(): void {
     // A scale that gives a radius size for each query based on its volume.
-    this.scales.set(Scales.RadiusScale, d3.scaleSqrt().domain([1, 100]).range([
-      (window.innerWidth + window.innerHeight) / 120,
-      (window.innerWidth + window.innerHeight) / 50
-    ]));
+    this.scales.set(
+        Scales.RadiusScale,
+        d3.scaleSqrt()
+            .domain([this.minQueryVolume, this.maxQueryVolume])
+            .range([
+              (window.innerWidth + window.innerHeight) / 120,
+              (window.innerWidth + window.innerHeight) / 50
+            ]));
 
     // A scale that gives a color for each bubble.
     this.scales.set(
         Scales.ColorScale,
         d3.scaleOrdinal()
-            .domain(Array.from(this.clusters.keys()).map(String))
+            .domain(Array.from(this.clustersToDisplay.keys()).map(String))
             .range(this.colorsService.colors));
 
     // A scale that gives a light color for each outer bubble.
     this.scales.set(
         Scales.LightColorScale,
         d3.scaleOrdinal()
-            .domain(Array.from(this.clusters.keys()).map(String))
+            .domain(Array.from(this.clustersToDisplay.keys()).map(String))
             .range(this.colorsService.lightColors));
 
     // A scale of the x position for each group.
     this.scales.set(
         Scales.XPositionSacle,
-        d3.scaleLinear().domain([1, this.clusters.size]).range([
+        d3.scaleLinear().domain([1, this.clustersToDisplay.size]).range([
           window.innerWidth / 6, 5 * window.innerWidth / 6
         ]));
   }
@@ -187,19 +218,29 @@ export class ClustersSectionComponent {
    * this.queries.
    */
   private processClustersObjects(clustersData: ClusterDataObj): void {
+    this.clusters = new Map<number, Cluster>();
     Object.values(clustersData).forEach((cluster) => {
       const newCluster: Cluster = new Cluster(
           cluster.title, cluster.id, cluster.volume, cluster.queriesToDisplay,
           cluster.additionalQueries, cluster.relatedClustersIds);
-      newCluster.bubbles.forEach((bubble) => {
+      this.clusters.set(newCluster.id, newCluster);
+    });
+  }
+
+  /**
+   * Updates this.queries, minQueryVolume, maxQueryVolume properties.
+   */
+  private processQueries(): void {
+    this.queries = new Array<Bubble>();
+    this.clustersToDisplay.forEach((cluster) => {
+      cluster.bubbles.forEach((bubble) => {
         this.minQueryVolume = Math.min(this.minQueryVolume, bubble.volume);
         this.maxQueryVolume = Math.max(this.maxQueryVolume, bubble.volume);
         this.queries.push(bubble);
+        this.displayedClustersDiffer.set(
+            cluster.id, this.differs.find(cluster).create());
       });
-      this.clusters.set(newCluster.id, newCluster);
-      this.clustersDiffer.set(
-          newCluster.id, this.differs.find(newCluster).create());
-    });
+    })
   }
 
   /**
@@ -208,13 +249,15 @@ export class ClustersSectionComponent {
    */
   private gridDivision(): Map<number, Location> {
     const height: number = window.innerHeight;
-    const upperYPosition: number = Math.min(300, height / 3);
+    const upperYPosition: number = Math.min(250, height / 3);
     const lowerYPosition: number = 2 * height / 3;
     const clusterIdToLoc: Map<number, Location> = new Map<number, Location>();
-    this.clusters.forEach((cluster) => {
-      const x: number = this.scales.get(Scales.XPositionSacle)(cluster.id);
-      const y: number = cluster.id % 2 === 0 ? upperYPosition : lowerYPosition;
+    let i: number = 1;
+    this.clustersToDisplay.forEach((cluster) => {
+      const x: number = this.scales.get(Scales.XPositionSacle)(i);
+      const y: number = i % 2 === 0 ? upperYPosition : lowerYPosition;
       clusterIdToLoc.set(cluster.id, {xPosition: x, yPosition: y});
+      i++;
     });
     // Location for the delete
     clusterIdToLoc.set(
@@ -288,21 +331,126 @@ export class ClustersSectionComponent {
   }
 
   /** Adds the clusters' titles as text above each group of bubbles */
-  private addClusterTitles(circleGroup:
-                               d3.Selection<SVGGElement, any, any, any>): void {
+  private addClusterTitlesAndBtn(
+      circleGroup: d3.Selection<SVGGElement, any, any, any>): void {
     this.clusterIdToLoc.forEach((location, clusterID) => {
       if (clusterID != -1) {
-        circleGroup.append('text')
-            .attr('class', 'clusters-titles')
-            .text(this.clusters.get(clusterID).title)
-            .attr('x', location.xPosition - window.innerWidth / 80)
-            .attr(
-                'y',
-                location.yPosition - Math.min(window.innerHeight / 4, 200));
+        const x: number = location.xPosition - window.innerWidth / 80;
+        const y: number =
+            location.yPosition - Math.min(window.innerHeight / 4, 200);
+        const nonDisplayedSimCluster = this.getNonDisplayedSimilar(clusterID);
+
+        // Groups for title + buttons and for the buttons only.
+        const titleGroup =
+            circleGroup.append('g').attr('class', 'titles-container');
+        const titleBtnGroup =
+            titleGroup.append('g').attr('class', 'titles-btn-container');
+
+        this.addTitle(
+            titleGroup, this.clustersToDisplay.get(clusterID).title, x, y);
+        // Adds the + similar button only if exists new clusters to display.
+        if (nonDisplayedSimCluster.length > 0)
+          this.addSimilarBtn(
+              titleBtnGroup, x - 30, y - 5, clusterID, nonDisplayedSimCluster);
+        this.addDelClusterBtn(titleBtnGroup, x - 80, y - 5, clusterID);
       }
     });
   }
 
+  /**
+   * Adds svg text element with the given title to titleGroup.
+   */
+  private addTitle(titleGroup, title: string, x: number, y: number): void {
+    titleGroup.append('text')
+        .attr('class', 'clusters-titles')
+        .text(title)
+        .attr('x', x)
+        .attr('y', y);
+  }
+
+  /**
+   * Adds to titleBtnGroup the add similar clusters button (when clicked on adds
+   * to the displayed clusters the related clusters ids).
+   */
+  private addSimilarBtn(
+      titleBtnGroup, x: number, y: number, clusterID: number,
+      nonDisplayedSimCluster: number[]) {
+    const btnGroup = titleBtnGroup.append('g').on('click', d => {
+      if (nonDisplayedSimCluster.length + this.clustersToDisplay.size >
+          MAX_CLUSTERS) {
+        this.openAddSimilarDialog(nonDisplayedSimCluster);
+      } else {
+        this.addRelatedClusters(nonDisplayedSimCluster);
+      }
+    });
+    btnGroup.append('svg:title').text('Add Similar Clusters');
+    this.addBtnCircle(btnGroup, x, y, clusterID);
+    this.addBtnText(titleBtnGroup, x, y, clusterID, '+');
+  }
+
+  /**
+   * Adds to titleBtnGroup the add similar clusters button (when clicked on
+   * remove the cluster from the screen).
+   */
+  private addDelClusterBtn(
+      titleBtnGroup, x: number, y: number, clusterID: number) {
+    const btnGroup = titleBtnGroup.append('g').on(
+        'click', d => {this.clustersToDisplay.delete(clusterID)});
+    btnGroup.append('svg:title').text('Hide Cluster');
+    this.addBtnCircle(btnGroup, x, y, clusterID);
+    this.addBtnText(titleBtnGroup, x, y, clusterID, 'x');
+  }
+
+  /**
+   * Handles adding the circle component of the button.
+   */
+  private addBtnCircle(btnGroup, x: number, y: number, clusterID: number):
+      void {
+    btnGroup.append('circle')
+        .attr('class', 'similar-clusters-btn')
+        .attr('cx', x)
+        .attr('cy', y)
+  }
+
+  /**
+   * Handles adding the text component of the button.
+   */
+  private addBtnText(
+      btnGroup, x: number, y: number, clusterID: number, text: string): void {
+    btnGroup.append('text').attr('x', x).attr('y', y).text(text);
+  }
+
+  /**
+   * Adds each of the cluster in the given relatedClustersIds to the list of
+   * clusters to display.
+   */
+  addRelatedClusters(relatedClustersIds: number[]) {
+    relatedClustersIds.forEach((id) => {
+      this.clustersToDisplay.set(id, this.clusters.get(id));
+    })
+  }
+
+  /**
+   * Returns a list of clusters' ids in the related clusters to the given
+   * cluster that aren't currently displayed.
+   */
+  private getNonDisplayedSimilar(clusterID: number): number[] {
+    return this.clusters.get(clusterID).relatedClustersIds.filter(
+        id => !this.clustersToDisplay.has(id));
+  }
+
+
+  /**
+   * Handles openning the AddSimilarDialogComponent and transform to it the
+   * relevant data.
+   */
+  private openAddSimilarDialog(relatedClustersIds: number[]) {
+    const clusters = relatedClustersIds.map(id => this.clusters.get(id));
+    clusters.sort((cluster1, cluster2) => cluster2.volume - cluster1.volume);
+    this.addSimilarDialog.open(
+        AddSimilarDialogComponent,
+        {data: {clusterly: this, clusters: clusters}});
+  }
   /**
    * Adds to circle tooltip functionality (tooltip appears when the mouse is
    * over the circle and disapears when it moves).
@@ -311,7 +459,7 @@ export class ClustersSectionComponent {
     const mousemove = (d) => {
       this.tooltip.html(d.query)
           .style('left', (d3.event.pageX + 25) + 'px')
-          .style('top', (d3.event.pageY - 45) + 'px');
+          .style('top', (d3.event.pageY - 65) + 'px');
     };
     this.circles
         .on('mouseover',
@@ -472,7 +620,8 @@ export class ClustersSectionComponent {
         clusterly: this,
         currentCluster: cluster,
         queries: sortedQueries,
-        clusters: [DELETE_CLUSTER].concat(Array.from(this.clusters.values())),
+        clusters: [DELETE_CLUSTER].concat(
+            Array.from(this.clustersToDisplay.values())),
         updateFunc: this.updateClustersBasedOnDialog,
       }
     });
@@ -485,10 +634,13 @@ export class ClustersSectionComponent {
   private addCluster(title: string, clusterly: ClustersSectionComponent): void {
     const newCluster: Cluster =
         new Cluster(title, clusterly.clusters.size + 1, 0, [], [], []);
+    clusterly.clustersToDisplay.set(clusterly.clusters.size + 1, newCluster);
     clusterly.clusters.set(clusterly.clusters.size + 1, newCluster);
-    clusterly.clustersDiffer.set(
+    clusterly.displayedClustersDiffer.set(
         newCluster.id, clusterly.differs.find(newCluster).create());
-    clusterly.simulation.stop();
+    if (clusterly.simulation) {
+      clusterly.simulation.stop();
+    }
     d3.selectAll('.' + TOOLTIP_CLASS).remove();
     clusterly.svgContainer.selectAll('*').remove();
     clusterly.addClustersVisualization();

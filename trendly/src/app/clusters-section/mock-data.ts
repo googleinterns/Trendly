@@ -1,4 +1,6 @@
 import {ClusterData} from '../models/server-datatypes'
+import {ClusterDataObj} from '../models/server-datatypes';
+
 
 /**
  * Const mock data, to be deleted when the server is connected
@@ -16,7 +18,7 @@ export const CLUSTERS_DATA = {
       {title: 'This is query 5 from cluster 1 ', value: 100},
     ],
     additionalQueries: [],
-    relatedClustersIds: []
+    relatedClustersIds: [3]
   },
   '1': {
     title: 'Cluster 2',
@@ -30,7 +32,7 @@ export const CLUSTERS_DATA = {
       {title: 'grapes!!', value: 100},
     ],
     additionalQueries: [],
-    relatedClustersIds: []
+    relatedClustersIds: [4]
   },
   '2': {
     title: 'Cluster 3',
@@ -44,7 +46,7 @@ export const CLUSTERS_DATA = {
       {title: 'hi!!!', value: 100},
     ],
     additionalQueries: [],
-    relatedClustersIds: []
+    relatedClustersIds: [3]
   },
   '3': {
     title: 'Cluster 4',
@@ -58,7 +60,7 @@ export const CLUSTERS_DATA = {
       {title: 'hi!!!!', value: 100},
     ],
     additionalQueries: [],
-    relatedClustersIds: []
+    relatedClustersIds: [1]
   },
   '4': {
     title: 'Cluster 5',
@@ -72,7 +74,7 @@ export const CLUSTERS_DATA = {
       {title: 'hi!!!!', value: 100},
     ],
     additionalQueries: [],
-    relatedClustersIds: []
+    relatedClustersIds: [2]
   },
   '5': {
     title: 'Cluster 6',
@@ -85,7 +87,8 @@ export const CLUSTERS_DATA = {
       {title: 'hi!!!!', value: 90},
       {title: 'hi!!!!', value: 100},
     ],
-    additionalQueries: []
+    additionalQueries: [],
+    relatedClustersIds: [1]
   },
   '6': {
     title: 'Cluster 7',
@@ -99,7 +102,7 @@ export const CLUSTERS_DATA = {
       {title: 'hi!!!!', value: 100},
     ],
     additionalQueries: [],
-    relatedClustersIds: []
+    relatedClustersIds: [1]
   },
   '7': {
     title: 'Cluster 8',
