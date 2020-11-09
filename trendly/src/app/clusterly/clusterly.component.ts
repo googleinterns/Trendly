@@ -5,9 +5,11 @@ import {InputObj} from '../clusterly-inputs/clusterly-inputs.component';
 import {DataService} from '../data.service';
 import {Cluster} from '../models/cluster-model';
 /**
- * Clusterly component - includes Clusterly inputs & clusters-section
- * components and handles fetching data from server based on the user inputs and
- * transfering the returnd data to the relevant component.
+ * Clusterly component - includes Clusterly inputs, clusters-section and
+ * clusters components and handles fetching data from server based on the user
+ * inputs and transfering the returnd data to the relevant component. It also
+ * contains side nav which allows the user to see all clusters and pick the ones
+ * they want to display on the screen.
  */
 @Component({
   selector: 'app-clusterly',
@@ -19,9 +21,10 @@ export class ClusterlyComponent {
   isLoading: boolean = false;
   clusters: Map<number, Cluster> = new Map<number, Cluster>();
   clustersToShow: Map<number, Cluster>;
-  displayedColumns: string[] = ['select', 'title', 'volume'];
+  readonly displayedColumns: string[] = ['select', 'title', 'volume'];
   dataSource: MatTableDataSource<Cluster>;
-  selection: SelectionModel<Cluster> = new SelectionModel<Cluster>(true, []);
+  readonly selection: SelectionModel<Cluster> =
+      new SelectionModel<Cluster>(true, []);
 
   constructor(private dataService: DataService) {
     this.clustersToShow = new Map<number, Cluster>();
