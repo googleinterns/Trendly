@@ -145,10 +145,9 @@ public class QueriesExpansion {
   /** Returns new cluster object based on the giben queries, id and title. */
   private static Cluster createNewCluster(TrendsQuery[] queries, AtomicInteger id, String title) {
     double volume = calculateClusterVolume(queries);
-    TrendsQuery[] queriesToDisplay =
-        Arrays.copyOfRange(queries, 0, Math.min(MAX_QUERIES, queries.length));
-    TrendsQuery[] additionalQueries =
-        Arrays.copyOfRange(queries, Math.min(MAX_QUERIES, queries.length), queries.length);
+    int maxQueriesToDis = Math.min(MAX_QUERIES, queries.length);
+    TrendsQuery[] queriesToDisplay = Arrays.copyOfRange(queries, 0, maxQueriesToDis);
+    TrendsQuery[] additionalQueries = Arrays.copyOfRange(queries, maxQueriesToDis, queries.length);
     return new Cluster(title, id.getAndIncrement(), volume, queriesToDisplay, additionalQueries);
   }
 }
