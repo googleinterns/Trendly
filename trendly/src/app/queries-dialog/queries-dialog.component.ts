@@ -4,7 +4,7 @@ import {Inject} from '@angular/core';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {MatTableDataSource} from '@angular/material/table';
 
-import {ClusterlyComponent} from '../clusterly/clusterly.component'
+import {ClusterlyComponent} from '../clusterly/clusterly.component';
 import {Bubble} from '../models/bubble-model';
 import {Cluster} from '../models/cluster-model';
 

@@ -20,12 +20,12 @@
     <!-- Query Column -->
     <ng-container matColumnDef="query">
       <mat-header-cell *matHeaderCellDef> Query </mat-header-cell>
-      <mat-cell *matCellDef="let bubble"> {{bubble.query}} </mat-cell>
+      <mat-cell class= "query" *matCellDef="let bubble"> {{bubble.query}} </mat-cell>
     </ng-container>
     <!-- Name Column -->
     <ng-container matColumnDef="volume">
       <mat-header-cell *matHeaderCellDef> Volume </mat-header-cell>
-      <mat-cell *matCellDef="let bubble"> {{bubble.volume}} </mat-cell>
+      <mat-cell class= "volume" *matCellDef="let bubble">  {{bubble.volume}} </mat-cell>
     </ng-container>
     <!-- Columns Headers -->
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

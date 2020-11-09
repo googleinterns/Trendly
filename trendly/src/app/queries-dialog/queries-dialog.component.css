@@ -1,10 +1,15 @@
 .mat-cell,
 .mat-dialog-content {
-  font-size: 20px;
+  font-size: 18px;
+}
+
+.query,
+mat-header-cell:nth-child(2) {
+  min-width: 300px;
 }
 
 .mat-header-cell {
-  font-size: 22px;
+  font-size: 20px;
 }
 
 #mat-dialog-title-0 {

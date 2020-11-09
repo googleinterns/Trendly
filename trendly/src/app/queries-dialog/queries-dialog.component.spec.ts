@@ -1,16 +1,19 @@
 import {OverlayContainer} from '@angular/cdk/overlay';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogModule} from '@angular/material/dialog';
+import {MatTableModule} from '@angular/material/table';
+import {MatTableDataSource} from '@angular/material/table';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import {Bubble} from '../models/bubble-model';
 import {Cluster} from '../models/cluster-model';
+
 import {DialogData, QueriesDialogComponent} from './queries-dialog.component';
 
 const CLUSTER1: Cluster =
-    new Cluster('Cluster1 title', 1, [{title: '', value: 1}]);
+    new Cluster('Cluster1 title', 1, 100, [{title: '', value: 1}], [], []);
 const CLUSTER2: Cluster =
-    new Cluster('Cluster2 title', 1, [{title: '', value: 1}]);
+    new Cluster('Cluster2 title', 1, 100, [{title: '', value: 1}], [], []);
 const QUERIES: Bubble[] =
     [new Bubble('query 1', 10, 1), new Bubble('query 2', 15, 2)];
 const DATA: DialogData = {
@@ -22,8 +25,8 @@ const CONFIG = {
   data: DATA
 };
 const DIALOG_TITLE = 'Topic: Cluster1 title';
-const FIRST_QUERY_OPTION = ' query 1 (volume: 10) ';
-const SECOND_QUERY_OPTION = ' query 2 (volume: 15) ';
+const FIRST_QUERY_OPTION = ' query 1 ';
+const SECOND_QUERY_OPTION = ' query 2 ';
 
 describe('QueriesDialogComponent', () => {
   let component: QueriesDialogComponent;
@@ -35,7 +38,11 @@ describe('QueriesDialogComponent', () => {
     await TestBed
         .configureTestingModule({
           declarations: [QueriesDialogComponent],
-          imports: [MatDialogModule, BrowserAnimationsModule],
+          imports: [
+            MatDialogModule,
+            BrowserAnimationsModule,
+            MatTableModule,
+          ],
           providers: [
             {provide: MAT_DIALOG_DATA, useValue: DATA}, {
               provide: OverlayContainer,
@@ -67,12 +74,13 @@ describe('QueriesDialogComponent', () => {
     expect(h1.textContent).toBe(DIALOG_TITLE);
   });
 
-  it('should create dialog\'s list options that match the queries', () => {
+  it('should create dialog\'s table that match the queries', () => {
+    (component as any).dataSource = new MatTableDataSource<Bubble>(QUERIES);
     dialog.open(QueriesDialogComponent, CONFIG);
     fixture.detectChanges();
-    const matList = overlayContainerElement.querySelectorAll('mat-list-option');
-    expect(matList.item(0).textContent).toBe(FIRST_QUERY_OPTION);
-    expect(matList.item(1).textContent).toBe(SECOND_QUERY_OPTION);
+    const matList = overlayContainerElement.querySelectorAll('mat-cell');
+    expect(matList.item(1).textContent).toBe(FIRST_QUERY_OPTION);
+    expect(matList.item(4).textContent).toBe(SECOND_QUERY_OPTION);
   });
 
   it('should create select options thay match the clusters\' titles', () => {
