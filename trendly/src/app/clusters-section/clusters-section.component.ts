@@ -338,7 +338,8 @@ export class ClustersSectionComponent {
         const x: number = location.xPosition - window.innerWidth / 80;
         const y: number =
             location.yPosition - Math.min(window.innerHeight / 4, 200);
-        const nonDisplayedSimCluster = this.getNonDisplayedSimilar(clusterID);
+        const nonDisplayedSimCluster: number[] =
+            this.getNonDisplayedSimilar(clusterID);
 
         // Groups for title + buttons and for the buttons only.
         const titleGroup =
@@ -374,7 +375,7 @@ export class ClustersSectionComponent {
    */
   private addSimilarBtn(
       titleBtnGroup, x: number, y: number, clusterID: number,
-      nonDisplayedSimCluster: number[]) {
+      nonDisplayedSimCluster: number[]): void {
     const btnGroup = titleBtnGroup.append('g').on('click', d => {
       if (nonDisplayedSimCluster.length + this.clustersToDisplay.size >
           MAX_CLUSTERS) {
@@ -393,7 +394,7 @@ export class ClustersSectionComponent {
    * remove the cluster from the screen).
    */
   private addDelClusterBtn(
-      titleBtnGroup, x: number, y: number, clusterID: number) {
+      titleBtnGroup, x: number, y: number, clusterID: number): void {
     const btnGroup = titleBtnGroup.append('g').on(
         'click', d => {this.clustersToDisplay.delete(clusterID)});
     btnGroup.append('svg:title').text('Hide Cluster');
@@ -638,9 +639,7 @@ export class ClustersSectionComponent {
     clusterly.clusters.set(clusterly.clusters.size + 1, newCluster);
     clusterly.displayedClustersDiffer.set(
         newCluster.id, clusterly.differs.find(newCluster).create());
-    if (clusterly.simulation) {
-      clusterly.simulation.stop();
-    }
+    (clusterly.simulation) ? clusterly.simulation.stop() : null;
     d3.selectAll('.' + TOOLTIP_CLASS).remove();
     clusterly.svgContainer.selectAll('*').remove();
     clusterly.addClustersVisualization();
