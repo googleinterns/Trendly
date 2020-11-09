@@ -68,6 +68,7 @@ export class ClusterlyComponent {
    * Gets data from the server and updates the dataFromServer property.
    */
   getDataFromServer(input: InputObj) {
+    this.selection.clear();
     this.isLoading = true;
     this.dataService
         .fetchClustrlyData(
