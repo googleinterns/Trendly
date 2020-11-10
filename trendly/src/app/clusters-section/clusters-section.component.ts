@@ -207,7 +207,7 @@ export class ClustersSectionComponent {
     this.scales.set(
         Scales.XPositionSacle,
         d3.scaleLinear().domain([1, this.clustersToDisplay.size]).range([
-          window.innerWidth / 6, 5 * window.innerWidth / 6
+          window.innerWidth / 6, 5 * window.innerWidth / 6 - 200
         ]));
   }
 
@@ -270,7 +270,7 @@ export class ClustersSectionComponent {
       d3.Selection<SVGSVGElement, any, any, any> {
     return d3.select(container)
         .append('svg')
-        .attr('width', window.innerWidth - 100)
+        .attr('width', window.innerWidth - 300)
         .attr('height', window.innerHeight);
   }
 
