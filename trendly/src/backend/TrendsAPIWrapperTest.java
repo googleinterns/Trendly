@@ -54,4 +54,13 @@ public final class TrendsAPIWrapperTest {
             TrendsFunctions.RISING_QUERIES, TERM, LOCATION, START_DATE, END_DATE, CATEGORY);
     Assert.assertTrue(res instanceof TrendsRisingQueriesResult);
   }
+
+  /** Checks fetchDataFromTrends with getGraph API function returns TrendsGraphResult object. */
+  @Test
+  public void getGraphReturnType() throws IOException {
+    final TrendsResult res =
+        TrendsAPIWrapper.fetchDataFromTrends(
+            TrendsFunctions.GET_GRAPH, TERM, LOCATION, START_DATE, END_DATE, CATEGORY);
+    Assert.assertTrue(res instanceof TrendsGraphResult);
+  }
 }
