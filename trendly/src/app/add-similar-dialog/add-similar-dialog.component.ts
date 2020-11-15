@@ -31,7 +31,7 @@ export class AddSimilarDialogComponent {
   constructor(@Inject(MAT_DIALOG_DATA) public data: SimilarDialogData) {
     this.dataSource = new MatTableDataSource<Cluster>(data.clusters);
     this.dataSource.data.forEach(
-        cluster => {this.selectedClusters.select(cluster)});
+        cluster => this.selectedClusters.select(cluster));
   }
 
   /**
@@ -50,7 +50,7 @@ export class AddSimilarDialogComponent {
     this.isAllSelected() ?
         this.selectedClusters.clear() :
         this.dataSource.data.forEach(
-            cluster => {this.selectedClusters.select(cluster)});
+            cluster => this.selectedClusters.select(cluster));
   }
 
   /**
