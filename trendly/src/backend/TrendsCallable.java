@@ -1,6 +1,10 @@
 import java.io.IOException;
 import java.util.concurrent.Callable;
 
+/**
+ * For using TrendsAPIWrapper with threads (each TrendsCallable instance represents an asynchronous
+ * task which can be executed by a separate thread).
+ */
 public class TrendsCallable implements Callable<TrendsResult> {
   String trendsFunction;
   String term;
@@ -24,6 +28,7 @@ public class TrendsCallable implements Callable<TrendsResult> {
     this.category = category;
   }
 
+  /** Calls TrendsAPIWrapper with the restriction given in the constructor. */
   @Override
   public TrendsResult call() throws IOException {
     return TrendsAPIWrapper.fetchDataFromTrends(
