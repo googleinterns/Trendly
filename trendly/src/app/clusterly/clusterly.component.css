@@ -1,5 +1,65 @@
-app-clusterly-inputs {
-  margin: auto;
+.side-nav-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+mat-sidenav,
+mat-sidenav.mat-locked-open,
+mat-sidenav.mat-closed.mat-locked-open-add-active {
+  min-width: 300px !important;
+  max-width: 500px !important;
+}
+
+table {
+  width: 100%;
+}
+
+.rowWrap {
+  display: table;
+}
+
+.column {
+  display: table-cell;
+  vertical-align: middle;
   width: 50%;
 }
 
+.vol {
+  text-align: right;
+  margin-right: 1em;
+}
+
+.mat-checkbox-frame,
+.mat-checkbox-background,
+.mat-checkbox-anim-unchecked-checked .mat-checkbox-anim-checked-unchecked {
+  transform: scale(2);
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 25px;
+  display: inline-flex;
+  vertical-align: top;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
+#title {
+  font-family: 'Amatic SC', cursive;
+  font-size: 25px;
+}
