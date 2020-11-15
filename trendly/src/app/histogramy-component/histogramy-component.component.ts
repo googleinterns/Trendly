@@ -9,7 +9,6 @@ interface InputObj {
   interval: number;
   category: string;
 }
-
 /**
  * Histogramy feature component.
  */
@@ -19,8 +18,13 @@ interface InputObj {
   styleUrls: ['./histogramy-component.component.css']
 })
 export class HistogramyComponentComponent {
-  readonly TopTopicsTitle: string = 'Top Topics'
-  readonly RisingTopicsTitle: string = 'Rising Topics'
+  readonly topTopicsTitle: string = 'Top Topics';
+  readonly risingTopicsTitle: string = 'Rising Topics';
+  readonly areaChartType: string = 'AreaChart';
+  readonly columnChartType: string = 'ColumnChart';
+  readonly lineChartType: string = 'LineChart';
+  whichTop: number = 0;
+  whichRising: number = 1;
   dataTop;
   dataRising;
   showMatProgress: boolean = true;
@@ -39,7 +43,6 @@ export class HistogramyComponentComponent {
     month = month.length === 1 ? '0' + month : month;
     let yearEnd = '' + end.getFullYear();
     let yearStart = '' + (end.getFullYear() - 1)
-
     return [yearStart + '-' + month, yearEnd + '-' + month];
   }
 
