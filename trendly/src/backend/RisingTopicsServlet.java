@@ -1,5 +1,5 @@
-
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.util.*;
 import javax.servlet.annotation.WebServlet;
@@ -7,9 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * Returns rising topic data.
- * */
+/** Returns rising topic data. */
 @WebServlet("/rising-topics")
 public class RisingTopicsServlet extends HttpServlet {
   public static final String RESPONSE_JSON = "application/json";
@@ -29,11 +27,19 @@ public class RisingTopicsServlet extends HttpServlet {
     String endDate = request.getParameter(END_DATE_PARAMETER);
     String category = request.getParameter(CATEGORY_PARAMETER);
 
-    LinkedHashMap<String, ArrayList<HistogramTopic>> results =
-        HistogramyDataRetrieval.getDataForServlet(
-            term, startDate, endDate, country, interval, category, TrendsFunctions.RISING_TOPICS);
-    response.setContentType(RESPONSE_JSON);
-    String json = new Gson().toJson(results);
-    response.getWriter().println(json);
+    try {
+      Map<HistogramTopic, TrendsGraphResult> results =
+          HistogramyDataRetrieval.getDataForServlet(
+              term, startDate, endDate, country, interval, category, TrendsFunctions.RISING_TOPICS);
+      response.setContentType(RESPONSE_JSON);
+      Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
+      String json = gson.toJson(results);
+      System.out.println(json);
+      response.getWriter().println(json);
+
+    } catch (Exception c) {
+      System.out.println(c.getMessage());
+      throw new Error(c);
+    }
   }
 }
