@@ -1,8 +1,9 @@
 import {Cluster} from './cluster-model';
 
 const CLUSTER = new Cluster(
-    '', 1,
-    [{title: '', value: 15}, {title: '', value: 14}, {title: '', value: 13}]);
+    '', 1, 42,
+    [{title: '', value: 15}, {title: '', value: 14}, {title: '', value: 13}],
+    [], []);
 
 describe('Cluster', () => {
   /**
@@ -48,8 +49,8 @@ describe('Cluster', () => {
  *  Returns 2 created clusters and a bubble that belongs to the first one.
  */
 function get2ClustersAndBubble() {
-  const currCluster = new Cluster('', 1, [{title: '', value: 15}]);
-  const newCluster = new Cluster('', 2, [{title: '', value: 100}]);
+  const currCluster = new Cluster('', 1, 15, [{title: '', value: 15}], [], []);
+  const newCluster = new Cluster('', 2, 100, [{title: '', value: 100}], [], []);
   const bubble = currCluster.bubbles.values().next().value;
   return [currCluster, newCluster, bubble];
 }

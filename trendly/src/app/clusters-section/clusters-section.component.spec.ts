@@ -1,9 +1,10 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {MatDialog} from '@angular/material/dialog';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import * as d3 from 'd3';
 
+import {AddClusterDialogComponent, AddClusterDialogData} from '../add-cluster-dialog/add-cluster-dialog.component';
 import {Bubble} from '../models/bubble-model';
 import {CircleDatum} from '../models/circle-datum';
 import {Cluster} from '../models/cluster-model';
@@ -11,38 +12,60 @@ import {Cluster} from '../models/cluster-model';
 import {CLUSTERS_CONTAINER, ClustersSectionComponent, Location, Scales, TOOLTIP_CLASS} from './clusters-section.component';
 
 
-
 // Mock data recieved from server.
 const CLUSTER_DATA = {
-  '1': {title: '', id: 1, queries: [{title: '', value: 10}]},
-  '2': {title: '', id: 2, queries: [{title: '', value: 15}]}
-};
-const CLUSTER_DATA2 = {
-  '1': {title: '', id: 1, queries: [{title: '', value: 1}]},
+  '1': {
+    title: '',
+    id: 1,
+    volume: 10,
+    queriesToDisplay: [{title: '', value: 10}],
+    additionalQueries: [],
+    relatedClustersIds: []
+  },
   '2': {
     title: '',
     id: 2,
-    queries: [{title: '', value: 1}, {title: '', value: 1}]
+    volume: 15,
+    queriesToDisplay: [{title: '', value: 15}],
+    additionalQueries: [],
+    relatedClustersIds: []
   }
 };
-
+const CLUSTER_DATA2 = {
+  '1': {
+    title: '',
+    id: 1,
+    volume: 1,
+    queriesToDisplay: [{title: '', value: 1}],
+    additionalQueries: [],
+    relatedClustersIds: []
+  },
+  '2': {
+    title: '',
+    id: 2,
+    volume: 10,
+    queriesToDisplay: [{title: '', value: 10}],
+    additionalQueries: [],
+    relatedClustersIds: []
+  }
+};
 // Options for clusters property.
 const CLUSTERS_1_GROUP: Map<number, Cluster> =
-    new Map([[1, new Cluster('', 1, [{title: '', value: 1}])]]);
+    new Map([[1, new Cluster('', 1, 100, [{title: '', value: 1}], [], [])]]);
 const CLUSTERS_2_GROUPS: Map<number, Cluster> = new Map([
-  [1, new Cluster('', 1, [{title: '', value: 10}])],
-  [2, new Cluster('', 2, [{title: '', value: 15}])]
+  [1, new Cluster('', 1, 100, [{title: '', value: 10}], [], [])],
+  [2, new Cluster('', 2, 100, [{title: '', value: 15}], [], [])]
 ]);
 const CLUSTERS_3_GROUPS: Map<number, Cluster> = new Map([
-  [1, new Cluster('', 1, [{title: '', value: 1}])],
-  [2, new Cluster('', 2, [{title: '', value: 1}])],
-  [3, new Cluster('', 3, [{title: '', value: 1}])]
+  [1, new Cluster('', 1, 100, [{title: '', value: 1}], [], [])],
+  [2, new Cluster('', 2, 100, [{title: '', value: 1}], [], [])],
+  [3, new Cluster('', 3, 100, [{title: '', value: 1}], [], [])]
 ]);
 const CLUSTERS_4_GROUPS: Map<number, Cluster> = new Map([
-  [1, new Cluster('', 1, [{title: '', value: 1}])],
-  [2, new Cluster('', 2, [{title: '', value: 1}])],
-  [3, new Cluster('', 3, [{title: '', value: 1}])],
-  [4, new Cluster('', 4, [{title: '', value: 1}])]
+  [1, new Cluster('', 1, 100, [{title: '', value: 1}], [], [])],
+  [2, new Cluster('', 2, 100, [{title: '', value: 1}], [], [])],
+  [3, new Cluster('', 3, 100, [{title: '', value: 1}], [], [])],
+  [4, new Cluster('', 4, 100, [{title: '', value: 1}], [], [])],
 ]);
 
 // Options for queries property.
@@ -58,6 +81,16 @@ const CLUSTER_ID_TO_LOC_3_GROUPS: Map<number, Location> = new Map([
   [3, {xPosition: 25, yPosition: 25}]
 ]);
 
+// Mock data to addClusterDialog
+const DATA: AddClusterDialogData = {
+  addCluster: null,
+  clustersTitles: [],
+  clusterly: null
+};
+const CONFIG = {
+  data: DATA
+};
+
 describe('ClustersSectionComponent', () => {
   let component: ClustersSectionComponent;
   let fixture: ComponentFixture<ClustersSectionComponent>;
@@ -70,9 +103,10 @@ describe('ClustersSectionComponent', () => {
           imports: [
             BrowserAnimationsModule,
             MatTooltipModule,
+            MatDialogModule,
           ],
           providers: [
-            {provide: MatDialog, useValue: {}},
+            {provide: MatDialog, useValue: DATA},
           ]
         })
         .compileComponents();
@@ -110,6 +144,8 @@ describe('ClustersSectionComponent', () => {
    */
   it('should create correct queries', () => {
     (component as any).processClustersObjects(CLUSTER_DATA);
+    (component as any).clustersToDisplay = (component as any).clusters;
+    (component as any).processQueries();
     expect((component as any).queries).toEqual(QUERIES);
   });
 
@@ -117,7 +153,7 @@ describe('ClustersSectionComponent', () => {
    * Checks gridDivision assigns location for each clusterId in this.clusters.
    */
   it('should assign location for each cluster', () => {
-    (component as any).clusters = CLUSTERS_3_GROUPS;
+    (component as any).clustersToDisplay = CLUSTERS_3_GROUPS;
     (component as any).addScales();
     const clusterIdtoLoc: Map<number, Location> =
         (component as any).gridDivision();
@@ -132,7 +168,7 @@ describe('ClustersSectionComponent', () => {
    * between 0 and HEIGHT).
    */
   it('should assign valid locations ', () => {
-    (component as any).clusters = CLUSTERS_3_GROUPS;
+    (component as any).clustersToDisplay = CLUSTERS_3_GROUPS;
     (component as any).addScales();
     const clusterIdtoLoc: Map<number, Location> =
         (component as any).gridDivision();
@@ -153,7 +189,7 @@ describe('ClustersSectionComponent', () => {
    * between each close pair of clusters is the same).
    */
   it('should assign equally distributed locations ', () => {
-    (component as any).clusters = CLUSTERS_4_GROUPS;
+    (component as any).clustersToDisplay = CLUSTERS_4_GROUPS;
     (component as any).addScales();
     let distance: number;
     const clusterIdtoLoc: Map<number, Location> =
@@ -226,9 +262,8 @@ describe('ClustersSectionComponent', () => {
     (component as any).svgContainer =
         (component as any).addSvg(CLUSTERS_CONTAINER);
     const circleGroup = (component as any).addGroup();
-    // (component as any).clusterIdtoLoc = CLUSTER_ID_TO_LOC_3_GROUPS;
     (component as any).addCircles(circleGroup, '', 0, Scales.ColorScale);
-    expect(circleGroup.selectAll('circle').size()).toBe(3);
+    expect(circleGroup.selectAll('circle').size()).toBe(2);
   });
 
   /**
@@ -301,6 +336,43 @@ describe('ClustersSectionComponent', () => {
     (component as any).changeBubbleCluster((bubble as CircleDatum));
     expect((component as any).clusters.get(2).bubbles.has(bubble)).toBeTrue();
   });
+
+  it('should trigger onResize method when window is resized', () => {
+    const spyOnResize = spyOn(component, 'onResize');
+    window.dispatchEvent(new Event('resize'));
+    expect(spyOnResize).toHaveBeenCalled();
+  });
+
+  it('should emit when clusters\' list is changed', () => {
+    spyOn(component.clustersEmitter, 'emit');
+    (component as any).clusters = CLUSTERS_2_GROUPS;
+    spyOn(component, 'ngDoCheck').and.callThrough();
+    component.ngDoCheck();
+    expect(component.clustersEmitter.emit).toHaveBeenCalled();
+    expect(component.clustersEmitter.emit)
+        .toHaveBeenCalledWith(CLUSTERS_2_GROUPS);
+  });
+
+  it('should emit when clustersToDisplay\'s list is changed', () => {
+    spyOn(component.displayedClustersEmitter, 'emit');
+    (component as any).clustersToDisplay = CLUSTERS_2_GROUPS;
+    spyOn(component, 'ngDoCheck').and.callThrough();
+    component.ngDoCheck();
+    expect(component.displayedClustersEmitter.emit).toHaveBeenCalled();
+    expect(component.displayedClustersEmitter.emit)
+        .toHaveBeenCalledWith(CLUSTERS_2_GROUPS);
+  });
+
+  it('should emit when one of the inner clusters is changed', () => {
+    initialClusterData(component);
+    spyOn(component.displayedClustersEmitter, 'emit');
+    (component as any)
+        .clustersToDisplay.get(1)
+        .bubbles.add(new Bubble('new', 3, 1));
+    spyOn(component, 'ngDoCheck').and.callThrough();
+    component.ngDoCheck();
+    expect(component.displayedClustersEmitter.emit).toHaveBeenCalled();
+  });
 });
 
 /** Helper function for changeBubbleCluster & addCircles tests. */
@@ -309,7 +381,8 @@ function initialClusterData(component) {
   (component as any).svgContainer =
       (component as any).addSvg(CLUSTERS_CONTAINER);
   (component as any).processClustersObjects(clustersData);
+  (component as any).clustersToDisplay = CLUSTERS_2_GROUPS;
+  (component as any).queries = QUERIES;
   (component as any).addClustersVisualization();
-  (component as any).clusters = CLUSTERS_2_GROUPS;
   (component as any).clusterIdToLoc = CLUSTER_ID_TO_LOC_2_GROUPS;
 }

@@ -1,21 +1,51 @@
 <h1 mat-dialog-title>Topic: {{data.currentCluster.title}}</h1>
 <div mat-dialog-content>
-  Queries:
-  <mat-selection-list #terms>
-    <mat-list-option *ngFor="let query of data.queries" [value]="query">
-      {{query.query}} (volume: {{query.volume}})
-    </mat-list-option>
-  </mat-selection-list>
+  <mat-table #table
+             [dataSource]="dataSource">
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="select">
+      <mat-header-cell *matHeaderCellDef>
+        <mat-checkbox (change)="$event ? masterToggle() : null"
+                      [checked]="selectedQueries.hasValue() && isAllSelected()"
+                      [indeterminate]="selectedQueries.hasValue() && !isAllSelected()">
+        </mat-checkbox>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <mat-checkbox (click)="$event.stopPropagation()"
+                      (change)="$event ? selectedQueries.toggle(row) : null"
+                      [checked]="selectedQueries.isSelected(row)">
+        </mat-checkbox>
+      </mat-cell>
+    </ng-container>
+    <!-- Query Column -->
+    <ng-container matColumnDef="query">
+      <mat-header-cell *matHeaderCellDef> Query </mat-header-cell>
+      <mat-cell class= "query" *matCellDef="let bubble"> {{bubble.query}} </mat-cell>
+    </ng-container>
+    <!-- Name Column -->
+    <ng-container matColumnDef="volume">
+      <mat-header-cell *matHeaderCellDef> Volume </mat-header-cell>
+      <mat-cell class= "volume" *matCellDef="let bubble">  {{bubble.volume}} </mat-cell>
+    </ng-container>
+    <!-- Columns Headers -->
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"
+             (click)="selectedQueries.toggle(row)">
+    </mat-row>
+  </mat-table>
+
   <div class="cluster-selection">
     <p>Move selected queries to </p>
     <mat-form-field appearance="fill">
-      <mat-label>Select a cluster</mat-label>
-      <mat-select (selectionChange)="selected($event)">
-        <mat-option *ngFor="let cluster of data.clusters" [value]="cluster">{{cluster.title}}</mat-option>
+      <mat-label>Select Location:</mat-label>
+      <mat-select (selectionChange)="selectedCluster = $event.value">
+        <mat-option *ngFor="let cluster of data.clusters"
+                    [value]="cluster">{{cluster.title}}</mat-option>
       </mat-select>
     </mat-form-field>
   </div>
   <div class="btn">
-    <button class='apply-button' (click)="data.updateFunc(selectedCluster, terms.selectedOptions.selected, data.currentCluster, data.clusterly)">Apply</button>
+    <button class="apply-button"
+            (click)="data.updateFunc(selectedCluster, selectedQueries, data.currentCluster, data.clusterly)">Apply</button>
   </div>
 </div>

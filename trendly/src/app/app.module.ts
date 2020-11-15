@@ -14,6 +14,7 @@ import {RouterModule} from '@angular/router'
 import {GoogleChartsModule} from 'angular-google-charts'
 
 import {AddClusterDialogComponent} from './add-cluster-dialog/add-cluster-dialog.component';
+import {AddSimilarDialogComponent} from './add-similar-dialog/add-similar-dialog.component';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {CategoryInputComponent} from './category-input/category-input.component';
@@ -56,6 +57,7 @@ import {TopBarComponent} from './top-bar/top-bar.component';
     AddClusterDialogComponent,
     CategoryInputComponent,
     DeleteConfirmationDialogComponent,
+    AddSimilarDialogComponent,
   ],
   imports: [
     BrowserModule,

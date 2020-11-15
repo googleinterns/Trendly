@@ -2,7 +2,7 @@
   float: left;
   padding: 10px;
   padding-left: 30px;
-  width: 100%;
+  /* width: 100%; */
   font-size: 20px;
   position: relative;
 }
@@ -10,6 +10,7 @@
 .example-month-picker .mat-calendar-period-button {
   pointer-events: none;
 }
+
 .example-month-picker .mat-calendar-arrow {
   display: none;
 }
@@ -17,4 +18,8 @@
 .dates {
   display: flex;
   flex-direction: row;
+}
+
+::ng-deep .mat-form-field {
+  width: 100%;
 }

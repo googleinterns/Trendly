@@ -1,0 +1,42 @@
+<h1 mat-dialog-title>Add Similar Clusters:</h1>
+<div mat-dialog-content>
+  (Make sure not to choose too many clusters)
+  <mat-table #table
+             [dataSource]="dataSource">
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="select">
+      <mat-header-cell *matHeaderCellDef>
+        <mat-checkbox (change)="$event ? masterToggle() : null"
+                      [checked]="selectedClusters.hasValue() && isAllSelected()"
+                      [indeterminate]="selectedClusters.hasValue() && !isAllSelected()">
+        </mat-checkbox>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <mat-checkbox (click)="$event.stopPropagation()"
+                      (change)="$event ? selectedClusters.toggle(row) : null"
+                      [checked]="selectedClusters.isSelected(row)">
+        </mat-checkbox>
+      </mat-cell>
+    </ng-container>
+    <!-- Title Column -->
+    <ng-container matColumnDef="title">
+      <mat-header-cell *matHeaderCellDef> Cluster </mat-header-cell>
+      <mat-cell class= "title" *matCellDef="let cluster"> {{cluster.title}} </mat-cell>
+    </ng-container>
+    <!-- Volume Column -->
+    <ng-container matColumnDef="volume">
+      <mat-header-cell *matHeaderCellDef> Volume </mat-header-cell>
+      <mat-cell class= "volume" *matCellDef="let cluster">  {{cluster.volume}} </mat-cell>
+    </ng-container>
+    <!-- Columns Headers -->
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"
+             (click)="selectedClusters.toggle(row)">
+    </mat-row>
+  </mat-table>
+
+  <div class="btn">
+    <button class="apply-button"
+            (click)="sendSelectedIds()">Apply</button>
+  </div>
+</div>

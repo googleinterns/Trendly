@@ -1,43 +1,44 @@
 import {OverlayContainer} from '@angular/cdk/overlay';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogModule} from '@angular/material/dialog';
-import {MatTableModule} from '@angular/material/table';
 import {MatTableDataSource} from '@angular/material/table';
+import {MatTableModule} from '@angular/material/table';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
-import {Bubble} from '../models/bubble-model';
 import {Cluster} from '../models/cluster-model';
 
-import {DialogData, QueriesDialogComponent} from './queries-dialog.component';
+import {AddSimilarDialogComponent, SimilarDialogData} from './add-similar-dialog.component';
+
 
 const CLUSTER1: Cluster =
     new Cluster('Cluster1 title', 1, 100, [{title: '', value: 1}], [], []);
 const CLUSTER2: Cluster =
     new Cluster('Cluster2 title', 1, 100, [{title: '', value: 1}], [], []);
-const QUERIES: Bubble[] =
-    [new Bubble('query 1', 10, 1), new Bubble('query 2', 15, 2)];
-const DATA: DialogData = {
-  currentCluster: CLUSTER1,
-  queries: QUERIES,
-  clusters: [CLUSTER1, CLUSTER2]
+const CLUSTERS: Cluster[] = [CLUSTER1, CLUSTER2];
+
+const DATA: SimilarDialogData = {
+  clusters: CLUSTERS,
+  clusterly: null
 };
 const CONFIG = {
   data: DATA
 };
-const DIALOG_TITLE = 'Topic: Cluster1 title';
-const FIRST_QUERY_OPTION = ' query 1 ';
-const SECOND_QUERY_OPTION = ' query 2 ';
 
-describe('QueriesDialogComponent', () => {
-  let component: QueriesDialogComponent;
-  let fixture: ComponentFixture<QueriesDialogComponent>;
+const DIALOG_TITLE = 'Add Similar Clusters:';
+const DIALOG_CONTENT = '(Make sure not to choose too many clusters)';
+const FIRST_CLUSTER_OPTION = ' Cluster1 title ';
+const SECOND_CLUSTER_OPTION = ' Cluster2 title ';
+
+describe('AddSimilarDialogComponent', () => {
+  let component: AddSimilarDialogComponent;
+  let fixture: ComponentFixture<AddSimilarDialogComponent>;
   let dialog: MatDialog;
   let overlayContainerElement: HTMLElement;
 
   beforeEach(async () => {
     await TestBed
         .configureTestingModule({
-          declarations: [QueriesDialogComponent],
+          declarations: [AddSimilarDialogComponent],
           imports: [
             MatDialogModule,
             BrowserAnimationsModule,
@@ -57,7 +58,7 @@ describe('QueriesDialogComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(QueriesDialogComponent);
+    fixture = TestBed.createComponent(AddSimilarDialogComponent);
     dialog = TestBed.get(MatDialog);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -67,26 +68,27 @@ describe('QueriesDialogComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should create dialog\'s title correctly (with the cluster title)', () => {
-    dialog.open(QueriesDialogComponent, CONFIG);
+  it('should create dialog\'s title correctly', () => {
+    dialog.open(AddSimilarDialogComponent, CONFIG);
     fixture.detectChanges();
     const h1 = overlayContainerElement.querySelector('.mat-dialog-title');
     expect(h1.textContent).toBe(DIALOG_TITLE);
   });
 
-  it('should create dialog\'s table that match the queries', () => {
-    (component as any).dataSource = new MatTableDataSource<Bubble>(QUERIES);
-    dialog.open(QueriesDialogComponent, CONFIG);
+  it('should create dialog\'s table that match the given clusters', () => {
+    (component as any).dataSource = new MatTableDataSource<Cluster>(CLUSTERS);
+    dialog.open(AddSimilarDialogComponent, CONFIG);
     fixture.detectChanges();
     const matList = overlayContainerElement.querySelectorAll('mat-cell');
-    expect(matList.item(1).textContent).toBe(FIRST_QUERY_OPTION);
-    expect(matList.item(4).textContent).toBe(SECOND_QUERY_OPTION);
+    expect(matList.item(1).textContent).toBe(FIRST_CLUSTER_OPTION);
+    expect(matList.item(4).textContent).toBe(SECOND_CLUSTER_OPTION);
   });
 
-  it('should create select options thay match the clusters\' titles', () => {
-    dialog.open(QueriesDialogComponent, CONFIG);
+  it('should create dialog\'s content correctly', () => {
+    dialog.open(AddSimilarDialogComponent, CONFIG);
     fixture.detectChanges();
-    const matForm = overlayContainerElement.querySelector('mat-select');
-    expect(matForm.textContent).toBe(CLUSTER1.title + CLUSTER2.title);
+    const dialogCont =
+        overlayContainerElement.querySelector('.mat-dialog-content');
+    expect(dialogCont.textContent.includes(DIALOG_CONTENT)).toBeTrue();
   });
 });

@@ -52,7 +52,7 @@ public final class QueriesExpansionTest {
   private static int countQueries(List<Cluster> clusters) {
     int counter = 0;
     for (Cluster cluster : clusters) {
-      counter += cluster.queries.length;
+      counter += cluster.queriesToDisplay.length;
     }
     return counter;
   }

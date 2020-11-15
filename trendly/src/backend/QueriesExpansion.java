@@ -3,7 +3,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,8 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * "clusters" are the topic with their related queries)
  */
 public class QueriesExpansion {
-  public static final int MAX_CLUSTERS = 8;
-  public static final int MAX_QUERIES = 50;
+  public static final int MAX_QUERIES = 8;
 
   /**
    * Receives list of terms and time + location restrictions and returns list of Cluster objects
@@ -39,21 +37,23 @@ public class QueriesExpansion {
   public static List<Cluster> getAllClusters(
       String[] terms, String location, String startDate, String endDate, String category)
       throws IOException, InterruptedException, ExecutionException {
-    return terms.length == 0
-        ? new ArrayList<Cluster>()
-        : topicQueryProcess(
-            QueriesExpansion.getTopTopics(terms, location, startDate, endDate, category),
-            location,
-            startDate,
-            endDate,
-            category);
+    List<Cluster> clusters =
+        terms.length == 0
+            ? new ArrayList<Cluster>()
+            : topicQueryProcess(
+                QueriesExpansion.getTopTopics(terms, location, startDate, endDate, category),
+                location,
+                startDate,
+                endDate,
+                category);
+    Similarity.updateClustersSimilarity(clusters);
+    return clusters;
   }
 
   /** Expands the given terms to related top topics and returns a set of topics titles. */
   private static Set<String> getTopTopics(
       String[] terms, String location, String startDate, String endDate, String category)
       throws IOException, InterruptedException, ExecutionException {
-    int max_related_topics = MAX_CLUSTERS / terms.length;
     ExecutorService executor = Executors.newFixedThreadPool(terms.length);
     List<Future<TrendsResult>> topicsResults = new ArrayList<>();
     for (String term : terms) {
@@ -63,7 +63,7 @@ public class QueriesExpansion {
       topicsResults.add(executor.submit(callable));
     }
     executor.shutdown();
-    return getTopicsFromThreads(topicsResults, max_related_topics);
+    return getTopicsFromThreads(topicsResults);
   }
 
   /**
@@ -73,17 +73,14 @@ public class QueriesExpansion {
    *     from threads.
    * @param max_related_topics - max amount of topics per result
    */
-  private static Set<String> getTopicsFromThreads(
-      List<Future<TrendsResult>> topicsResults, int max_related_topics)
+  private static Set<String> getTopicsFromThreads(List<Future<TrendsResult>> topicsResults)
       throws InterruptedException, ExecutionException {
     Set<String> topics = new HashSet<>();
     for (Future<TrendsResult> res : topicsResults) {
       TrendsTopicsResult topicsResult = (TrendsTopicsResult) res.get();
       if (topicsResult.item != null) {
-        Iterator<TrendsTopic> topicsIter = Arrays.stream(topicsResult.item).iterator();
-        int max_topics_size = topics.size() + max_related_topics;
-        while (topicsIter.hasNext() && topics.size() < max_topics_size) {
-          topics.add(topicsIter.next().title);
+        for (TrendsTopic topic : topicsResult.item) {
+          topics.add(topic.title);
         }
       }
     }
@@ -97,7 +94,6 @@ public class QueriesExpansion {
   private static List<Cluster> topicQueryProcess(
       Set<String> topics, String location, String startDate, String endDate, String category)
       throws IOException, InterruptedException, ExecutionException {
-    int max_related_queries = MAX_QUERIES / topics.size();
     ExecutorService executor = Executors.newFixedThreadPool(topics.size());
 
     Map<String, Future<TrendsResult>> queriesResults = new HashMap<>();
@@ -110,18 +106,19 @@ public class QueriesExpansion {
               queriesResults.put(topic, executor.submit(callable));
             });
     executor.shutdown();
-    return getClustersFromThreads(queriesResults, max_related_queries);
+    return getClustersFromThreads(queriesResults);
   }
 
   /**
-   * Extracts the TrendsQueriesResult from the given Future list and returns list of Cluster objects
+   * Extracts the TrendsQueriesResult from the given Future list and returns list of Cluster
+   * objects.
    *
    * @param queriesResults - a map between topic title to its related queries Future<TrendsResult>
    *     result
    * @param max_related_queries - max amount of queries per result.
    */
   private static List<Cluster> getClustersFromThreads(
-      Map<String, Future<TrendsResult>> queriesResults, int max_related_queries) {
+      Map<String, Future<TrendsResult>> queriesResults) {
     List<Cluster> clusters = new ArrayList<>();
     AtomicInteger id = new AtomicInteger(1);
     queriesResults.entrySet().parallelStream()
@@ -134,14 +131,23 @@ public class QueriesExpansion {
                 throw new Error(e);
               }
               if (queriesResult.item != null) {
-                TrendsQuery[] trendsQueries =
-                    Arrays.copyOfRange(
-                        queriesResult.item,
-                        0,
-                        Math.min(max_related_queries, queriesResult.item.length));
-                clusters.add(new Cluster(entry.getKey(), id.getAndIncrement(), trendsQueries));
+                clusters.add(createNewCluster(queriesResult.item, id, entry.getKey()));
               }
             });
     return clusters;
+  }
+
+  /** Returns the clustr's volume (sum of queries volume). */
+  private static double calculateClusterVolume(TrendsQuery[] queries) {
+    return Arrays.stream(queries).mapToDouble((query) -> query.value).sum();
+  }
+
+  /** Returns new cluster object based on the giben queries, id and title. */
+  private static Cluster createNewCluster(TrendsQuery[] queries, AtomicInteger id, String title) {
+    double volume = calculateClusterVolume(queries);
+    int maxQueriesToDis = Math.min(MAX_QUERIES, queries.length);
+    TrendsQuery[] queriesToDisplay = Arrays.copyOfRange(queries, 0, maxQueriesToDis);
+    TrendsQuery[] additionalQueries = Arrays.copyOfRange(queries, maxQueriesToDis, queries.length);
+    return new Cluster(title, id.getAndIncrement(), volume, queriesToDisplay, additionalQueries);
   }
 }

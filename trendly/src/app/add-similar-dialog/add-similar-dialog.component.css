@@ -3,11 +3,6 @@
   font-size: 18px;
 }
 
-.query,
-mat-header-cell:nth-child(2) {
-  min-width: 300px;
-}
-
 .mat-header-cell {
   font-size: 20px;
 }
@@ -33,14 +28,4 @@ mat-header-cell:nth-child(2) {
 .btn {
   display: flex;
   justify-content: center;
-}
-
-.cluster-selection {
-  display: flex;
-  flex-direction: row;
-  padding-top: 30px;
-}
-
-mat-form-field {
-  padding-left: 20px;
 }

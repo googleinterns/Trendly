@@ -1,7 +1,8 @@
-.chip-list {
-  width: 45vh;
-}
 
 mat-chip {
   font-size: 1.8vh;
+}
+
+::ng-deep .mat-form-field {
+  width: 100%;
 }

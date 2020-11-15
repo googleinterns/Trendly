@@ -8,10 +8,13 @@ export interface QueryData {
 export interface ClusterData {
   title: string;
   id: number;
-  queries: QueryData[]
+  volume: number;
+  queriesToDisplay: QueryData[];
+  additionalQueries: QueryData[];
+  relatedClustersIds: number[];
 }
 
 /** The final object that the sever returns. */
 export interface ClusterDataObj {
-  '1': ClusterData;
+  [id: number]: ClusterData
 }
