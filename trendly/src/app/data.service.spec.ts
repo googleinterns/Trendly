@@ -43,18 +43,18 @@ describe('DataService', () => {
   it('should change url according the parameters(list of terms)', () => {
     const url =
         (service as any)
-            .buildURLParameters(['a', 'b', 'c'], '10 2010', '11 2011', 'US', 3);
+            .buildURLParameters(['a', 'b', 'c'], '10 2010', '11 2011', 'US', 3, '45');
     const expectedUrl =
-        'term=a&term=b&term=c&startDate=10 2010&endDate=11 2011&country=US&interval=3';
+        'term=a&term=b&term=c&startDate=10 2010&endDate=11 2011&country=US&interval=3&category=45&';
     expect(url).toEqual(expectedUrl);
   });
 
   it('should change url according the parameters(single term)', () => {
     const url =
         (service as any)
-            .buildURLParameters('corona', '10 2010', '11 2011', 'US', 3);
+            .buildURLParameters('corona', '10 2010', '11 2011', 'US', 3, '45');
     const expectedUrl =
-        'term=corona&startDate=10 2010&endDate=11 2011&country=US&interval=3';
+        'term=corona&startDate=10 2010&endDate=11 2011&country=US&interval=3&category=45&';
     expect(url).toEqual(expectedUrl);
   });
 });
