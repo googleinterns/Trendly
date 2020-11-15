@@ -52,38 +52,6 @@ NEW_MOCK_DATA.set(topic2, {
   }]
 });
 
-// const DATA1: DataType = {
-//   '8/2010': [
-//     {title: 'apple', value: 50, description: 'big tech company'},
-//     {title: 'corona', value: 50, description: 'a dangerous virus'}
-//   ],
-//   '9/2010': [
-//     {title: 'apple', value: 30, description: 'big tech company'},
-//     {title: 'elections', value: 10, description: 'elections'},
-//     {title: 'corona', value: 80, description: 'a dangerous virus'}
-//   ],
-//   '10/2010': [
-//     {title: 'elections', value: 80, description: 'elections'},
-//     {title: 'corona', value: 100, description: 'a dangerous virus'},
-//     {title: 'pizza', value: 20, description: 'very tasty food'}
-//   ],
-// };
-// const DATA2: DataType = {
-//   '8/2010': [
-//     {title: 'food', value: 40, description: 'yummy'},
-//     {title: 'corona', value: 50, description: 'a dangerous virus'}
-//   ],
-//   '9/2010': [
-//     {title: 'ninja', value: 30, description: 'kitchen instrument'},
-//     {title: 'elections', value: 10, description: 'elections'},
-//     {title: 'corona', value: 80, description: 'a dangerous virus'}
-//   ],
-//   '10/2010': [
-//     {title: 'elections', value: 80, description: 'elections'},
-//     {title: 'corona', value: 100, description: 'a dangerous virus'},
-//     {title: 'pizza', value: 20, description: 'very tasty food'}
-//   ],
-// };
 const EXPECT_OUTPUT: Array<Array<string|number>> = [
   [
     '2010-01-03', 15, 'elections', '#4ec3ff', 15, 'a dangerous virus',

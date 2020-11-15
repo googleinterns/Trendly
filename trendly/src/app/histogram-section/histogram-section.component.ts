@@ -26,91 +26,6 @@ interface DataValueType {
   lines: GraphSection[]
 }
 
-// TODO: remove mocks
-const topic1: Topic = {
-  title: 'elections',
-  value: 80,
-  description: 'elections'
-};
-const topic2: Topic = {
-  title: 'corona',
-  value: 100,
-  description: 'a dangerous virus'
-};
-const NEW_MOCK_DATA: Map<Topic, DataValueType> =
-    new Map<Topic, DataValueType>();
-NEW_MOCK_DATA.set(topic1, {
-  'lines': [{
-    'term': 'soccer',
-    'points': [
-      {'value': 15, 'date': '2010-01-03'}, {'value': 21, 'date': '2010-01-10'},
-      {'value': 28, 'date': '2010-01-17'}, {'value': 27, 'date': '2010-01-24'},
-      {'value': 20, 'date': '2010-01-31'}, {'value': 0, 'date': '2010-02-07'},
-      {'value': 42, 'date': '2010-02-14'}, {'value': 28, 'date': '2010-02-21'},
-      {'value': 20, 'date': '2010-02-28'}, {'value': 27, 'date': '2010-03-07'},
-      {'value': 0, 'date': '2010-03-14'},  {'value': 27, 'date': '2010-03-21'},
-      {'value': 30, 'date': '2010-03-28'}, {'value': 47, 'date': '2010-04-04'},
-      {'value': 38, 'date': '2010-04-11'}, {'value': 13, 'date': '2010-04-18'},
-      {'value': 20, 'date': '2010-04-25'}, {'value': 33, 'date': '2010-05-02'},
-      {'value': 29, 'date': '2010-05-09'}, {'value': 58, 'date': '2010-05-16'},
-      {'value': 50, 'date': '2010-05-23'}, {'value': 31, 'date': '2010-05-30'},
-      {'value': 39, 'date': '2010-06-06'}, {'value': 35, 'date': '2010-06-13'},
-      {'value': 33, 'date': '2010-06-20'}, {'value': 32, 'date': '2010-06-27'},
-      {'value': 33, 'date': '2010-07-04'}, {'value': 44, 'date': '2010-07-11'},
-      {'value': 43, 'date': '2010-07-18'}, {'value': 100, 'date': '2010-07-25'},
-      {'value': 50, 'date': '2010-08-01'}, {'value': 45, 'date': '2010-08-08'},
-      {'value': 36, 'date': '2010-08-15'}, {'value': 35, 'date': '2010-08-22'},
-      {'value': 28, 'date': '2010-08-29'}, {'value': 34, 'date': '2010-09-05'},
-      {'value': 33, 'date': '2010-09-12'}, {'value': 33, 'date': '2010-09-19'},
-      {'value': 19, 'date': '2010-09-26'}, {'value': 20, 'date': '2010-10-03'},
-      {'value': 13, 'date': '2010-10-10'}, {'value': 31, 'date': '2010-10-17'},
-      {'value': 12, 'date': '2010-10-24'}, {'value': 24, 'date': '2010-10-31'},
-      {'value': 18, 'date': '2010-11-07'}, {'value': 18, 'date': '2010-11-14'},
-      {'value': 12, 'date': '2010-11-21'}, {'value': 43, 'date': '2010-11-28'},
-      {'value': 37, 'date': '2010-12-05'}, {'value': 39, 'date': '2010-12-12'},
-      {'value': 23, 'date': '2010-12-19'}, {'value': 59, 'date': '2010-12-26'},
-      {'value': 29, 'date': '2011-01-02'}, {'value': 28, 'date': '2011-01-09'},
-      {'value': 44, 'date': '2011-01-16'}, {'value': 11, 'date': '2011-01-23'},
-      {'value': 38, 'date': '2011-01-30'}
-    ]
-  }]
-});
-NEW_MOCK_DATA.set(topic2, {
-  'lines': [{
-    'term': 'soccer',
-    'points': [
-      {'value': 15, 'date': '2010-01-03'}, {'value': 21, 'date': '2010-01-10'},
-      {'value': 28, 'date': '2010-01-17'}, {'value': 27, 'date': '2010-01-24'},
-      {'value': 20, 'date': '2010-01-31'}, {'value': 0, 'date': '2010-02-07'},
-      {'value': 42, 'date': '2010-02-14'}, {'value': 28, 'date': '2010-02-21'},
-      {'value': 20, 'date': '2010-02-28'}, {'value': 27, 'date': '2010-03-07'},
-      {'value': 0, 'date': '2010-03-14'},  {'value': 27, 'date': '2010-03-21'},
-      {'value': 30, 'date': '2010-03-28'}, {'value': 47, 'date': '2010-04-04'},
-      {'value': 38, 'date': '2010-04-11'}, {'value': 13, 'date': '2010-04-18'},
-      {'value': 20, 'date': '2010-04-25'}, {'value': 33, 'date': '2010-05-02'},
-      {'value': 29, 'date': '2010-05-09'}, {'value': 58, 'date': '2010-05-16'},
-      {'value': 50, 'date': '2010-05-23'}, {'value': 31, 'date': '2010-05-30'},
-      {'value': 39, 'date': '2010-06-06'}, {'value': 35, 'date': '2010-06-13'},
-      {'value': 33, 'date': '2010-06-20'}, {'value': 32, 'date': '2010-06-27'},
-      {'value': 33, 'date': '2010-07-04'}, {'value': 44, 'date': '2010-07-11'},
-      {'value': 43, 'date': '2010-07-18'}, {'value': 100, 'date': '2010-07-25'},
-      {'value': 50, 'date': '2010-08-01'}, {'value': 45, 'date': '2010-08-08'},
-      {'value': 36, 'date': '2010-08-15'}, {'value': 35, 'date': '2010-08-22'},
-      {'value': 28, 'date': '2010-08-29'}, {'value': 34, 'date': '2010-09-05'},
-      {'value': 33, 'date': '2010-09-12'}, {'value': 33, 'date': '2010-09-19'},
-      {'value': 19, 'date': '2010-09-26'}, {'value': 20, 'date': '2010-10-03'},
-      {'value': 13, 'date': '2010-10-10'}, {'value': 31, 'date': '2010-10-17'},
-      {'value': 12, 'date': '2010-10-24'}, {'value': 24, 'date': '2010-10-31'},
-      {'value': 18, 'date': '2010-11-07'}, {'value': 18, 'date': '2010-11-14'},
-      {'value': 12, 'date': '2010-11-21'}, {'value': 43, 'date': '2010-11-28'},
-      {'value': 37, 'date': '2010-12-05'}, {'value': 39, 'date': '2010-12-12'},
-      {'value': 23, 'date': '2010-12-19'}, {'value': 59, 'date': '2010-12-26'},
-      {'value': 29, 'date': '2011-01-02'}, {'value': 28, 'date': '2011-01-09'},
-      {'value': 44, 'date': '2011-01-16'}, {'value': 11, 'date': '2011-01-23'},
-      {'value': 38, 'date': '2011-01-30'}
-    ]
-  }]
-});
 const TOOLTIP_ROLE_NAME = 'tooltip';
 const STYLE_ROLE_NAME = 'style';
 const COLUMN_TOPIC = 'Topic';
@@ -139,15 +54,12 @@ export class HistogramSectionComponent implements OnInit {
   @Input() options: object = {};
   @Output() progress = new EventEmitter<boolean>();
   private mapTrendsData: Map<Topic, DataValueType>;
-  private filteredCol: Map<number, number[]> = new Map<number, number[]>();
+  readonly filteredCol: Map<number, number[]> = new Map<number, number[]>();
 
   constructor(private coloresService: ColorsService) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.changeChartOptions();
-    // TODO: for running without data - romove it.
-    // this.mapTrendsData = NEW_MOCK_DATA;
-    // this.convertDataToChartsFormat();
   }
 
   /**
@@ -168,7 +80,6 @@ export class HistogramSectionComponent implements OnInit {
     [...data.keys()].forEach((topic) => {
       topics.set(topic.title, counter++);
     });
-    console.log(topics);
     return topics;
   }
 
@@ -184,7 +95,6 @@ export class HistogramSectionComponent implements OnInit {
     for (const key of topics.keys()) {
       this.columnNames.push(key, TOOLTIP_ROLE, STYLE_ROLE);
     }
-    console.log(this.columnNames);
   }
 
   /**
@@ -215,7 +125,6 @@ export class HistogramSectionComponent implements OnInit {
       row[1] = 0;
       this.data.push(row);
     }
-    console.log(this.data);
   }
 
   /**
@@ -243,8 +152,6 @@ export class HistogramSectionComponent implements OnInit {
    */
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['trendsData']) {
-      // this.trendsData = changes['trendsData'].currentValue;
-      console.log(this.trendsData);
       this.filteredCol.clear();
       this.changeChartOptions();
       this.convrtTrendsDataToMap();
@@ -258,7 +165,8 @@ export class HistogramSectionComponent implements OnInit {
    * columns / chnage data).
    */
   @HostListener('window:resize')
-  private changeChartOptions(colors: string[] = this.coloresService.lightColors) : void {
+  private changeChartOptions(
+      colors: string[] = this.coloresService.lightColors): void {
     this.options = {
       curveType: 'function',
       width: 3 * (window.innerWidth / 5),
@@ -276,7 +184,6 @@ export class HistogramSectionComponent implements OnInit {
    * @param event - a given user click on the chart's topics event.
    */
   onSelect(event): void {
-    console.log(event);
     if (event['selection'][0].row === null) {
       const col = event['selection'][0].column;
       if (this.filteredCol.has(col)) {
@@ -294,32 +201,35 @@ export class HistogramSectionComponent implements OnInit {
    * accordingly.
    */
   private removeCol(col: number): void {
-    this.data.forEach((val, key) => {
-      this.filteredCol.get(col).push(val[col] as number);
-      val[col] = 0;
-      val[col + 2] = '#A9A9A9';
-    });
-    this.data = Object.assign([], this.data);
-    const colors: string[] = Object.assign([], this.options['colors']);
-    colors[(col - 1) / NUM_OF_COL_PER_TOPIC] = '#A9A9A9';
-    this.changeChartOptions(colors);
+    this.colChangeHelper('#A9A9A9', col, false);
   }
 
   /**
    * Restores the given column to the chart's data and updates the charts
    * options accordingly.
    */
-  private restoreCol(col: number) {
-    let index: number = 0;
+  private restoreCol(col: number): void {
     const newColor: string =
         this.coloresService.lightColors[(col - 1) / NUM_OF_COL_PER_TOPIC];
+    this.colChangeHelper(newColor, col, true);
+  }
+
+  /**
+   * Make the required change on the given column(restore or remove). Then
+   * updates the data and the colors property in the options in order to apply
+   * the changes in yhe UI.
+   */
+  private colChangeHelper(color: string, col: number, isRestore: boolean):
+      void {
+    let index: number = 0;
     this.data.forEach((val, key) => {
-      val[col] = this.filteredCol.get(col)[index++];
-      val[col + 2] = newColor;
+      !isRestore ? this.filteredCol.get(col).push(val[col] as number) : null;
+      val[col] = isRestore ? this.filteredCol.get(col)[index++] : 0;
+      val[col + 2] = color;
     });
     this.data = Object.assign([], this.data);
     const colors: string[] = Object.assign([], this.options['colors']);
-    colors[(col - 1) / NUM_OF_COL_PER_TOPIC] = newColor;
+    colors[(col - 1) / NUM_OF_COL_PER_TOPIC] = color;
     this.changeChartOptions(colors);
   }
 }
