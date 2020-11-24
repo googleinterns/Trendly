@@ -6,61 +6,76 @@ interface Topic {
   value: number;
   description: string;
 }
-interface DataType {
-  [index: string]: Topic[];
+interface Point {
+  value: number;
+  date: string;
 }
-const DATA1: DataType = {
-  '8/2010': [
-    {title: 'apple', value: 50, description: 'big tech company'},
-    {title: 'corona', value: 50, description: 'a dangerous virus'}
-  ],
-  '9/2010': [
-    {title: 'apple', value: 30, description: 'big tech company'},
-    {title: 'elections', value: 10, description: 'elections'},
-    {title: 'corona', value: 80, description: 'a dangerous virus'}
-  ],
-  '10/2010': [
-    {title: 'elections', value: 80, description: 'elections'},
-    {title: 'corona', value: 100, description: 'a dangerous virus'},
-    {title: 'pizza', value: 20, description: 'very tasty food'}
-  ],
+
+interface GraphSection {
+  term: string;
+  points: Point[]
+}
+
+interface DataValueType {
+  lines: GraphSection[]
+}
+const topic1: Topic = {
+  title: 'elections',
+  value: 80,
+  description: 'elections'
 };
-const DATA2: DataType = {
-  '8/2010': [
-    {title: 'food', value: 40, description: 'yummy'},
-    {title: 'corona', value: 50, description: 'a dangerous virus'}
-  ],
-  '9/2010': [
-    {title: 'ninja', value: 30, description: 'kitchen instrument'},
-    {title: 'elections', value: 10, description: 'elections'},
-    {title: 'corona', value: 80, description: 'a dangerous virus'}
-  ],
-  '10/2010': [
-    {title: 'elections', value: 80, description: 'elections'},
-    {title: 'corona', value: 100, description: 'a dangerous virus'},
-    {title: 'pizza', value: 20, description: 'very tasty food'}
-  ],
+const topic2: Topic = {
+  title: 'corona',
+  value: 100,
+  description: 'a dangerous virus'
 };
+const NEW_MOCK_DATA: Map<Topic, DataValueType> =
+    new Map<Topic, DataValueType>();
+NEW_MOCK_DATA.set(topic1, {
+  'lines': [{
+    'term': 'elections',
+    'points': [
+      {'value': 15, 'date': '2010-01-03'}, {'value': 21, 'date': '2010-01-10'},
+      {'value': 28, 'date': '2010-01-17'}, {'value': 27, 'date': '2010-01-24'},
+      {'value': 20, 'date': '2010-01-31'}, {'value': 0, 'date': '2010-02-07'},
+    ]
+  }]
+});
+NEW_MOCK_DATA.set(topic2, {
+  'lines': [{
+    'term': 'corona',
+    'points': [
+      {'value': 15, 'date': '2010-01-03'}, {'value': 21, 'date': '2010-01-10'},
+      {'value': 28, 'date': '2010-01-17'}, {'value': 27, 'date': '2010-01-24'},
+      {'value': 20, 'date': '2010-01-31'}, {'value': 0, 'date': '2010-02-07'},
+    ]
+  }]
+});
+
 const EXPECT_OUTPUT: Array<Array<string|number>> = [
   [
-    '8/2010', 50, 'big tech company', '#4ec3ff', 50, 'a dangerous virus',
-    '#9467e4', 0, '', '', 0, '', ''
+    '2010-01-03', 15, 'elections', '#4ec3ff', 15, 'a dangerous virus',
+    '#9467e4'
   ],
   [
-    '9/2010', 30, 'big tech company', '#4ec3ff', 80, 'a dangerous virus',
-    '#9467e4', 10, 'elections', '#2dc3b5', 0, '', ''
+    '2010-01-10', 21, 'elections', '#4ec3ff', 21, 'a dangerous virus',
+    '#9467e4'
   ],
   [
-    '10/2010', 0, '', '', 100, 'a dangerous virus', '#9467e4', 80, 'elections',
-    '#2dc3b5', 20, 'very tasty food', '#ffc52d'
+    '2010-01-17', 28, 'elections', '#4ec3ff', 28, 'a dangerous virus', '#9467e4'
+  ],
+  [
+    '2010-01-24', 27, 'elections', '#4ec3ff', 27, 'a dangerous virus',
+    '#9467e4'
+  ],
+  [
+    '2010-01-31', 20, 'elections', '#4ec3ff', 20, 'a dangerous virus',
+    '#9467e4'
+  ],
+  [
+    '2010-02-07', 0, 'elections', '#4ec3ff', 0, 'a dangerous virus', '#9467e4'
   ]
 ];
-const TERM1 = 'corona';
-const TERM2 = 'apple';
-const TERM3 = 'elections';
-const TERM4 = 'pizza';
-const TERM5 = 'food';
-const TERM6 = 'ninja';
 
 describe('HistogramSectionComponent', () => {
   let component: HistogramSectionComponent;
@@ -83,35 +98,19 @@ describe('HistogramSectionComponent', () => {
 
   it('test extract topics with data1', () => {
     const topics: Map<string, number> = new Map<string, number>();
-    topics.set(TERM2, 0);
-    topics.set(TERM1, 1);
-    topics.set(TERM3, 2);
-    topics.set(TERM4, 3);
+    topics.set('elections', 0);
+    topics.set('corona', 1);
 
-    expect((component as any).extractTopics(DATA1)).toEqual(topics);
-  });
-
-  it('test extract topics with data2', () => {
-    const topics: Map<string, number> = new Map<string, number>();
-    topics.set(TERM5, 0);
-    topics.set(TERM1, 1);
-    topics.set(TERM6, 2);
-    topics.set(TERM3, 3);
-    topics.set(TERM4, 4);
-    expect((component as any).extractTopics(DATA2)).toEqual(topics);
+    expect((component as any).extractTopics(NEW_MOCK_DATA)).toEqual(topics);
   });
 
   it('test creat coulumns', () => {
     const topics: Map<string, number> = new Map<string, number>();
-    topics.set(TERM5, 0);
-    topics.set(TERM1, 1);
-    topics.set(TERM6, 2);
-    topics.set(TERM3, 3);
-    topics.set(TERM2, 4);
+    topics.set('elections', 0);
+    topics.set('corona', 1);
+
     const columns = [
-      'Topic', TERM5, {role: 'tooltip'}, {role: 'style'}, TERM1,
-      {role: 'tooltip'}, {role: 'style'}, TERM6, {role: 'tooltip'},
-      {role: 'style'}, TERM3, {role: 'tooltip'}, {role: 'style'}, TERM2,
+      'Topic', 'elections', {role: 'tooltip'}, {role: 'style'}, 'corona',
       {role: 'tooltip'}, {role: 'style'}
     ];
     (component as any).createColumnNames(topics);
@@ -119,7 +118,7 @@ describe('HistogramSectionComponent', () => {
   });
 
   it('test output of the component given the mock data', () => {
-    component.trendsData = DATA1;
+    (component as any).mapTrendsData = NEW_MOCK_DATA;
     component.convertDataToChartsFormat();
     expect(component.data).toEqual(EXPECT_OUTPUT);
   });

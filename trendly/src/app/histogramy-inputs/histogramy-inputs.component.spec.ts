@@ -12,14 +12,16 @@ const DEF_OBJ = {
   startDate: '2004-01',
   endDate: MOCK_END_DATE,
   country: '',
-  interval: 1
+  interval: 1,
+  category: '',
 };
 const CHANGED_OBJ = {
   term: '',
   startDate: '2004-01',
   endDate: CHANGED_END_DATE,
   country: IL_COUNTRY,
-  interval: CHANGED_INTERVAL
+  interval: CHANGED_INTERVAL,
+  category: '45',
 }
 
 describe('InputsComponent', () => {
@@ -55,6 +57,7 @@ describe('InputsComponent', () => {
     component.country = 'IL';
     component.endDate = '2006-01';
     component.interval = 2;
+    component.category = '45';
     spyOn(component.apply, 'emit');
     component.sendParameters();
     expect(component.apply.emit).toHaveBeenCalled();

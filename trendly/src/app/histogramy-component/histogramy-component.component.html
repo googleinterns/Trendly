@@ -3,10 +3,78 @@
 <app-histogramy-inputs (apply)="getDataFromServer($event)">
 </app-histogramy-inputs>
 <div id="charts-container">
-  <app-histogram-section [title]="TopTopicsTitle"
+  <div class="pick-chart">
+    <button mat-button
+            title="stacked area chart view"
+            (click)="whichTop = 0;"
+            [ngClass]="{'clicked': whichTop === 0 }"><span class=" icon material-icons">
+        stacked_line_chart
+      </span></button>
+    <button mat-button
+            title="columns chart view"
+            (click)="whichTop = 1;"
+            [ngClass]="{'clicked': whichTop === 1}">
+      <span class="icon material-icons">
+        bar_chart
+      </span></button>
+    <button mat-button
+            title="line chart view"
+            (click)="whichTop = 2;"
+            [ngClass]="{'clicked': whichTop === 2}">
+      <span class="icon material-icons">
+        show_chart
+      </span></button>
+  </div>
+  <app-histogram-section *ngIf="whichTop === 0"
+                         [title]="topTopicsTitle"
                          [trendsData]="dataTop"
+                         [type]="areaChartType"
                          (progress)="changeProgress($event)"></app-histogram-section>
-  <app-histogram-section [title]="RisingTopicsTitle "
-                         [trendsData]="dataRising "
+  <app-histogram-section *ngIf="whichTop === 1"
+                         [title]="topTopicsTitle"
+                         [trendsData]="dataTop"
+                         [type]="columnChartType"
+                         (progress)="changeProgress($event)"></app-histogram-section>
+  <app-histogram-section *ngIf="whichTop === 2"
+                         [title]="topTopicsTitle"
+                         [trendsData]="dataTop"
+                         [type]="lineChartType"
+                         (progress)="changeProgress($event)"></app-histogram-section>
+  <div class="pick-chart">
+    <button mat-button
+            title="stacked area chart view"
+            (click)="whichRising = 0"
+            [ngClass]="{'clicked': whichRising === 0}"><span class="icon material-icons">
+        stacked_line_chart
+      </span>
+    </button>
+    <button mat-button
+            title="columns chart view"
+            (click)="whichRising = 1"
+            [ngClass]="{'clicked': whichRising === 1}"><span class="icon material-icons">
+        bar_chart
+      </span></button>
+    <button mat-button
+            title="line chart view"
+            (click)="whichRising = 2;"
+            [ngClass]="{'clicked': whichRising === 2}">
+      <span class="icon material-icons">
+        show_chart
+      </span></button>
+  </div>
+  <app-histogram-section *ngIf="whichRising === 0"
+                         [title]="risingTopicsTitle"
+                         [trendsData]="dataRising"
+                         [type]="areaChartType"
+                         (progress)="changeProgress($event)"></app-histogram-section>
+  <app-histogram-section *ngIf="whichRising === 1"
+                         [title]="risingTopicsTitle"
+                         [trendsData]="dataRising"
+                         [type]="columnChartType"
+                         (progress)="changeProgress($event)"></app-histogram-section>
+  <app-histogram-section *ngIf="whichRising === 2"
+                         [title]="risingTopicsTitle"
+                         [trendsData]="dataRising"
+                         [type]="lineChartType"
                          (progress)="changeProgress($event)"></app-histogram-section>
 </div>
