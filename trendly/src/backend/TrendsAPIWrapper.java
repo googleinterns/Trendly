@@ -17,9 +17,10 @@ public class TrendsAPIWrapper {
   private static final Map<String, Class<? extends TrendsResult>> FUNC_TO_CLASS =
       Map.ofEntries(
           entry(TrendsFunctions.TOP_TOPICS, TrendsTopicsResult.class),
-              entry(TrendsFunctions.RISING_TOPICS, TrendsRisingTopicsResult.class),
+          entry(TrendsFunctions.RISING_TOPICS, TrendsRisingTopicsResult.class),
           entry(TrendsFunctions.TOP_QUERIES, TrendsQueriesResult.class),
-              entry(TrendsFunctions.RISING_QUERIES, TrendsRisingQueriesResult.class));
+          entry(TrendsFunctions.RISING_QUERIES, TrendsRisingQueriesResult.class),
+          entry(TrendsFunctions.GET_GRAPH, TrendsGraphResult.class));
 
   /**
    * Runs the requested function from Google Trends API with the given restrictions and returns
@@ -63,7 +64,8 @@ public class TrendsAPIWrapper {
       String endDate,
       String category) {
     GenericUrl url = new GenericUrl(TrendsAPIWrapper.BASE_URL + funcName);
-    url.put(UrlParams.TERM, term);
+    String termParam = funcName == TrendsFunctions.GET_GRAPH ? UrlParams.TERMS : UrlParams.TERM;
+    url.put(termParam, term);
     if (!location.equals("")) {
       url.put(UrlParams.GEO, location);
     }
@@ -71,7 +73,9 @@ public class TrendsAPIWrapper {
     if (!endDate.equals("")) {
       url.put(UrlParams.END_DATE, endDate);
     }
-    url.put(UrlParams.CATEGORY, category);
+    if (!category.equals("")) {
+      url.put(UrlParams.CATEGORY, category);
+    }
     url.put(UrlParams.KEY, TrendsAPIWrapper.API_KEY);
     url.put(UrlParams.ALT, UrlParams.JSON);
     return url;
