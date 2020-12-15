@@ -28,14 +28,12 @@ public class HistogramyDataRetrieval {
   public static final int NUM_OF_MONTHES = 12;
   public static final String UNTIT_DATE = " - ";
 
-  public static List<HistogramTopic> getInitialTopicsList(
-      String term,
-      String startDate,
-      String endDate,
-      String country,
-      String interval,
-      String category,
-      String funcName)
+  /**
+   * For the initial request from the front-end. Returns a list of rising/top topic relevant for
+   * the given restrictions.
+   */
+  public static List<HistogramTopic> getInitialTopicsList(String term, String startDate,
+      String endDate, String country, String interval, String category, String funcName)
       throws Exception {
     ArrayList<DateRange> dates =
         dateProcessing(startDate, endDate, getIntervalForTopics(startDate, endDate));
@@ -43,8 +41,8 @@ public class HistogramyDataRetrieval {
   }
 
   /**
-   * The main function which called from the servlets. Gets the restrictions and returns the data to
-   * the servlet.
+   * The main function which called from the servlets. Gets the restrictions and list of topics and
+   * returns their data to the servlet.
    *
    * @param term - The search term wished to be explored.
    * @param startDate- The start of requested time range should be a month and a year in the format
@@ -56,16 +54,9 @@ public class HistogramyDataRetrieval {
    * @param funcName - The requested function name on Trends API (topTopics, risingTopics).
    * @return A map between topic object to its TrendsGraphResult.
    */
-  public static Map<HistogramTopic, TrendsGraphResult> getDataForTopics(
-      String term,
-      String startDate,
-      String endDate,
-      String country,
-      String interval,
-      String category,
-      String funcName,
-      List<HistogramTopic> topics)
-      throws Exception {
+  public static Map<HistogramTopic, TrendsGraphResult> getDataForTopics(String term,
+      String startDate, String endDate, String country, String interval, String category,
+      String funcName, List<HistogramTopic> topics) throws Exception {
     if (topics.size() > 0) {
       updateTopicsDescription(topics);
       return mapTopicToGraph(topics, startDate, endDate, country, category);
@@ -108,14 +99,12 @@ public class HistogramyDataRetrieval {
       int endOfIntervalYear = currentYear;
       // In case the interval is more than 1 year.
       if (endOfIntervalMonth > NUM_OF_MONTHES) {
-        endOfIntervalYear +=
-            endOfIntervalMonth % NUM_OF_MONTHES == 0
-                ? (endOfIntervalMonth / NUM_OF_MONTHES) - 1
-                : endOfIntervalMonth / NUM_OF_MONTHES;
-        endOfIntervalMonth =
-            endOfIntervalMonth % NUM_OF_MONTHES == 0
-                ? NUM_OF_MONTHES
-                : endOfIntervalMonth % NUM_OF_MONTHES;
+        endOfIntervalYear += endOfIntervalMonth % NUM_OF_MONTHES == 0
+            ? (endOfIntervalMonth / NUM_OF_MONTHES) - 1
+            : endOfIntervalMonth / NUM_OF_MONTHES;
+        endOfIntervalMonth = endOfIntervalMonth % NUM_OF_MONTHES == 0
+            ? NUM_OF_MONTHES
+            : endOfIntervalMonth % NUM_OF_MONTHES;
       }
       // Check out of range.
       if (endOfIntervalYear > endYear
@@ -124,10 +113,8 @@ public class HistogramyDataRetrieval {
         endOfIntervalYear = endYear;
       }
 
-      DateRange newDR =
-          new DateRange(
-              currentYear + SEPERATOR + currentMonth,
-              endOfIntervalYear + SEPERATOR + endOfIntervalMonth);
+      DateRange newDR = new DateRange(currentYear + SEPERATOR + currentMonth,
+          endOfIntervalYear + SEPERATOR + endOfIntervalMonth);
       ranges.add(newDR);
       currentYear = endOfIntervalYear;
       currentMonth = endOfIntervalMonth + 1;
@@ -210,40 +197,26 @@ public class HistogramyDataRetrieval {
   /** Extracts the description from the given Future list and updates topics. */
   private static void getDescriptionFromThreads(
       List<HistogramTopic> topics, Map<String, Future<String>> midToDescription) {
-          System.out.println("KG!!!!!");
-    topics.parallelStream()
-        .forEach(
-            (topic) -> {
-              try {
-                topic.description = midToDescription.get(topic.mid).get();
-              } catch (InterruptedException | ExecutionException e) {
-                  System.out.println("KG Failed!!!!!");
-                throw new Error(e);
-              }
-            });
+    System.out.println("KG!!!!!");
+    topics.parallelStream().forEach((topic) -> {
+      try {
+        topic.description = midToDescription.get(topic.mid).get();
+      } catch (InterruptedException | ExecutionException e) {
+        System.out.println("KG Failed!!!!!");
+        throw new Error(e);
+      }
+    });
   }
   /** Returns a map between a topic object to its trends graph result. */
-  private static Map<HistogramTopic, TrendsGraphResult> mapTopicToGraph(
-      List<HistogramTopic> topics,
-      String startDate,
-      String endDate,
-      String country,
-      String category) {
+  private static Map<HistogramTopic, TrendsGraphResult> mapTopicToGraph(List<HistogramTopic> topics,
+      String startDate, String endDate, String country, String category) {
     Map<HistogramTopic, Future<TrendsResult>> graphResults = new HashMap<>();
     ExecutorService executor = Executors.newFixedThreadPool(topics.size());
-    topics.parallelStream()
-        .forEach(
-            (topic) -> {
-              Callable<TrendsResult> callable =
-                  new TrendsCallable(
-                      TrendsFunctions.GET_GRAPH,
-                      topic.title,
-                      country,
-                      startDate,
-                      endDate,
-                      category);
-              graphResults.put(topic, executor.submit(callable));
-            });
+    topics.parallelStream().forEach((topic) -> {
+      Callable<TrendsResult> callable = new TrendsCallable(
+          TrendsFunctions.GET_GRAPH, topic.title, country, startDate, endDate, category);
+      graphResults.put(topic, executor.submit(callable));
+    });
     executor.shutdown();
     return getGraphsFromThreads(graphResults);
   }
@@ -251,17 +224,15 @@ public class HistogramyDataRetrieval {
   private static Map<HistogramTopic, TrendsGraphResult> getGraphsFromThreads(
       Map<HistogramTopic, Future<TrendsResult>> graphResults) {
     Map<HistogramTopic, TrendsGraphResult> topicsToGraph = new HashMap<>();
-    graphResults.entrySet().parallelStream()
-        .forEach(
-            (entry) -> {
-              TrendsGraphResult graphResult;
-              try {
-                graphResult = (TrendsGraphResult) entry.getValue().get();
-              } catch (InterruptedException | ExecutionException e) {
-                throw new Error(e);
-              }
-              topicsToGraph.put(entry.getKey(), graphResult);
-            });
+    graphResults.entrySet().parallelStream().forEach((entry) -> {
+      TrendsGraphResult graphResult;
+      try {
+        graphResult = (TrendsGraphResult) entry.getValue().get();
+      } catch (InterruptedException | ExecutionException e) {
+        throw new Error(e);
+      }
+      topicsToGraph.put(entry.getKey(), graphResult);
+    });
     return topicsToGraph;
   }
 }

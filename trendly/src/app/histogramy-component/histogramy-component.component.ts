@@ -229,6 +229,9 @@ export class HistogramyComponentComponent {
     }
   }
 
+  /**
+   * Updates the top topics selections after a topic selected / unselected.
+   */
   toggleTop(topic: Topic) {
     this.selectionTop.toggle(topic);
     this.topForHistogramSection = new Map();
@@ -239,6 +242,9 @@ export class HistogramyComponentComponent {
     });
   }
 
+  /**
+   * Updates the rising topics selections after a topic selected / unselected.
+   */
   toggleRising(topic: Topic) {
     this.selectionRising.toggle(topic);
     this.risingForHistogramSection = new Map();

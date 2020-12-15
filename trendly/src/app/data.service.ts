@@ -24,25 +24,6 @@ export class DataService {
   return this.callServlet(
       '/histogramy-data', term, startDate, endDate, country, interval, category, funcName, topics);
   }
-  // /**
-  //  * Fetches data from top-topic servlet according to the restrictions.
-  //  */
-  // public fetchTopTopics(
-  //     term: string|string[], startDate: string, endDate: string,
-  //     country: string, interval: number = 1, category: string, topics? : Topic[]) {
-  //   return this.callServlet(
-  //       '/top-topics', term, startDate, endDate, country, interval, category, topics)
-  // }
-
-  // /**
-  //  * Fetches data from rising-topic servlet according to the restrictions.
-  //  */
-  // public fetchRisingTopics(
-  //     term: string|string[], startDate: string, endDate: string,
-  //     country: string, interval: number = 1, category: string, topics? : Topic[]) {
-  //   return this.callServlet(
-  //       '/rising-topics', term, startDate, endDate, country, interval, category, topics)
-  // }
 
   /**
    * Fetches data from clusterly-data servlet according to the restrictions.
@@ -76,13 +57,6 @@ export class DataService {
   private buildTopicsParameter(topics : Topic[])
   {
     const topicsURL : string = 'topics=' + (JSON.stringify(topics) as any).replaceAll('&', '%26');
-
-    // for (let i = 0; i < topics.length; i++)
-    // {
-    //   const topic = 'topics[' + i + ']';
-    //   const empty = '';
-    //   topicsURL += topic + '[title]=' + topics[i].title + '&' + topic + '[mid]=' + topics[i].mid + '&' + topic + '[description]=' + empty + '&' + topic + '[value]=' + empty + '&';
-    // }
     return topicsURL;
   }
 
