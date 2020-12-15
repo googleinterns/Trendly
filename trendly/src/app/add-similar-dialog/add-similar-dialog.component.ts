@@ -20,7 +20,6 @@ export interface SimilarDialogData {
   selector: 'app-add-similar-dialog',
   templateUrl: './add-similar-dialog.component.html',
   styleUrls: ['./add-similar-dialog.component.css'],
-  encapsulation: ViewEncapsulation.None
 })
 export class AddSimilarDialogComponent {
   readonly displayedColumns: string[] = ['select', 'title', 'volume'];

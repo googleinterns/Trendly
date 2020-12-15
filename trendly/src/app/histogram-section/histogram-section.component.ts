@@ -53,7 +53,7 @@ export class HistogramSectionComponent implements OnInit {
   @Input() columnNames: ColumnArray = [];
   @Input() options: object = {};
   @Output() progress = new EventEmitter<boolean>();
-  private mapTrendsData: Map<Topic, DataValueType>;
+  // private mapTrendsData: Map<Topic, DataValueType>;
   readonly filteredCol: Map<number, number[]> = new Map<number, number[]>();
 
   constructor(private coloresService: ColorsService) {}
@@ -66,7 +66,7 @@ export class HistogramSectionComponent implements OnInit {
    * Converts the data from the server to charts format.
    */
   convertDataToChartsFormat(): void {
-    const topics: Map<string, number> = this.extractTopics(this.mapTrendsData);
+    const topics: Map<string, number> = this.extractTopics(this.trendsData);
     this.createColumnNames(topics);
     this.createData(topics);
   }
@@ -104,13 +104,12 @@ export class HistogramSectionComponent implements OnInit {
     this.data = [];
     if (topics.size !== 0) {
       for (let i = 0;
-           i < this.mapTrendsData.values().next().value.lines[0].points.length;
+           i < this.trendsData.values().next().value.lines[0].points.length;
            i++) {
         const row = Array((topics.size * NUM_OF_COL_PER_TOPIC) + 1).fill('');
         this.initializeRowArray(row);
-        row[0] =
-            this.mapTrendsData.values().next().value.lines[0].points[i].date;
-        for (const [key, val] of this.mapTrendsData) {
+        row[0] = this.trendsData.values().next().value.lines[0].points[i].date;
+        for (const [key, val] of this.trendsData) {
           let index = topics.get(key.title) * NUM_OF_COL_PER_TOPIC;
           const indexColor = topics.get(key.title);
           row[++index] = val.lines[0].points[i].value;
@@ -136,16 +135,6 @@ export class HistogramSectionComponent implements OnInit {
     }
   }
 
-  /**
-   * Converts trend data variable to map (topics mapped to their graph objects
-   * from trends API)
-   */
-  private convrtTrendsDataToMap(): void {
-    this.mapTrendsData = new Map<Topic, DataValueType>();
-    for (let i = 0; i < Object.keys(this.trendsData).length; i++) {
-      this.mapTrendsData.set(this.trendsData[i][0], this.trendsData[i][1]);
-    }
-  }
 
   /**
    * Changes trends data property when it recognized change in parent component.
@@ -154,7 +143,6 @@ export class HistogramSectionComponent implements OnInit {
     if (changes['trendsData']) {
       this.filteredCol.clear();
       this.changeChartOptions();
-      this.convrtTrendsDataToMap();
       this.convertDataToChartsFormat();
       this.progress.emit(false);
     }

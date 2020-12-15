@@ -3,15 +3,16 @@
   width: 100%;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: center;
   flex-flow: row wrap;
 }
 
 .input-element {
-  flex: 0 1 300px;
-  padding: 0px 20px;
-  width: 100%;
-  font-size: 20px;
+  flex: 0 1 10%;
+  /* padding: 0px 20px; */
+  padding-left: 1%;
+  font-size: 1.5vh;
   font-family: "Roboto", cursive;
 }
 
@@ -22,12 +23,12 @@
 .btn {
   display: flex;
   align-items: center;
-  padding: 0px 5px 25px;
+  padding-left: 1%;
+  padding-bottom: 1%;
 }
 
 .apply-button {
   background-color: rgb(57, 99, 161);
-  height: 50px;
   padding: 10px 20px 10px;
   font-family: "Roboto";
   color: #fff;
@@ -36,6 +37,7 @@
   border: none;
   border-radius: 6px;
   vertical-align: middle;
+  font-size:0.8vw;
 }
 
 .inputs {
@@ -43,7 +45,6 @@
   justify-content: center;
   padding: 40px;
 }
-
 
 ::ng-deep .mat-form-field {
   width: 100%;

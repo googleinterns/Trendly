@@ -8,17 +8,16 @@ import {Injectable} from '@angular/core';
 })
 export class ColorsService {
   readonly colors: string[] = [
-    '#2196f3',
-    '#673ab7',
-    '#009688',
-    '#ff9800',
-    '#ff5722',
-    '#e91e63',
-    '#3f51b5',
-    '#2e7d32',
+    '#2196F3',
+    '#673AB7',
+    '#1FC58D',
+    '#E24AA9',
+    '#FF9800',
+    '#DE2F2F',
+    '#3D0F75',
+    '#02614F',
     '#E65100',
-    '#4A148C',
-    '#D50000',
+    '#3F51B5'
   ];
   readonly lightColors: string[] = [];
   // A colorblind-friendly palette.

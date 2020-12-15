@@ -28,6 +28,20 @@ public class HistogramyDataRetrieval {
   public static final int NUM_OF_MONTHES = 12;
   public static final String UNTIT_DATE = " - ";
 
+  public static List<HistogramTopic> getInitialTopicsList(
+      String term,
+      String startDate,
+      String endDate,
+      String country,
+      String interval,
+      String category,
+      String funcName)
+      throws Exception {
+    ArrayList<DateRange> dates =
+        dateProcessing(startDate, endDate, getIntervalForTopics(startDate, endDate));
+    return createTopicsList(dates, country, term, category, funcName);
+  }
+
   /**
    * The main function which called from the servlets. Gets the restrictions and returns the data to
    * the servlet.
@@ -42,21 +56,21 @@ public class HistogramyDataRetrieval {
    * @param funcName - The requested function name on Trends API (topTopics, risingTopics).
    * @return A map between topic object to its TrendsGraphResult.
    */
-  public static Map<HistogramTopic, TrendsGraphResult> getDataForServlet(
+  public static Map<HistogramTopic, TrendsGraphResult> getDataForTopics(
       String term,
       String startDate,
       String endDate,
       String country,
       String interval,
       String category,
-      String funcName)
+      String funcName,
+      List<HistogramTopic> topics)
       throws Exception {
-    ArrayList<DateRange> dates =
-        dateProcessing(startDate, endDate, getIntervalForTopics(startDate, endDate));
-    List<HistogramTopic> topics = createTopicsList(dates, country, term, category, funcName);
-    return topics.size() > 0
-        ? mapTopicToGraph(topics, startDate, endDate, country, category)
-        : new HashMap<HistogramTopic, TrendsGraphResult>();
+    if (topics.size() > 0) {
+      updateTopicsDescription(topics);
+      return mapTopicToGraph(topics, startDate, endDate, country, category);
+    }
+    return new HashMap<HistogramTopic, TrendsGraphResult>();
   }
 
   /**
@@ -140,11 +154,7 @@ public class HistogramyDataRetrieval {
       topicsResults.add(executor.submit(callable));
     }
     executor.shutdown();
-    List<HistogramTopic> filteredTopics = filterTopics(getTopicsFromThreads(topicsResults));
-    if (filteredTopics.size() > 0) {
-      updateTopicsDescription(filteredTopics);
-    }
-    return filteredTopics;
+    return new ArrayList<>(getTopicsFromThreads(topicsResults));
   }
 
   /**
@@ -200,12 +210,14 @@ public class HistogramyDataRetrieval {
   /** Extracts the description from the given Future list and updates topics. */
   private static void getDescriptionFromThreads(
       List<HistogramTopic> topics, Map<String, Future<String>> midToDescription) {
+          System.out.println("KG!!!!!");
     topics.parallelStream()
         .forEach(
             (topic) -> {
               try {
                 topic.description = midToDescription.get(topic.mid).get();
               } catch (InterruptedException | ExecutionException e) {
+                  System.out.println("KG Failed!!!!!");
                 throw new Error(e);
               }
             });

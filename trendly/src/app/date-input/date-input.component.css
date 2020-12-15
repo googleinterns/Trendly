@@ -1,9 +1,8 @@
 .form-field {
   float: left;
-  padding: 10px;
-  padding-left: 30px;
+  /* padding: 10px;
+  padding-left: 30px; */
   /* width: 100%; */
-  font-size: 20px;
   position: relative;
 }
 
@@ -22,4 +21,8 @@
 
 ::ng-deep .mat-form-field {
   width: 100%;
+}
+
+.end {
+  padding-left: 2%;
 }

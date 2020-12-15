@@ -1,18 +1,22 @@
-.mat-cell,
-.mat-dialog-content {
+::ng-deep .mat-cell,
+::ng-deep .mat-dialog-content {
   font-size: 18px;
 }
 
+table {
+  width: 100%;
+}
+
 .query,
-mat-header-cell:nth-child(2) {
+::ng-deep mat-header-cell:nth-child(2) {
   min-width: 300px;
 }
 
-.mat-header-cell {
-  font-size: 20px;
+::ng-deep .mat-header-cell {
+  font-size: 18px;
 }
 
-#mat-dialog-title-0 {
+::ng-deep #mat-dialog-title-0 {
   font-size: 25px;
 }
 
@@ -41,6 +45,6 @@ mat-header-cell:nth-child(2) {
   padding-top: 30px;
 }
 
-mat-form-field {
+::ng-deep mat-form-field {
   padding-left: 20px;
 }

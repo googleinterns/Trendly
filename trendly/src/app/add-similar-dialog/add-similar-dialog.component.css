@@ -1,14 +1,22 @@
-.mat-cell,
-.mat-dialog-content {
+
+::ng-deep .mat-dialog-content {
   font-size: 18px;
 }
 
-.mat-header-cell {
+/* ::ng-deep .mat-header-cell {
+  font-size: 20px;
+} */
+
+::ng-deep #mat-dialog-title-0 {
+  font-size: 25px;
+}
+
+.cell-header {
   font-size: 20px;
 }
 
-#mat-dialog-title-0 {
-  font-size: 25px;
+.cell {
+  font-size: 18px;
 }
 
 .apply-button {

@@ -5,13 +5,13 @@
              [dataSource]="dataSource">
     <!-- Checkbox Column -->
     <ng-container matColumnDef="select">
-      <mat-header-cell *matHeaderCellDef>
+      <mat-header-cell class="cell-header" *matHeaderCellDef>
         <mat-checkbox (change)="$event ? masterToggle() : null"
                       [checked]="selectedClusters.hasValue() && isAllSelected()"
                       [indeterminate]="selectedClusters.hasValue() && !isAllSelected()">
         </mat-checkbox>
       </mat-header-cell>
-      <mat-cell *matCellDef="let row">
+      <mat-cell class="cell" *matCellDef="let row">
         <mat-checkbox (click)="$event.stopPropagation()"
                       (change)="$event ? selectedClusters.toggle(row) : null"
                       [checked]="selectedClusters.isSelected(row)">

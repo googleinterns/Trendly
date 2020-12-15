@@ -4,6 +4,7 @@
 
 .pick-chart {
   float: right;
+  padding: 0;
 }
 
 .clicked {
@@ -15,4 +16,19 @@
   border: 4px solid black;
   border-radius: 8px;
   font-size: 30px;
+}
+
+.arrow-icon {
+  font-size: 20px;
+}
+
+::ng-deep .clear-icon {
+  font-size: 20px;
+  float: right;
+  vertical-align: middle;
+}
+
+.table-header {
+  vertical-align: middle;
+  margin-right: 8px;
 }
