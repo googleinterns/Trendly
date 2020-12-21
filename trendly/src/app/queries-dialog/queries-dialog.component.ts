@@ -28,7 +28,6 @@ export interface DialogData {
   selector: 'app-queries-dialog',
   templateUrl: './queries-dialog.component.html',
   styleUrls: ['./queries-dialog.component.css'],
-  encapsulation: ViewEncapsulation.None
 })
 export class QueriesDialogComponent {
   selectedCluster: Cluster;

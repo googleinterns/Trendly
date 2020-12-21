@@ -1,80 +1,178 @@
 <mat-progress-bar *ngIf="showMatProgress"
                   mode="indeterminate"></mat-progress-bar>
-<app-histogramy-inputs (apply)="getDataFromServer($event)">
-</app-histogramy-inputs>
-<div id="charts-container">
-  <div class="pick-chart">
+<mat-sidenav-container class="side-nav-container">
+  <mat-sidenav #sidenav
+               mode="side"
+               opened="true">
+    <table *ngIf="tab === 0"
+           mat-table
+           [dataSource]="dataSourceTop"
+           class="mat-elevation-z8">
+      <!-- Checkbox Column -->
+      <ng-container matColumnDef="select">
+        <th mat-header-cell
+            *matHeaderCellDef>
+        </th>
+        <td mat-cell
+            *matCellDef="let row">
+          <mat-checkbox *ngIf="allTopData.has(row.mid)"
+                        (click)="$event.stopPropagation()"
+                        (change)="($event) ? toggleTop(row) :null"
+                        [checked]="selectionTop.isSelected(row)">
+          </mat-checkbox>
+          <mat-spinner *ngIf="!allTopData.has(row.mid)"
+                       diameter="20"></mat-spinner>
+        </td>
+      </ng-container>
+      <!-- Name Column -->
+      <ng-container matColumnDef="title">
+        <th mat-header-cell
+            *matHeaderCellDef
+            class="table-header"> Top Topics
+          <span class="title"><button mat-button
+                    class="material-icons clear-icon"
+                    (click)="sidenav.close()">clear</button>
+          </span></th>
+
+        <td mat-cell
+            *matCellDef="let element"> {{element.title}} </td>
+      </ng-container>
+
+      <tr mat-header-row
+          *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row
+          *matRowDef="let row; columns: displayedColumns;">
+      </tr>
+    </table>
+    <table *ngIf="tab === 1"
+           mat-table
+           [dataSource]="dataSourceRising"
+           class="mat-elevation-z8">
+      <!-- Checkbox Column -->
+      <ng-container matColumnDef="select">
+        <th mat-header-cell
+            *matHeaderCellDef>
+        </th>
+        <td mat-cell
+            *matCellDef="let row">
+          <mat-checkbox *ngIf="allRisingData.has(row.mid)"
+                        (click)="$event.stopPropagation()"
+                        (change)="($event) ? toggleRising(row) :null"
+                        [checked]="selectionRising.isSelected(row)">
+          </mat-checkbox>
+          <mat-spinner *ngIf="!allRisingData.has(row.mid)"
+                       diameter="20"
+                       mode="determinate"></mat-spinner>
+        </td>
+      </ng-container>
+      <!-- Name Column -->
+      <ng-container matColumnDef="title">
+        <th mat-header-cell
+            *matHeaderCellDef
+            class="table-header"> Rising Topics
+          <span class="title"><button mat-button
+                    class="material-icons clear-icon"
+                    (click)="sidenav.close()">clear</button>
+          </span></th>
+        <td mat-cell
+            *matCellDef="let element"> {{element.title}} </td>
+      </ng-container>
+
+      <tr mat-header-row
+          *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row
+          *matRowDef="let row; columns: displayedColumns;">
+      </tr>
+    </table>
+  </mat-sidenav>
+  <mat-sidenav-content>
     <button mat-button
-            title="stacked area chart view"
-            (click)="whichTop = 0;"
-            [ngClass]="{'clicked': whichTop === 0 }"><span class=" icon material-icons">
-        stacked_line_chart
-      </span></button>
-    <button mat-button
-            title="columns chart view"
-            (click)="whichTop = 1;"
-            [ngClass]="{'clicked': whichTop === 1}">
-      <span class="icon material-icons">
-        bar_chart
-      </span></button>
-    <button mat-button
-            title="line chart view"
-            (click)="whichTop = 2;"
-            [ngClass]="{'clicked': whichTop === 2}">
-      <span class="icon material-icons">
-        show_chart
-      </span></button>
-  </div>
-  <app-histogram-section *ngIf="whichTop === 0"
-                         [title]="topTopicsTitle"
-                         [trendsData]="dataTop"
-                         [type]="areaChartType"
-                         (progress)="changeProgress($event)"></app-histogram-section>
-  <app-histogram-section *ngIf="whichTop === 1"
-                         [title]="topTopicsTitle"
-                         [trendsData]="dataTop"
-                         [type]="columnChartType"
-                         (progress)="changeProgress($event)"></app-histogram-section>
-  <app-histogram-section *ngIf="whichTop === 2"
-                         [title]="topTopicsTitle"
-                         [trendsData]="dataTop"
-                         [type]="lineChartType"
-                         (progress)="changeProgress($event)"></app-histogram-section>
-  <div class="pick-chart">
-    <button mat-button
-            title="stacked area chart view"
-            (click)="whichRising = 0"
-            [ngClass]="{'clicked': whichRising === 0}"><span class="icon material-icons">
-        stacked_line_chart
-      </span>
-    </button>
-    <button mat-button
-            title="columns chart view"
-            (click)="whichRising = 1"
-            [ngClass]="{'clicked': whichRising === 1}"><span class="icon material-icons">
-        bar_chart
-      </span></button>
-    <button mat-button
-            title="line chart view"
-            (click)="whichRising = 2;"
-            [ngClass]="{'clicked': whichRising === 2}">
-      <span class="icon material-icons">
-        show_chart
-      </span></button>
-  </div>
-  <app-histogram-section *ngIf="whichRising === 0"
-                         [title]="risingTopicsTitle"
-                         [trendsData]="dataRising"
-                         [type]="areaChartType"
-                         (progress)="changeProgress($event)"></app-histogram-section>
-  <app-histogram-section *ngIf="whichRising === 1"
-                         [title]="risingTopicsTitle"
-                         [trendsData]="dataRising"
-                         [type]="columnChartType"
-                         (progress)="changeProgress($event)"></app-histogram-section>
-  <app-histogram-section *ngIf="whichRising === 2"
-                         [title]="risingTopicsTitle"
-                         [trendsData]="dataRising"
-                         [type]="lineChartType"
-                         (progress)="changeProgress($event)"></app-histogram-section>
-</div>
+            class="material-icons arrow-icon"
+            *ngIf="!this.sidenav.opened"
+            (click)="sidenav.toggle()">arrow_forward</button>
+    <app-histogramy-inputs (apply)="getDataFromServer($event)">
+    </app-histogramy-inputs>
+    <mat-tab-group mat-align-tabs="center"
+                   (selectedTabChange)="tabChanged($event)">
+      <mat-tab label="Top Topics">
+        <div class="pick-chart">
+          <button mat-button
+                  title="stacked area chart view"
+                  (click)="whichTop = 0;"
+                  [ngClass]="{'clicked': whichTop === 0 }"><span class=" icon material-icons">
+              stacked_line_chart
+            </span></button>
+          <button mat-button
+                  title="columns chart view"
+                  (click)="whichTop = 1;"
+                  [ngClass]="{'clicked': whichTop === 1}">
+            <span class="icon material-icons">
+              bar_chart
+            </span></button>
+          <button mat-button
+                  title="line chart view"
+                  (click)="whichTop = 2;"
+                  [ngClass]="{'clicked': whichTop === 2}">
+            <span class="icon material-icons">
+              show_chart
+            </span></button>
+        </div>
+        <app-histogram-section *ngIf="whichTop === 0"
+                               [title]="topTopicsTitle"
+                               [trendsData]="topForHistogramSection"
+                               [type]="areaChartType"
+                               (progress)="changeProgress($event)"></app-histogram-section>
+        <app-histogram-section *ngIf="whichTop === 1"
+                               [title]="topTopicsTitle"
+                               [trendsData]="topForHistogramSection"
+                               [type]="columnChartType"
+                               (progress)="changeProgress($event)"></app-histogram-section>
+        <app-histogram-section *ngIf="whichTop === 2"
+                               [title]="topTopicsTitle"
+                               [trendsData]="topForHistogramSection"
+                               [type]="lineChartType"
+                               (progress)="changeProgress($event)"></app-histogram-section>
+      </mat-tab>
+      <mat-tab label="Rising Topics">
+        <div class="pick-chart">
+          <button mat-button
+                  title="stacked area chart view"
+                  (click)="whichRising = 0"
+                  [ngClass]="{'clicked': whichRising === 0}"><span class="icon material-icons">
+              stacked_line_chart
+            </span>
+          </button>
+          <button mat-button
+                  title="columns chart view"
+                  (click)="whichRising = 1"
+                  [ngClass]="{'clicked': whichRising === 1}"><span class="icon material-icons">
+              bar_chart
+            </span></button>
+          <button mat-button
+                  title="line chart view"
+                  (click)="whichRising = 2;"
+                  [ngClass]="{'clicked': whichRising === 2}">
+            <span class="icon material-icons">
+              show_chart
+            </span></button>
+        </div>
+        <app-histogram-section *ngIf="whichRising === 0"
+                               [title]="risingTopicsTitle"
+                               [trendsData]="risingForHistogramSection"
+                               [type]="areaChartType"
+                               (progress)="changeProgress($event)"></app-histogram-section>
+        <app-histogram-section *ngIf="whichRising === 1"
+                               [title]="risingTopicsTitle"
+                               [trendsData]="risingForHistogramSection"
+                               [type]="columnChartType"
+                               (progress)="changeProgress($event)"></app-histogram-section>
+        <app-histogram-section *ngIf="whichRising === 2"
+                               [title]="risingTopicsTitle"
+                               [trendsData]="risingForHistogramSection"
+                               [type]="lineChartType"
+                               (progress)="changeProgress($event)"></app-histogram-section>
+
+      </mat-tab>
+    </mat-tab-group>
+  </mat-sidenav-content>
+</mat-sidenav-container>
