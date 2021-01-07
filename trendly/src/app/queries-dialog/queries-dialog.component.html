@@ -10,7 +10,8 @@
                       [indeterminate]="selectedQueries.hasValue() && !isAllSelected()">
         </mat-checkbox>
       </mat-header-cell>
-      <mat-cell *matCellDef="let row">
+      <mat-cell class="select"
+                *matCellDef="let row">
         <mat-checkbox (click)="$event.stopPropagation()"
                       (change)="$event ? selectedQueries.toggle(row) : null"
                       [checked]="selectedQueries.isSelected(row)">
@@ -20,17 +21,35 @@
     <!-- Query Column -->
     <ng-container matColumnDef="query">
       <mat-header-cell *matHeaderCellDef> Query </mat-header-cell>
-      <mat-cell class= "query" *matCellDef="let bubble"> {{bubble.query}} </mat-cell>
+      <mat-cell class="query"
+                *matCellDef="let bubble"> {{bubble.query}} </mat-cell>
     </ng-container>
-    <!-- Name Column -->
+    <!-- Volume Column -->
     <ng-container matColumnDef="volume">
       <mat-header-cell *matHeaderCellDef> Volume </mat-header-cell>
-      <mat-cell class= "volume" *matCellDef="let bubble">  {{bubble.volume}} </mat-cell>
+      <mat-cell class="volume"
+                *matCellDef="let bubble"> {{bubble.volume}} </mat-cell>
+    </ng-container>
+    <!-- Visibility Column -->
+    <ng-container matColumnDef="visibility">
+      <mat-header-cell *matHeaderCellDef> Visibility </mat-header-cell>
+      <mat-cell class="visibility"
+                *matCellDef="let bubble">
+        <button mat-icon-button
+                *ngIf="data.currentCluster.bubbles.has(bubble)"
+                (click)="data.clusterly.makeQueryInvisible(bubble, data.currentCluster)">
+          <mat-icon class="icon">visibility</mat-icon>
+        </button>
+        <button mat-icon-button
+                *ngIf="data.currentCluster.additionalBubbles.has(bubble)"
+                (click)="data.clusterly.makeQueryVisible(bubble, data.currentCluster)">
+          <mat-icon class="icon">visibility_off</mat-icon>
+        </button>
+      </mat-cell>
     </ng-container>
     <!-- Columns Headers -->
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;"
-             (click)="selectedQueries.toggle(row)">
+    <mat-row *matRowDef="let row; columns: displayedColumns;">
     </mat-row>
   </mat-table>
 

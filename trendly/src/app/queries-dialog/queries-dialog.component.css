@@ -12,6 +12,18 @@ table {
   min-width: 300px;
 }
 
+.volume,
+.visibility,
+::ng-deep mat-header-cell:nth-child(3),
+::ng-deep mat-header-cell:nth-child(4) {
+  min-width: 100px;
+}
+
+.select,
+::ng-deep mat-header-cell:nth-child(1) {
+  min-width: 50px;
+}
+
 ::ng-deep .mat-header-cell {
   font-size: 18px;
 }
@@ -47,4 +59,8 @@ table {
 
 ::ng-deep mat-form-field {
   padding-left: 20px;
+}
+
+::ng-deep .icon {
+  font-size: 25px;
 }
