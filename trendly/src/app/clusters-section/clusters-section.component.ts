@@ -29,6 +29,7 @@ const ADD_ID = -2;
 const DELETE_CLUSTER = new Cluster('Trash (Delete)', -1, 0, [], [], []);
 const DELETE_BTN_IMG = 'assets/img/delete-white-18dp.svg';
 const ADD_BTN_IMG = 'assets/img/add-white-18dp.svg';
+const MOVE_BTN_IMG = 'assets/img/open_with-white-24dp.svg';
 
 export interface Location {
   xPosition: number;
@@ -100,7 +101,7 @@ export class ClustersSectionComponent {
     // New data arrived from the server.
     if (changes['trendsData']) {
       const clustersData: ClusterDataObj =
-          isUndefined(this.trendsData) ? CLUSTERS_DATA : this.trendsData;
+          isUndefined(this.trendsData) ? [] : this.trendsData;
       if (isUndefined(this.svgContainer) || this.svgContainer.empty()) {
         this.svgContainer = this.addSvg(CLUSTERS_CONTAINER);
       } else {
@@ -187,7 +188,7 @@ export class ClustersSectionComponent {
   private addClustersVisualization(
       newClusterIdToLoc?, colorScale?, lightColorScale?): void {
     // If there are no cluster to be presented, no need for visualization.
-    if (this.clustersToDisplay && this.clustersToDisplay.size > 0) {
+    if (!this.clustersToDisplay || this.clustersToDisplay.size == 0) {
       return;
     }
     // Initialize current simulation if it's defined.
@@ -258,7 +259,6 @@ export class ClustersSectionComponent {
                 .range(this.colorsService.lightColors));
 
     // A scale of the x position for each group.
-    console.log(this.isSideNavOpened);
     this.scales.set(
         Scales.XPositionSacle,
         d3.scaleLinear().domain([1, this.clustersToDisplay.size]).range([
@@ -433,7 +433,7 @@ export class ClustersSectionComponent {
 
         this.BindTitlesAndBtn(
             titleGroup, titleBtnGroup, moveBtn, clusterID,
-            nonDisplayedSimCluster);
+            nonDisplayedSimCluster, x, y);
       }
     });
   }
@@ -446,7 +446,7 @@ export class ClustersSectionComponent {
       titleGroup: d3.Selection<SVGGElement, any, any, any>,
       titleBtnGroup: d3.Selection<SVGGElement, any, any, any>,
       moveBtn: d3.Selection<SVGGElement, any, any, any>, clusterID: number,
-      nonDisplayedSimCluster: number[]): void {
+      nonDisplayedSimCluster: number[], x: number, y: number): void {
     this.addTitle(
         titleGroup, this.clustersToDisplay.get(clusterID).title, x, y,
         clusterID);
@@ -496,17 +496,17 @@ export class ClustersSectionComponent {
         titleBtnGroup.append('g').attr('class', 'move-btn' + clusterID);
     btnGroup.append('svg:title').text('Move the Cluster');
     this.addBtnCircle(btnGroup, x, y);
-    this.addBtnIcon(
-        btnGroup, x - 10, y - 10, 'assets/img/open_with-white-24dp.svg', 20);
-    this.applyMoveDragging(moveBtn);
+    this.addBtnIcon(btnGroup, x - 10, y - 10, MOVE_BTN_IMG, 20);
+    this.applyMoveDragging(titleBtnGroup, x, y, clusterID);
   }
 
   /**
    * Adds the dragging functionality to the move button (that attracts the
    * relevant clustr with him).
    */
-  private applyMoveDragging(moveBtn: d3.Selection<SVGGElement, any, any, any>):
-      void {
+  private applyMoveDragging(
+      moveBtn: d3.Selection<SVGGElement, any, any, any>, x: number, y: number,
+      clusterID: number): void {
     moveBtn
         .datum({
           x: (x +
@@ -695,11 +695,20 @@ export class ClustersSectionComponent {
    * Handles adding the circle component of the button.
    */
   private addBtnCircle(btnGroup, x: number, y: number):
-      d3.Selection<SVGCircleElement, any, SVGGElement, any>{
-          return btnGroup.append('circle')
-              .attr('class', 'similar-clusters-btn')
-              .attr('cx', x)
-              .attr('cy', y)}
+      d3.Selection<SVGCircleElement, any, SVGGElement, any> {
+    return btnGroup.append('circle')
+        .attr('class', 'similar-clusters-btn')
+        .attr('cx', x)
+        .attr('cy', y)
+  }
+
+  /**
+   * Handles adding the text component of the button.
+   */
+  private addBtnText(
+      btnGroup, x: number, y: number, clusterID: number, text: string): void {
+    btnGroup.append('text').attr('x', x).attr('y', y).text(text);
+  }
 
   /**
    * Adds each of the cluster in the given relatedClustersIds to the list of
@@ -882,7 +891,7 @@ export class ClustersSectionComponent {
   private changeBubbleCluster(bubbleObj: CircleDatum): void {
     const currentCluster: Cluster = this.clusters.get(bubbleObj.clusterId);
     // Get new ClusterId based on current position
-    const newID = this.closestGroupId(bubbleObj.x, bubbleObj.y)[0];
+    const newID = this.closestGroupId(bubbleObj.x, bubbleObj.y);
     if (newID === DELETE_ID) {
       bubbleObj.clusterId = newID;
       this.openDeleteDialog(bubbleObj, currentCluster);
