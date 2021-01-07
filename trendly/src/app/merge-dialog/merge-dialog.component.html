@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>Merge Confirmation</h1>
+<div mat-dialog-content>
+  Are you sure you want to merge cluster {{data.srcCluster.title}} into cluster
+  {{data.destCluster.title}}?
+  <div class="btn-row">
+    <div class="btn">
+      <button class="apply-button"
+              (click)="data.clusterly.mergeClusters(data.srcCluster, data.destCluster)">Yes</button>
+    </div>
+    <div class="btn">
+      <button class="no-button"
+              (click)="data.clusterly.mergeDialog.closeAll()">No</button>
+    </div>
+  </div>
+</div>
