@@ -101,7 +101,7 @@ export class ClustersSectionComponent {
     // New data arrived from the server.
     if (changes['trendsData']) {
       const clustersData: ClusterDataObj =
-          isUndefined(this.trendsData) ? [] : this.trendsData;
+          isUndefined(this.trendsData) ? CLUSTERS_DATA : this.trendsData;
       if (isUndefined(this.svgContainer) || this.svgContainer.empty()) {
         this.svgContainer = this.addSvg(CLUSTERS_CONTAINER);
       } else {
@@ -141,8 +141,10 @@ export class ClustersSectionComponent {
    * in the current clustersToDisplay but not in the previous clusterIdToLoc).
    */
   private hasClusterAdded(): boolean {
-    for (clusterId in this.clustersToDisplay.keys()) {
-      if (!this.clusterIdToLoc.has(clusterId)) return true;
+    for (const clusterId of this.clustersToDisplay.keys()) {
+      if (!this.clusterIdToLoc.has(clusterId)) {
+        return true;
+      }
     }
     return false;
   }
@@ -789,7 +791,6 @@ export class ClustersSectionComponent {
             return this.clusterIdToLoc.get(d.clusterId).yPosition;
           }
         }))
-
         .force(
             'charge',
             d3.forceManyBody().strength(
