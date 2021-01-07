@@ -63,3 +63,26 @@ table {
   font-family: 'Amatic SC', cursive;
   font-size: 25px;
 }
+
+#chart-container {
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  align-items: center;
+  padding-left: 30px;
+}
+
+google-chart {
+  padding: 20px;
+  border: 4px solid #808080;
+  border-radius: 25px;
+}
+
+.headline {
+  padding: 20px;
+  font-size: 40px;
+  font-family: 'Amatic SC', cursive;
+  text-align: center;
+}

@@ -1,9 +1,20 @@
 import {SelectionModel} from '@angular/cdk/collections';
-import {Component} from '@angular/core';
+import {Component, HostListener} from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import {InputObj} from '../clusterly-inputs/clusterly-inputs.component';
+import {ColorsService} from '../colors.service';
 import {DataService} from '../data.service';
 import {Cluster} from '../models/cluster-model';
+
+interface chartOptions {
+  curveType: string;
+  width: number;
+  height: number;
+  legend: object;
+  bar: object;
+  isStacked: boolean, explorer: object, colors: string[];
+}
+
 /**
  * Clusterly component - includes Clusterly inputs, clusters-section and
  * clusters components and handles fetching data from server based on the user
@@ -25,17 +36,26 @@ export class ClusterlyComponent {
   dataSource: MatTableDataSource<Cluster>;
   readonly selection: SelectionModel<Cluster> =
       new SelectionModel<Cluster>(true, []);
+  readonly title: string = 'Clusterly Summarized View';
+  readonly type: string = 'ColumnChart';
+  data: Array<Array<string|number>> = [];
+  readonly columnNames: Array<string> = ['Cluster', 'Volume'];
+  options: chartOptions;
+  tabIndex: number = 0;
+  withSummary: number = 0;
 
-  constructor(private dataService: DataService) {
+  constructor(
+      private dataService: DataService, private colorService: ColorsService) {
     this.clustersToShow = new Map<number, Cluster>();
     this.dataSource =
         new MatTableDataSource<Cluster>([...this.clusters.values()]);
+    this.changeChartOptions();
   }
 
   /**
    * Changes side-nav view according changes that done in the UI.
    */
-  changSideNavClusters(): void {
+  changeSideNavClusters(): void {
     const sortedClusters: Map<number, Cluster> = new Map(
         [...this.clusters.entries()].sort((a, b) => b[1].volume - a[1].volume));
     this.dataSource =
@@ -49,8 +69,7 @@ export class ClusterlyComponent {
    *     cluster-section.
    */
   changeInUiHandler(newClustersToShow: Map<number, Cluster>): void {
-    this.changSideNavClusters();
-    console.log(this.clustersToShow);
+    this.changeSideNavClusters();
     let hasChanged: boolean = false;
     this.dataSource.data.forEach((cluster => {
       if ((this.selection.isSelected(cluster) &&
@@ -93,6 +112,7 @@ export class ClusterlyComponent {
   itemToggle(row): void {
     this.selection.toggle(row);
     this.updateClustersToShow();
+    this.tabIndex == 1 ? this.updateChartData() : null;
   }
 
   /**
@@ -102,7 +122,7 @@ export class ClusterlyComponent {
     this.clustersToShow = new Map<number, Cluster>();
     this.selection.selected.forEach((cluster) => {
       this.clustersToShow.set(cluster.id, cluster);
-    })
+    });
   }
 
   /**
@@ -122,5 +142,43 @@ export class ClusterlyComponent {
         this.selection.clear() :
         this.dataSource.data.forEach((row) => this.selection.select(row));
     this.updateClustersToShow();
+    this.tabIndex == 1 ? this.updateChartData() : null;
+  }
+
+  /**
+   * Execute the needed changes when swiching between tabs (summary / edit).
+   */
+  tabClicked(index: number): void {
+    index === 1 ? this.updateChartData() : null;
+    this.tabIndex = index;
+  }
+
+  /**
+   * Updates the data for the summary view chart according to the selected
+   * clusters and the chart options.
+   */
+  private updateChartData(): void {
+    this.data = [];
+    this.clustersToShow.forEach((cluster) => {
+      this.data.push([cluster.title, cluster.volume]);
+    });
+  }
+
+  /**
+   * Changes the chart options property when needed (screen resize).
+   */
+  @HostListener('window:resize')
+  private changeChartOptions(): void {
+    this.options = {
+      curveType: 'function',
+      width: 3 * (window.innerWidth / 5),
+      height: window.innerWidth / 4,
+      legend: {position: 'top', maxLines: 3},
+      bar: {groupWidth: '75%'},
+      isStacked: false,
+      explorer: {actions: ['dragToZoom', 'rightClickToReset']},
+      colors: []
+    };
+    this.options['colors'] = this.colorService.lightColorForColorBlind;
   }
 }
