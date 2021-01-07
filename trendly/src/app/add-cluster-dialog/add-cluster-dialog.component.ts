@@ -5,6 +5,7 @@ import {ErrorStateMatcher} from '@angular/material/core';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 import {ClustersSectionComponent} from '../clusters-section/clusters-section.component';
+import {CircleDatum} from '../models/circle-datum';
 
 /** Error when invalid control is dirty, touched, or submitted. */
 export class AddClusterErrorStateMatcher implements ErrorStateMatcher {
@@ -18,8 +19,11 @@ export class AddClusterErrorStateMatcher implements ErrorStateMatcher {
 }
 
 export interface AddClusterDialogData {
-  addCluster: (title: String, clusterly: ClustersSectionComponent) => void;
+  addCluster:
+      (title: String, clusterly: ClustersSectionComponent,
+       query: CircleDatum) => void;
   clustersTitles: String[];
+  query?: CircleDatum;
   clusterly: ClustersSectionComponent;
 }
 
