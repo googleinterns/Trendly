@@ -34,6 +34,7 @@ import {QueriesDialogComponent} from './queries-dialog/queries-dialog.component'
 import {TermInputComponent} from './term-input/term-input.component';
 import {TermsChipsInputComponent} from './terms-chips-input/terms-chips-input.component';
 import {TopBarComponent} from './top-bar/top-bar.component';
+import { MergeDialogComponent } from './merge-dialog/merge-dialog.component';
 
 
 @NgModule({
@@ -58,6 +59,7 @@ import {TopBarComponent} from './top-bar/top-bar.component';
     CategoryInputComponent,
     DeleteConfirmationDialogComponent,
     AddSimilarDialogComponent,
+    MergeDialogComponent,
   ],
   imports: [
     BrowserModule,
