@@ -87,7 +87,7 @@ export class HistogramyComponentComponent {
    */
   private getDefaultDates(): string[] {
     let end: Date = new Date();
-    let month: string = '' + end.getMonth();
+    let month: string = '' + end.getMonth() + 1;
     month = month.length === 1 ? '0' + month : month;
     let yearEnd = '' + end.getFullYear();
     let yearStart = '' + (end.getFullYear() - 1)

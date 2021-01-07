@@ -35,9 +35,12 @@ NEW_MOCK_DATA.set(topic1, {
   'lines': [{
     'term': 'elections',
     'points': [
-      {'value': 15, 'date': '2010-01-03'}, {'value': 21, 'date': '2010-01-10'},
-      {'value': 28, 'date': '2010-01-17'}, {'value': 27, 'date': '2010-01-24'},
-      {'value': 20, 'date': '2010-01-31'}, {'value': 0, 'date': '2010-02-07'},
+      {'value': 15, 'date': '2010-01-03'},
+      {'value': 21, 'date': '2010-01-10'},
+      {'value': 28, 'date': '2010-01-17'},
+      {'value': 27, 'date': '2010-01-24'},
+      {'value': 20, 'date': '2010-01-31'},
+      {'value': 0, 'date': '2010-02-07'},
     ]
   }]
 });
@@ -45,36 +48,33 @@ NEW_MOCK_DATA.set(topic2, {
   'lines': [{
     'term': 'corona',
     'points': [
-      {'value': 15, 'date': '2010-01-03'}, {'value': 21, 'date': '2010-01-10'},
-      {'value': 28, 'date': '2010-01-17'}, {'value': 27, 'date': '2010-01-24'},
-      {'value': 20, 'date': '2010-01-31'}, {'value': 0, 'date': '2010-02-07'},
+      {'value': 15, 'date': '2010-01-03'},
+      {'value': 21, 'date': '2010-01-10'},
+      {'value': 28, 'date': '2010-01-17'},
+      {'value': 27, 'date': '2010-01-24'},
+      {'value': 20, 'date': '2010-01-31'},
+      {'value': 0, 'date': '2010-02-07'},
     ]
   }]
 });
 
 const EXPECT_OUTPUT: Array<Array<string|number>> = [
   [
-    '2010-01-03', 15, 'elections', '#4ec3ff', 15, 'a dangerous virus',
-    '#9467e4'
+    '2010-01-03', 15, 'elections', '#4ec3ff', 15, 'a dangerous virus', '#9467e4'
   ],
   [
-    '2010-01-10', 21, 'elections', '#4ec3ff', 21, 'a dangerous virus',
-    '#9467e4'
+    '2010-01-10', 21, 'elections', '#4ec3ff', 21, 'a dangerous virus', '#9467e4'
   ],
   [
     '2010-01-17', 28, 'elections', '#4ec3ff', 28, 'a dangerous virus', '#9467e4'
   ],
   [
-    '2010-01-24', 27, 'elections', '#4ec3ff', 27, 'a dangerous virus',
-    '#9467e4'
+    '2010-01-24', 27, 'elections', '#4ec3ff', 27, 'a dangerous virus', '#9467e4'
   ],
   [
-    '2010-01-31', 20, 'elections', '#4ec3ff', 20, 'a dangerous virus',
-    '#9467e4'
+    '2010-01-31', 20, 'elections', '#4ec3ff', 20, 'a dangerous virus', '#9467e4'
   ],
-  [
-    '2010-02-07', 0, 'elections', '#4ec3ff', 0, 'a dangerous virus', '#9467e4'
-  ]
+  ['2010-02-07', 0, 'elections', '#4ec3ff', 0, 'a dangerous virus', '#9467e4']
 ];
 
 describe('HistogramSectionComponent', () => {
@@ -118,7 +118,7 @@ describe('HistogramSectionComponent', () => {
   });
 
   it('test output of the component given the mock data', () => {
-    (component as any).mapTrendsData = NEW_MOCK_DATA;
+    (component as any).trendsData = NEW_MOCK_DATA;
     component.convertDataToChartsFormat();
     expect(component.data).toEqual(EXPECT_OUTPUT);
   });
