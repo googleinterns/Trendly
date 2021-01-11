@@ -5,17 +5,17 @@ import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {MatTableDataSource} from '@angular/material/table';
 
 import {ClusterlyComponent} from '../clusterly/clusterly.component';
+import {ClustersSectionComponent} from '../clusters-section/clusters-section.component';
 import {Bubble} from '../models/bubble-model';
 import {Cluster} from '../models/cluster-model';
 
 export interface DialogData {
-  clusterly?: ClusterlyComponent;
+  clusterly?: ClustersSectionComponent;
   currentCluster: Cluster;
-  queries: Bubble[];
   clusters: Cluster[];
   updateFunc?:
       (newCluster: Cluster, selections: SelectionModel<Bubble>,
-       currCluster: Cluster, clusterly: ClusterlyComponent) => void;
+       currCluster: Cluster, clusterly: ClustersSectionComponent) => void;
 }
 
 /**
@@ -31,13 +31,17 @@ export interface DialogData {
 })
 export class QueriesDialogComponent {
   selectedCluster: Cluster;
-  readonly displayedColumns: string[] = ['select', 'query', 'volume'];
+  readonly displayedColumns: string[] =
+      ['select', 'query', 'volume', 'visibility'];
   readonly dataSource: MatTableDataSource<Bubble>;
   readonly selectedQueries: SelectionModel<Bubble> =
       new SelectionModel<Bubble>(true, []);
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {
-    this.dataSource = new MatTableDataSource<Bubble>(data.queries);
+    this.dataSource = new MatTableDataSource<Bubble>(
+        Array.from(data.currentCluster.bubbles)
+            .concat(Array.from(data.currentCluster.additionalBubbles))
+            .sort((bubble1, bubble2) => bubble2.volume - bubble1.volume));
   }
 
   /**

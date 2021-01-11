@@ -18,7 +18,6 @@ const QUERIES: Bubble[] =
     [new Bubble('query 1', 10, 1), new Bubble('query 2', 15, 2)];
 const DATA: DialogData = {
   currentCluster: CLUSTER1,
-  queries: QUERIES,
   clusters: [CLUSTER1, CLUSTER2]
 };
 const CONFIG = {
@@ -67,26 +66,19 @@ describe('QueriesDialogComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should create dialog\'s title correctly (with the cluster title)', () => {
-    dialog.open(QueriesDialogComponent, CONFIG);
-    fixture.detectChanges();
-    const h1 = overlayContainerElement.querySelector('.mat-dialog-title');
-    expect(h1.textContent).toBe(DIALOG_TITLE);
-  });
+  it('should create queries\' dialog\'s title correctly (with the cluster title)',
+     () => {
+       dialog.open(QueriesDialogComponent, CONFIG);
+       fixture.detectChanges();
+       const h1 = overlayContainerElement.querySelector('.mat-dialog-title');
+       expect(h1.textContent).toBe(DIALOG_TITLE);
+     });
 
-  it('should create dialog\'s table that match the queries', () => {
-    (component as any).dataSource = new MatTableDataSource<Bubble>(QUERIES);
-    dialog.open(QueriesDialogComponent, CONFIG);
-    fixture.detectChanges();
-    const matList = overlayContainerElement.querySelectorAll('mat-cell');
-    expect(matList.item(1).textContent).toBe(FIRST_QUERY_OPTION);
-    expect(matList.item(4).textContent).toBe(SECOND_QUERY_OPTION);
-  });
-
-  it('should create select options thay match the clusters\' titles', () => {
-    dialog.open(QueriesDialogComponent, CONFIG);
-    fixture.detectChanges();
-    const matForm = overlayContainerElement.querySelector('mat-select');
-    expect(matForm.textContent).toBe(CLUSTER1.title + CLUSTER2.title);
-  });
+  it('should create queries\' select options thay match the clusters\' titles',
+     () => {
+       dialog.open(QueriesDialogComponent, CONFIG);
+       fixture.detectChanges();
+       const matForm = overlayContainerElement.querySelector('mat-select');
+       expect(matForm.textContent).toBe(CLUSTER1.title + CLUSTER2.title);
+     });
 });

@@ -17,7 +17,7 @@ export const CLUSTERS_DATA = {
       {title: 'This is query 4 from cluster 1 ', value: 80},
       {title: 'This is query 5 from cluster 1 ', value: 100},
     ],
-    additionalQueries: [],
+    additionalQueries: [{title: 'This is query 1 from cluster 1 ', value: 10}],
     relatedClustersIds: [3]
   },
   '1': {
@@ -49,7 +49,7 @@ export const CLUSTERS_DATA = {
     relatedClustersIds: [3]
   },
   '3': {
-    title: 'Cluster 4',
+    title: 'Clusterrrrrrr 4',
     id: 4,
     volume: 100,
     queriesToDisplay: [
@@ -115,7 +115,7 @@ export const CLUSTERS_DATA = {
       {title: 'hi!!!!', value: 90},
       {title: 'hi!!!!', value: 100},
     ],
-    additionalQueries: [],
+    additionalQueries: [{title: 'hi!!!!', value: 40}],
     relatedClustersIds: []
   },
 };

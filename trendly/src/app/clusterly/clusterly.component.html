@@ -55,9 +55,34 @@
             *ngIf="!this.sidenav.opened"
             (click)="sidenav.toggle()">arrow_forward</button>
     <app-clusterly-inputs (apply)="getDataFromServer($event);"></app-clusterly-inputs>
-    <app-clusters-section (clustersEmitter)="clusters = $event; changSideNavClusters();"
+    <mat-tab-group *ngIf="withSummary === 0"
+                   mat-align-tabs="center"
+                   (selectedTabChange)="tabClicked($event.index)">
+      <mat-tab label="clusterly-edit">
+        <app-clusters-section (clustersEmitter)="clusters = $event; changeSideNavClusters();"
+                              (displayedClustersEmitter)="changeInUiHandler($event);"
+                              [trendsData]="dataFromServer"
+                              [clustersToDisplay]="clustersToShow"
+                              [isSideNavOpened]="this.sidenav.opened"></app-clusters-section>
+      </mat-tab>
+      <mat-tab label="summarized-view">
+        <div id="chart-container">
+          <p class="headline">Summarized View</p>
+          <google-chart [title]="title"
+                        [type]="type"
+                        [data]="data"
+                        [columns]="columnNames"
+                        [options]="options">
+          </google-chart>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+    <!-- See without Summary view for the external tool. -->
+    <app-clusters-section *ngIf="withSummary === 1"
+                          (clustersEmitter)="clusters = $event; changeSideNavClusters();"
                           (displayedClustersEmitter)="changeInUiHandler($event);"
                           [trendsData]="dataFromServer"
                           [clustersToDisplay]="clustersToShow"></app-clusters-section>
+
   </mat-sidenav-content>
 </mat-sidenav-container>
